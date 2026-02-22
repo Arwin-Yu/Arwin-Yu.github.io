@@ -5,8 +5,8 @@
   
   <entry>
     <title>Hello World</title>
-    <link href="/2026/02/22/hello-world/"/>
-    <url>/2026/02/22/hello-world/</url>
+    <link href="/arwin.github.io/2026/02/22/hello-world/"/>
+    <url>/arwin.github.io/2026/02/22/hello-world/</url>
     
     <content type="html"><![CDATA[<p>Welcome to <a href="https://hexo.io/">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues">GitHub</a>.</p><h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">$ hexo new <span class="hljs-string">&quot;My New Post&quot;</span><br></code></pre></td></tr></table></figure><p>More info: <a href="https://hexo.io/docs/writing.html">Writing</a></p><h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">$ hexo server<br></code></pre></td></tr></table></figure><p>More info: <a href="https://hexo.io/docs/server.html">Server</a></p><h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">$ hexo generate<br></code></pre></td></tr></table></figure><p>More info: <a href="https://hexo.io/docs/generating.html">Generating</a></p><h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">$ hexo deploy<br></code></pre></td></tr></table></figure><p>More info: <a href="https://hexo.io/docs/one-command-deployment.html">Deployment</a></p>]]></content>
     
@@ -18,8 +18,8 @@
   
   <entry>
     <title>Hello World: Welcome to My AI Lab</title>
-    <link href="/2026/02/22/hello-ai/"/>
-    <url>/2026/02/22/hello-ai/</url>
+    <link href="/arwin.github.io/2026/02/22/hello-ai/"/>
+    <url>/arwin.github.io/2026/02/22/hello-ai/</url>
     
     <content type="html"><![CDATA[<h1 id="Hello-World-Hello-AI"><a href="#Hello-World-Hello-AI" class="headerlink" title="Hello, World. Hello, AI."></a>Hello, World. Hello, AI.</h1><p>Welcome to <strong>Arwin’s AI Lab</strong>.</p><p>I am <strong>Arwin (Haowen Yu)</strong>, a PhD student in Human-Computer Interaction (HCI) and Neuroscience at the University of Glasgow.</p><p>This blog is not just a collection of notes; it is my digital garden where I explore the boundaries of:</p><ul><li><strong>4D Head Avatars</strong> &amp; Neural Rendering</li><li><strong>Affective Computing</strong> (Emotion AI)</li><li><strong>Geometric Deep Learning</strong> (GNNs)</li></ul><p>Here, you will find:</p><ol><li><strong>Deep Dives:</strong> Technical tutorials on core DL algorithms.</li><li><strong>Weekly Pulse:</strong> My curated list of the most important AI news.</li><li><strong>Research:</strong> Updates on my papers and books (including <em>Geometric Deep Learning: Theory and Practice</em>).</li></ol><p>Stay tuned. The future is being decoded.</p><hr><p><em>Powered by Hexo &amp; Fluid.</em></p>]]></content>
     
