@@ -661,5 +661,186 @@
   <noscript>
     <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
   </noscript>
-<script src="/js/data-ocean.js"></script></body>
+<script src="/js/data-ocean.js"></script><!-- hexo injector body_end start -->
+<script>
+(function() {
+  // Prevent duplicate execution
+  if (document.getElementById('data-ocean-canvas')) return;
+
+  console.log("🌊 Data Ocean Inline Script Running...");
+
+  function initOcean() {
+    const canvas = document.createElement('canvas');
+    canvas.id = 'data-ocean-canvas';
+    canvas.style.position = 'fixed';
+    canvas.style.top = '0';
+    canvas.style.left = '0';
+    canvas.style.width = '100vw';
+    canvas.style.height = '100vh';
+    canvas.style.zIndex = '1'; // Above background
+    canvas.style.pointerEvents = 'none'; // Default pass-through
+    canvas.style.mixBlendMode = 'screen'; // Cool blending
+    document.body.appendChild(canvas);
+
+    const ctx = canvas.getContext('2d');
+    let width, height;
+
+    // Data Nodes
+    const shipsData = [
+      { name: "OpenClaw", url: "/2026/02/23/spotlight-openclaw/" },
+      { name: "Claude-Code", url: "https://github.com/anthropics/claude-code" },
+      { name: "AutoGPT", url: "https://github.com/Significant-Gravitas/AutoGPT" },
+      { name: "Llama-3", url: "https://github.com/meta-llama/llama3" }
+    ];
+
+    let particles = [];
+    let ships = [];
+
+    class Particle {
+      constructor() { this.reset(); }
+      reset() {
+        this.x = Math.random() * width;
+        this.y = Math.random() * height;
+        this.vx = (Math.random() - 0.5) * 0.5;
+        this.vy = (Math.random() - 0.5) * 0.5;
+        this.size = Math.random() * 2;
+        this.alpha = Math.random() * 0.5 + 0.2;
+      }
+      update() {
+        this.x += this.vx;
+        this.y += this.vy;
+        if (this.x < 0 || this.x > width) this.vx *= -1;
+        if (this.y < 0 || this.y > height) this.vy *= -1;
+      }
+      draw() {
+        ctx.fillStyle = `rgba(0, 255, 255, ${this.alpha})`; // Cyan
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+        ctx.fill();
+      }
+    }
+
+    class Ship {
+      constructor(data) {
+        this.name = data.name;
+        this.url = data.url;
+        this.x = Math.random() * width;
+        this.y = Math.random() * height;
+        this.vx = (Math.random() - 0.5) * 0.2;
+        this.vy = (Math.random() - 0.5) * 0.2;
+      }
+      update() {
+        this.x += this.vx;
+        this.y += this.vy;
+        if(this.x < 0) this.x = width;
+        if(this.x > width) this.x = 0;
+        if(this.y < 0) this.y = height;
+        if(this.y > height) this.y = 0;
+      }
+      draw() {
+        // Pulsing Ring
+        const pulse = Math.sin(Date.now() * 0.005) * 5 + 10;
+        ctx.shadowBlur = 15;
+        ctx.shadowColor = "#00ffff";
+        
+        ctx.strokeStyle = "rgba(0, 255, 255, 0.5)";
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, 15 + pulse, 0, Math.PI * 2);
+        ctx.stroke();
+
+        // Core
+        ctx.fillStyle = "#ffffff";
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, 5, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.shadowBlur = 0;
+
+        // Label
+        ctx.fillStyle = "white";
+        ctx.font = "bold 14px sans-serif";
+        ctx.fillText(this.name, this.x + 15, this.y + 5);
+      }
+    }
+
+    function resize() {
+      width = window.innerWidth;
+      height = window.innerHeight;
+      canvas.width = width;
+      canvas.height = height;
+    }
+
+    // Interaction
+    window.addEventListener('mousemove', (e) => {
+        let hit = false;
+        ships.forEach(ship => {
+            const dx = e.clientX - ship.x;
+            const dy = e.clientY - ship.y;
+            if (Math.sqrt(dx*dx + dy*dy) < 50) hit = true;
+        });
+        
+        if (hit) {
+            canvas.style.pointerEvents = 'auto';
+            canvas.style.cursor = 'pointer';
+        } else {
+            canvas.style.pointerEvents = 'none';
+            canvas.style.cursor = 'default';
+        }
+    });
+
+    window.addEventListener('click', (e) => {
+       ships.forEach(ship => {
+            const dx = e.clientX - ship.x;
+            const dy = e.clientY - ship.y;
+            if (Math.sqrt(dx*dx + dy*dy) < 50) {
+                window.location.href = ship.url;
+            }
+        });
+    });
+
+    function animate() {
+      ctx.clearRect(0, 0, width, height);
+      
+      // Particles
+      particles.forEach(p => { p.update(); p.draw(); });
+      
+      // Lines
+      ctx.strokeStyle = "rgba(0, 255, 255, 0.05)";
+      ctx.lineWidth = 1;
+      for(let i=0; i<particles.length; i++) {
+        for(let j=i+1; j<particles.length; j++) {
+           const dx = particles[i].x - particles[j].x;
+           const dy = particles[i].y - particles[j].y;
+           if (dx*dx + dy*dy < 5000) {
+             ctx.beginPath();
+             ctx.moveTo(particles[i].x, particles[i].y);
+             ctx.lineTo(particles[j].x, particles[j].y);
+             ctx.stroke();
+           }
+        }
+      }
+
+      // Ships
+      ships.forEach(s => { s.update(); s.draw(); });
+
+      requestAnimationFrame(animate);
+    }
+
+    resize();
+    window.addEventListener('resize', resize);
+    
+    for(let i=0; i<60; i++) particles.push(new Particle());
+    shipsData.forEach(d => ships.push(new Ship(d)));
+    
+    animate();
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initOcean);
+  } else {
+    initOcean();
+  }
+})();
+</script>
+<!-- hexo injector body_end end --></body>
 </html>
