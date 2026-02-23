@@ -496,5 +496,157 @@
   <noscript>
     <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
   </noscript>
-<script src="/js/data-ocean.js"></script></body>
+<script src="/js/data-ocean.js"></script><!-- hexo injector body_end start -->
+<script>
+(function() {
+  if (document.getElementById('data-ocean-canvas')) return;
+
+  console.log("🌊 Data Ocean Inline Script Running...");
+
+  function initOcean() {
+    var canvas = document.createElement('canvas');
+    canvas.id = 'data-ocean-canvas';
+    canvas.style.position = 'fixed';
+    canvas.style.top = '0';
+    canvas.style.left = '0';
+    canvas.style.width = '100vw';
+    canvas.style.height = '100vh';
+    canvas.style.zIndex = '1';
+    canvas.style.pointerEvents = 'none';
+    canvas.style.mixBlendMode = 'screen';
+    document.body.appendChild(canvas);
+
+    var ctx = canvas.getContext('2d');
+    var width, height;
+
+    var shipsData = [
+      { name: "OpenClaw", url: "/2026/02/23/spotlight-openclaw/" },
+      { name: "Claude-Code", url: "https://github.com/anthropics/claude-code" },
+      { name: "AutoGPT", url: "https://github.com/Significant-Gravitas/AutoGPT" },
+      { name: "Llama-3", url: "https://github.com/meta-llama/llama3" }
+    ];
+
+    var particles = [];
+    var ships = [];
+
+    function Particle() {
+      this.reset();
+    }
+    Particle.prototype.reset = function() {
+      this.x = Math.random() * width;
+      this.y = Math.random() * height;
+      this.vx = (Math.random() - 0.5) * 0.5;
+      this.vy = (Math.random() - 0.5) * 0.5;
+      this.size = Math.random() * 2;
+      this.alpha = Math.random() * 0.5 + 0.2;
+    };
+    Particle.prototype.update = function() {
+      this.x += this.vx;
+      this.y += this.vy;
+      if (this.x < 0 || this.x > width) this.vx *= -1;
+      if (this.y < 0 || this.y > height) this.vy *= -1;
+    };
+    Particle.prototype.draw = function() {
+      ctx.fillStyle = "rgba(0, 255, 255, " + this.alpha + ")";
+      ctx.beginPath();
+      ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+      ctx.fill();
+    };
+
+    function Ship(data) {
+      this.name = data.name;
+      this.url = data.url;
+      this.x = Math.random() * width;
+      this.y = Math.random() * height;
+      this.vx = (Math.random() - 0.5) * 0.2;
+      this.vy = (Math.random() - 0.5) * 0.2;
+    }
+    Ship.prototype.update = function() {
+      this.x += this.vx;
+      this.y += this.vy;
+      if(this.x < 0) this.x = width;
+      if(this.x > width) this.x = 0;
+      if(this.y < 0) this.y = height;
+      if(this.y > height) this.y = 0;
+    };
+    Ship.prototype.draw = function() {
+      var pulse = Math.sin(Date.now() * 0.005) * 5 + 10;
+      ctx.shadowBlur = 15;
+      ctx.shadowColor = "#00ffff";
+      
+      ctx.strokeStyle = "rgba(0, 255, 255, 0.5)";
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.arc(this.x, this.y, 15 + pulse, 0, Math.PI * 2);
+      ctx.stroke();
+
+      ctx.fillStyle = "#ffffff";
+      ctx.beginPath();
+      ctx.arc(this.x, this.y, 5, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.shadowBlur = 0;
+
+      ctx.fillStyle = "white";
+      ctx.font = "bold 14px sans-serif";
+      ctx.fillText(this.name, this.x + 15, this.y + 5);
+    };
+
+    function resize() {
+      width = window.innerWidth;
+      height = window.innerHeight;
+      canvas.width = width;
+      canvas.height = height;
+    }
+
+    window.addEventListener('mousemove', function(e) {
+        var hit = false;
+        ships.forEach(function(ship) {
+            var dx = e.clientX - ship.x;
+            var dy = e.clientY - ship.y;
+            if (Math.sqrt(dx*dx + dy*dy) < 50) hit = true;
+        });
+        
+        if (hit) {
+            canvas.style.pointerEvents = 'auto';
+            canvas.style.cursor = 'pointer';
+        } else {
+            canvas.style.pointerEvents = 'none';
+            canvas.style.cursor = 'default';
+        }
+    });
+
+    window.addEventListener('click', function(e) {
+       ships.forEach(function(ship) {
+            var dx = e.clientX - ship.x;
+            var dy = e.clientY - ship.y;
+            if (Math.sqrt(dx*dx + dy*dy) < 50) {
+                window.location.href = ship.url;
+            }
+        });
+    });
+
+    function animate() {
+      ctx.clearRect(0, 0, width, height);
+      particles.forEach(function(p) { p.update(); p.draw(); });
+      ships.forEach(function(s) { s.update(); s.draw(); });
+      requestAnimationFrame(animate);
+    }
+
+    resize();
+    window.addEventListener('resize', resize);
+    
+    for(var i=0; i<60; i++) particles.push(new Particle());
+    shipsData.forEach(function(d) { ships.push(new Ship(d)); });
+    
+    animate();
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initOcean);
+  } else {
+    initOcean();
+  }
+})();
+</script>
+<!-- hexo injector body_end end --></body>
 </html>
