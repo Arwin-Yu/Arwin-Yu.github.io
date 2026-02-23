@@ -678,12 +678,11 @@
     <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
   </noscript>
 <script src="/js/data-ocean.js"></script><!-- hexo injector body_end start -->
-<!-- Load Vanta Libs -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/vanta/0.5.24/vanta.waves.min.js"></script>
 
 <style>
-  /* --- The Ships (CSS Objects) --- */
+  /* --- The Ships (PNG Sprites) --- */
   .ocean-ship {
     position: fixed;
     z-index: 1;
@@ -692,99 +691,80 @@
     flex-direction: column;
     align-items: center;
     transition: transform 0.3s ease;
+    filter: drop-shadow(0 0 10px cyan); /* Neon Glow */
   }
   .ocean-ship:hover {
-    transform: scale(1.2);
+    transform: scale(1.2) translateY(-10px);
     z-index: 10;
+    filter: drop-shadow(0 0 20px cyan);
   }
   
-  /* The "Droplet" Visual */
   .ship-body {
-    width: 20px;
-    height: 20px;
-    background: radial-gradient(circle at 30% 30%, #ffffff, #00ffff);
-    border-radius: 50%;
-    box-shadow: 0 0 15px #00ffff, 0 0 30px #0000ff;
-    position: relative;
-  }
-  /* Engine Trail */
-  .ship-body::after {
-    content: '';
-    position: absolute;
-    top: 50%;
-    left: -20px;
-    width: 30px;
-    height: 2px;
-    background: linear-gradient(90deg, rgba(0,255,255,0), rgba(0,255,255,0.8));
-    transform: translateY(-50%);
+    width: 64px;
+    height: 64px;
+    /* High quality 3D icon */
+    background-image: url('https://img.icons8.com/external-flaticons-lineal-color-flat-icons/64/external-spaceship-space-flaticons-lineal-color-flat-icons-3.png'); 
+    background-size: contain;
+    background-repeat: no-repeat;
   }
 
   .ship-label {
-    margin-top: 8px;
-    color: rgba(255,255,255,0.8);
+    margin-top: 5px;
+    color: white;
     font-size: 12px;
     font-weight: bold;
-    text-shadow: 0 0 5px #000;
-    pointer-events: none;
+    text-shadow: 0 0 5px black;
+    background: rgba(0,0,0,0.5);
+    padding: 2px 6px;
+    border-radius: 4px;
   }
 
-  /* Animations */
-  @keyframes float1 { 0% { transform: translateY(0px); } 50% { transform: translateY(-15px); } 100% { transform: translateY(0px); } }
-  @keyframes float2 { 0% { transform: translateY(0px); } 50% { transform: translateY(-25px); } 100% { transform: translateY(0px); } }
-  @keyframes float3 { 0% { transform: translateY(0px); } 50% { transform: translateY(-10px); } 100% { transform: translateY(0px); } }
-
-  /* --- The Lighthouse --- */
+  /* --- The Lighthouse (PNG Sprite) --- */
   .ocean-lighthouse {
     position: fixed;
-    right: 15%;
-    bottom: 40%;
+    right: 10%;
+    bottom: 30%; /* Sit on the "horizon" */
     z-index: 0;
     cursor: pointer;
-    width: 40px;
-    height: 120px;
+    width: 100px;
+    height: 150px;
     display: flex;
     flex-direction: column;
     align-items: center;
+    filter: drop-shadow(0 0 15px orange);
+  }
+  .ocean-lighthouse:hover {
+    filter: drop-shadow(0 0 30px orange);
+    transform: scale(1.05);
   }
   
-  .lighthouse-beam {
-    width: 6px;
+  .lighthouse-body {
+    width: 100%;
     height: 100%;
-    background: linear-gradient(to top, rgba(255,160,0,0), rgba(255,160,0,1));
-    box-shadow: 0 0 20px rgba(255,100,0,0.8);
-    animation: pulseBeam 2s infinite ease-in-out;
-  }
-  
-  .lighthouse-core {
-    width: 20px;
-    height: 20px;
-    background: #ffaa00;
-    border-radius: 50%;
-    box-shadow: 0 0 40px #ffaa00;
-    margin-bottom: -10px; /* Connect to beam */
-    z-index: 2;
+    background-image: url('https://img.icons8.com/external-flaticons-lineal-color-flat-icons/100/external-lighthouse-sea-life-flaticons-lineal-color-flat-icons-2.png');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: bottom center;
   }
 
   .lighthouse-label {
-    margin-top: 10px;
+    position: absolute;
+    bottom: -25px;
     color: #ffaa00;
     font-family: monospace;
     font-weight: bold;
     text-shadow: 0 0 10px black;
   }
 
-  @keyframes pulseBeam {
-    0%, 100% { opacity: 0.6; height: 80%; }
-    50% { opacity: 1; height: 120%; }
-  }
+  /* Animations */
+  @keyframes float1 { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
+  @keyframes float2 { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-20px); } }
 
 </style>
 
 <script>
 (function() {
   if (document.getElementById('vanta-bg')) return;
-
-  console.log("🌊 Data Ocean v5.0 (CSS) Initializing...");
 
   // 1. Vanta Background
   var vantaBg = document.createElement('div');
@@ -809,19 +789,19 @@
         scale: 1.00,
         scaleMobile: 1.00,
         color: 0x051020,
-        shininess: 10.00,      // Lower shininess = Better FPS
-        waveHeight: 10.00,     // Smoother waves
-        waveSpeed: 0.5,        // Slower, majestic speed
+        shininess: 25.00,
+        waveHeight: 15.00,
+        waveSpeed: 0.6,
         zoom: 0.8
       });
-  } catch(e) { console.error("Vanta failed:", e); }
+  } catch(e) {}
 
-  // 2. Spawn Ships (DOM Elements)
+  // 2. Spawn Ships (PNGs)
   var shipsData = [
-      { name: "OpenClaw", url: "/2026/02/23/spotlight-openclaw/", top: "60%", left: "20%", anim: "float1 4s infinite ease-in-out" },
-      { name: "Claude-Code", url: "https://github.com/anthropics/claude-code", top: "55%", left: "40%", anim: "float2 5s infinite ease-in-out" },
-      { name: "AutoGPT", url: "https://github.com/Significant-Gravitas/AutoGPT", top: "65%", left: "60%", anim: "float3 6s infinite ease-in-out" },
-      { name: "Llama-3", url: "https://github.com/meta-llama/llama3", top: "50%", left: "80%", anim: "float1 4.5s infinite ease-in-out" }
+      { name: "OpenClaw", url: "/2026/02/23/spotlight-openclaw/", top: "60%", left: "15%", anim: "float1 4s infinite ease-in-out" },
+      { name: "Claude-Code", url: "https://github.com/anthropics/claude-code", top: "50%", left: "35%", anim: "float2 5s infinite ease-in-out" },
+      { name: "AutoGPT", url: "https://github.com/Significant-Gravitas/AutoGPT", top: "65%", left: "55%", anim: "float1 6s infinite ease-in-out" },
+      { name: "Llama-3", url: "https://github.com/meta-llama/llama3", top: "45%", left: "75%", anim: "float2 4.5s infinite ease-in-out" }
   ];
 
   shipsData.forEach(function(d) {
@@ -829,7 +809,7 @@
       ship.className = 'ocean-ship';
       ship.style.top = d.top;
       ship.style.left = d.left;
-      ship.style.animation = d.anim; // CSS Animation
+      ship.style.animation = d.anim; 
       ship.onclick = function() { window.location.href = d.url; };
       
       var body = document.createElement('div');
@@ -844,23 +824,19 @@
       document.body.appendChild(ship);
   });
 
-  // 3. Spawn Lighthouse
+  // 3. Spawn Lighthouse (PNG)
   var lh = document.createElement('div');
   lh.className = 'ocean-lighthouse';
   lh.onclick = function() { window.location.href = '/categories/Weekly-AI/'; };
   
-  var core = document.createElement('div');
-  core.className = 'lighthouse-core';
-  
-  var beam = document.createElement('div');
-  beam.className = 'lighthouse-beam';
+  var body = document.createElement('div');
+  body.className = 'lighthouse-body';
   
   var label = document.createElement('div');
   label.className = 'lighthouse-label';
   label.innerText = 'AI HUB';
   
-  lh.appendChild(core);
-  lh.appendChild(beam);
+  lh.appendChild(body);
   lh.appendChild(label);
   document.body.appendChild(lh);
 
