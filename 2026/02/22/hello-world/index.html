@@ -637,7 +637,7 @@
 (function() {
   if (document.getElementById('data-ocean-canvas')) return;
 
-  console.log("🌊 Data Ocean v3.0 Initializing...");
+  console.log("🌊 Data Ocean v4.0 (Storm) Initializing...");
 
   function initOcean() {
     var canvas = document.createElement('canvas');
@@ -647,7 +647,7 @@
     canvas.style.left = '0';
     canvas.style.width = '100vw';
     canvas.style.height = '100vh';
-    canvas.style.zIndex = '0'; // Behind text
+    canvas.style.zIndex = '0'; 
     canvas.style.pointerEvents = 'none'; 
     document.body.appendChild(canvas);
 
@@ -656,84 +656,91 @@
     var time = 0;
 
     // Config
-    var WAVE_COLOR_1 = "rgba(0, 255, 255, 0.1)"; 
-    var WAVE_COLOR_2 = "rgba(0, 100, 255, 0.15)";
-    var SHIP_COLOR = "#e0ffff";
-    var LIGHTHOUSE_X_RATIO = 0.85;
+    var WAVE_COLOR_1 = "rgba(0, 255, 255, 0.2)"; 
+    var WAVE_COLOR_2 = "rgba(0, 100, 200, 0.3)";
+    var BEAM_COLOR = "rgba(255, 150, 0, 0.4)";
 
     // Data
     var shipsData = [
-      { name: "OpenClaw", stars: 5000, url: "/2026/02/23/spotlight-openclaw/" },
-      { name: "Claude-Code", stars: 3000, url: "https://github.com/anthropics/claude-code" },
-      { name: "AutoGPT", stars: 15000, url: "https://github.com/Significant-Gravitas/AutoGPT" },
-      { name: "Llama-3", stars: 8000, url: "https://github.com/meta-llama/llama3" }
+      { name: "OpenClaw", url: "/2026/02/23/spotlight-openclaw/" },
+      { name: "Claude-Code", url: "https://github.com/anthropics/claude-code" },
+      { name: "AutoGPT", url: "https://github.com/Significant-Gravitas/AutoGPT" },
+      { name: "Llama-3", url: "https://github.com/meta-llama/llama3" }
     ];
 
     var ships = [];
     var lighthouse = null;
+
+    // --- Wave Function ---
+    function getWaveHeight(x, t) {
+        // Combine multiple sine waves for "Stormy" look
+        return Math.sin(x * 0.003 + t * 0.02) * 60 + 
+               Math.sin(x * 0.01 - t * 0.03) * 30 + 
+               Math.sin(x * 0.02 + t * 0.05) * 15;
+    }
+    
+    function getWaveSlope(x, t) {
+        // Derivative for rotation
+        var delta = 1;
+        var y1 = getWaveHeight(x, t);
+        var y2 = getWaveHeight(x + delta, t);
+        return Math.atan2(y2 - y1, delta);
+    }
 
     // --- Classes ---
 
     function Ship(data) {
       this.name = data.name;
       this.url = data.url;
-      this.x = Math.random() * (width * 0.6); // Left side
-      this.baseY = 0;
-      this.size = Math.max(15, Math.log(data.stars) * 2); // Size by heat
-      this.speed = Math.random() * 0.5 + 0.2;
-      this.floatOffset = Math.random() * 100;
+      this.x = Math.random() * (width * 0.6);
+      this.y = 0;
+      this.size = 20; 
+      this.speed = Math.random() * 0.8 + 0.5; // Faster
+      this.angle = 0;
     }
     
     Ship.prototype.update = function(t) {
       this.x += this.speed;
-      if (this.x > width * 0.7) this.x = -50; // Loop back
+      if (this.x > width * 0.7) this.x = -50; 
 
-      // Calculate Wave Height at this X
-      // Must match the wave formula in drawOcean
-      var waveH = Math.sin(this.x * 0.003 + t * 0.02) * 20 + 
-                  Math.sin(this.x * 0.01 + t * 0.01) * 10;
-      
-      this.baseY = (height * 0.6) + waveH; // Ride the wave
+      var waveH = getWaveHeight(this.x, t);
+      this.y = (height * 0.6) + waveH;
+      this.angle = getWaveSlope(this.x, t); // Tilt with wave
     };
 
     Ship.prototype.draw = function(isHovered) {
       ctx.save();
-      ctx.translate(this.x, this.baseY);
+      ctx.translate(this.x, this.y);
+      ctx.rotate(this.angle); // Rotate ship
 
       // Glow
-      ctx.shadowBlur = isHovered ? 40 : 20;
+      ctx.shadowBlur = isHovered ? 50 : 20;
       ctx.shadowColor = isHovered ? "#ffffff" : "#00ffff";
 
-      // The Droplet (Teardrop shape ish - circle for now but shiny)
-      var grad = ctx.createRadialGradient(-5, -5, 2, 0, 0, this.size);
-      grad.addColorStop(0, "#ffffff");
-      grad.addColorStop(0.5, "#00ffff");
-      grad.addColorStop(1, "#0044aa");
-      
-      ctx.fillStyle = grad;
+      // Hull (Teardrop)
+      ctx.fillStyle = isHovered ? "#ffffff" : "#e0ffff";
       ctx.beginPath();
-      ctx.arc(0, 0, this.size, 0, Math.PI * 2);
+      ctx.moveTo(15, 0); // Nose
+      ctx.bezierCurveTo(5, 10, -10, 10, -15, 0); // Tail
+      ctx.bezierCurveTo(-10, -10, 5, -10, 15, 0);
       ctx.fill();
 
-      // Reflection on "Water"
-      ctx.save();
-      ctx.scale(1, 0.3);
-      ctx.fillStyle = "rgba(0, 255, 255, 0.2)";
+      // Engine Trail
+      ctx.fillStyle = "rgba(0, 255, 255, 0.8)";
       ctx.beginPath();
-      ctx.arc(0, this.size * 4, this.size, 0, Math.PI * 2);
+      ctx.arc(-15, 0, 3 + Math.random()*2, 0, Math.PI*2);
       ctx.fill();
-      ctx.restore();
 
       ctx.restore();
 
-      // Label
+      // Label (No rotation)
       if (isHovered) {
         ctx.fillStyle = "#ffffff";
         ctx.font = "bold 16px sans-serif";
         ctx.textAlign = "center";
         ctx.shadowBlur = 4;
         ctx.shadowColor = "black";
-        ctx.fillText(this.name, this.x, this.baseY - this.size - 15);
+        ctx.fillText(this.name, this.x, this.y - 30);
       }
     };
 
@@ -743,39 +750,57 @@
     }
     
     Lighthouse.prototype.update = function() {
-      this.x = width * LIGHTHOUSE_X_RATIO;
-      this.y = height * 0.55; // Horizon
+      this.x = width * 0.85;
+      this.y = height * 0.5; 
     };
 
     Lighthouse.prototype.draw = function(t, isHovered) {
-      var pulse = (Math.sin(t * 0.05) + 1) / 2;
+      // Rotating Beam
+      var angle = t * 0.02;
       
-      // Light Beam (Rotating or Pulsing)
-      var glowSize = 40 + pulse * 40;
-      var grad = ctx.createRadialGradient(this.x, this.y, 5, this.x, this.y, glowSize);
-      grad.addColorStop(0, "rgba(255, 160, 0, 1)"); // Orange
-      grad.addColorStop(1, "rgba(255, 100, 0, 0)"); // Fade
-
+      ctx.save();
+      ctx.translate(this.x, this.y);
+      
+      // Beam 1
+      ctx.rotate(angle);
+      var grad = ctx.createLinearGradient(0, 0, 800, 0);
+      grad.addColorStop(0, BEAM_COLOR);
+      grad.addColorStop(1, "rgba(0,0,0,0)");
       ctx.fillStyle = grad;
       ctx.beginPath();
-      ctx.arc(this.x, this.y, glowSize, 0, Math.PI * 2);
+      ctx.moveTo(0, -5);
+      ctx.lineTo(800, -100);
+      ctx.lineTo(800, 100);
+      ctx.lineTo(0, 5);
+      ctx.fill();
+      
+      // Beam 2 (Opposite)
+      ctx.rotate(Math.PI);
+      ctx.fillStyle = grad;
+      ctx.beginPath();
+      ctx.moveTo(0, -5);
+      ctx.lineTo(800, -100);
+      ctx.lineTo(800, 100);
+      ctx.lineTo(0, 5);
       ctx.fill();
 
-      // Tower
-      ctx.fillStyle = "#111"; // Silhouette
+      ctx.restore();
+
+      // Tower Core
+      ctx.fillStyle = "#ffaa00";
+      ctx.shadowBlur = 50;
+      ctx.shadowColor = "#ffaa00";
       ctx.beginPath();
-      ctx.moveTo(this.x - 10, this.y);
-      ctx.lineTo(this.x + 10, this.y);
-      ctx.lineTo(this.x + 20, this.y + 150);
-      ctx.lineTo(this.x - 20, this.y + 150);
+      ctx.arc(this.x, this.y, 10, 0, Math.PI * 2);
       ctx.fill();
+      ctx.shadowBlur = 0;
 
       // Label
       if (isHovered) {
         ctx.fillStyle = "#ffaa00";
         ctx.font = "14px monospace";
         ctx.textAlign = "center";
-        ctx.fillText("AI NEWS HUB", this.x, this.y + 140);
+        ctx.fillText("AI NEWS HUB", this.x, this.y + 60);
       }
     };
 
@@ -795,11 +820,10 @@
       var hit = false;
       ships.forEach(function(s) {
         var dx = mouseX - s.x;
-        var dy = mouseY - s.baseY;
+        var dy = mouseY - s.y;
         if (dx*dx + dy*dy < 2500) hit = true;
       });
       
-      // Lighthouse hit
       if (lighthouse) {
          var dx = mouseX - lighthouse.x;
          var dy = mouseY - lighthouse.y;
@@ -816,14 +840,12 @@
     });
 
     window.addEventListener('click', function(e) {
-       // Ships
        ships.forEach(function(s) {
          var dx = e.clientX - s.x;
-         var dy = e.clientY - s.baseY;
+         var dy = e.clientY - s.y;
          if (dx*dx + dy*dy < 2500) window.location.href = s.url;
        });
        
-       // Lighthouse
        if (lighthouse) {
          var dx = e.clientX - lighthouse.x;
          var dy = e.clientY - lighthouse.y;
@@ -832,26 +854,25 @@
     });
 
     function drawOcean(t) {
-      // Background Gradient (Cyberpunk Deep Sea)
+      // Deep Background
       var bgGrad = ctx.createLinearGradient(0, 0, 0, height);
-      bgGrad.addColorStop(0, "#02020a"); // Space Black
-      bgGrad.addColorStop(1, "#0a0a2a"); // Deep Purple/Blue
+      bgGrad.addColorStop(0, "#050510"); 
+      bgGrad.addColorStop(1, "#001133"); 
       ctx.fillStyle = bgGrad;
       ctx.fillRect(0, 0, width, height);
 
-      // Waves
-      for(var i=0; i<3; i++) {
+      // Stormy Waves
+      for(var i=0; i<4; i++) {
         ctx.beginPath();
-        ctx.fillStyle = (i===2) ? WAVE_COLOR_1 : WAVE_COLOR_2;
+        // Alternating colors
+        ctx.fillStyle = (i%2===0) ? WAVE_COLOR_1 : WAVE_COLOR_2;
         
-        var offset = i * 100;
-        var speed = t * (0.01 + i*0.005);
+        var offset = i * 50;
+        var speed = t * (0.02 + i*0.01);
         
         ctx.moveTo(0, height);
         for(var x=0; x<=width; x+=10) {
-           var y = (height * 0.6) + 
-                   Math.sin(x * 0.003 + speed) * 30 + 
-                   Math.sin(x * 0.01 + speed) * 10 + offset;
+           var y = (height * 0.6) + getWaveHeight(x, time + i*100) + offset;
            ctx.lineTo(x, y);
         }
         ctx.lineTo(width, height);
@@ -864,19 +885,20 @@
       time++;
       ctx.clearRect(0, 0, width, height);
       
+      // 1. Ocean
       drawOcean(time);
       
+      // 2. Lighthouse Beam (Behind ships)
       if(lighthouse) {
         lighthouse.update();
-        var ldx = mouseX - lighthouse.x;
-        var ldy = mouseY - lighthouse.y;
-        lighthouse.draw(time, ldx*ldx + ldy*ldy < 3600);
+        lighthouse.draw(time, false); // Beam
       }
 
+      // 3. Ships (Riding the waves)
       ships.forEach(function(s) {
         s.update(time);
         var dx = mouseX - s.x;
-        var dy = mouseY - s.baseY;
+        var dy = mouseY - s.y;
         s.draw(dx*dx + dy*dy < 2500);
       });
 
@@ -886,7 +908,7 @@
     resize();
     window.addEventListener('resize', resize);
     
-    // Init Ships
+    // Init
     shipsData.forEach(function(d) { ships.push(new Ship(d)); });
     lighthouse = new Lighthouse();
     
