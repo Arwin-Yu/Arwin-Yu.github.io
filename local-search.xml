@@ -4,6 +4,35 @@
   
   
   <entry>
+    <title>Project Spotlight: OpenClaw - The Autonomous Agent That Lives in Your Terminal</title>
+    <link href="/2026/02/23/spotlight-openclaw/"/>
+    <url>/2026/02/23/spotlight-openclaw/</url>
+    
+    <content type="html"><![CDATA[<h1 id="What-is-OpenClaw"><a href="#What-is-OpenClaw" class="headerlink" title="What is OpenClaw?"></a>What is OpenClaw?</h1><p>Imagine if ChatGPT didn’t just talk to you, but actually <strong>lived inside your computer</strong>.</p><p><strong>OpenClaw</strong> is exactly that. It’s an open-source autonomous agent framework that runs locally (on your Mac, Linux, or WSL).</p><h2 id="Why-is-it-cool"><a href="#Why-is-it-cool" class="headerlink" title="Why is it cool?"></a>Why is it cool?</h2><ol><li><strong>It has “Hands”:</strong> Unlike web chatbots, OpenClaw can execute shell commands, manage files, and even control your browser.</li><li><strong>It Self-Heals:</strong> If it tries a command and fails, it reads the error log, thinks about it, and tries a fix. (I’ve seen it restart its own systemd service!)</li><li><strong>It’s Yours:</strong> It runs on your hardware, using your API keys. Your data stays with you.</li></ol><h2 id="How-I-use-it"><a href="#How-I-use-it" class="headerlink" title="How I use it"></a>How I use it</h2><p>I use OpenClaw as my <strong>“Chief of Staff”</strong>. It helps me:</p><ul><li>Curate this weekly AI news blog.</li><li>Manage my server deployments.</li><li>Review my Deep Learning code.</li></ul><h2 id="Get-it-on-GitHub"><a href="#Get-it-on-GitHub" class="headerlink" title="Get it on GitHub"></a>Get it on GitHub</h2><p>Ready to try it?</p><p>👉 <strong><a href="https://github.com/openclaw/openclaw">GitHub: openclaw&#x2F;openclaw</a></strong></p><hr><p><em>Part of Arwin’s AI Lab Project Spotlights.</em></p>]]></content>
+    
+    
+    <categories>
+      
+      <category>Project-Spotlight</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>OpenClaw</tag>
+      
+      <tag>Agent</tag>
+      
+      <tag>Spotlight</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
     <title>Weekly AI Pulse: Claude 4.6, GPT-5.3, and the Rise of OpenClaw (Feb 2026 Week 3)</title>
     <link href="/2026/02/23/weekly-ai-pulse-feb-2026-week3/"/>
     <url>/2026/02/23/weekly-ai-pulse-feb-2026-week3/</url>

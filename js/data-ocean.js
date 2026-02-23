@@ -18,19 +18,55 @@ document.addEventListener('DOMContentLoaded', function () {
   const ctx = canvas.getContext('2d');
   let width, height;
 
-  // Mock Data
+  // Mock Data (Updated with internal links)
   const shipsData = [
-    { name: "OpenClaw", stars: 5000 },
-    { name: "Claude-Code", stars: 3000 },
-    { name: "AutoGPT", stars: 15000 },
-    { name: "Llama-3", stars: 8000 }
+    { name: "OpenClaw", stars: 5000, url: "/2026/02/23/spotlight-openclaw/" },
+    { name: "Claude-Code", stars: 3000, url: "https://github.com/anthropics/claude-code" },
+    { name: "AutoGPT", stars: 15000, url: "https://github.com/Significant-Gravitas/AutoGPT" },
+    { name: "Llama-3", stars: 8000, url: "https://github.com/meta-llama/llama3" }
   ];
 
   let particles = [];
   let ships = [];
+  
+  // ... (Classes remain the same) ...
 
-  class Particle {
-    constructor() { this.reset(); }
+  // Mouse Interaction (Smart Pointer Events)
+  let mouseX = 0, mouseY = 0;
+  let hoveredShip = null;
+
+  document.addEventListener('mousemove', (e) => {
+    mouseX = e.clientX;
+    mouseY = e.clientY;
+    
+    // Check collision logic here to toggle pointer-events
+    // We need to loop through ships to see if we are over one
+    let hit = false;
+    ships.forEach(ship => {
+        const dx = mouseX - ship.x;
+        const dy = mouseY - ship.y;
+        if (Math.sqrt(dx*dx + dy*dy) < 20) hit = true;
+    });
+    
+    if (hit) {
+        canvas.style.pointerEvents = 'auto';
+        canvas.style.cursor = 'pointer';
+    } else {
+        canvas.style.pointerEvents = 'none';
+        canvas.style.cursor = 'default';
+    }
+  });
+
+  canvas.addEventListener('click', () => {
+    // Re-check collision because click event needs precise target
+    ships.forEach(ship => {
+        const dx = mouseX - ship.x;
+        const dy = mouseY - ship.y;
+        if (Math.sqrt(dx*dx + dy*dy) < 20) {
+            window.location.href = ship.url;
+        }
+    });
+  });
     reset() {
       this.x = Math.random() * width;
       this.y = Math.random() * height;
