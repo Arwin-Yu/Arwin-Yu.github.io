@@ -4,6 +4,39 @@
   
   
   <entry>
+    <title>Weekly AI Pulse: Claude 4.6, GPT-5.3, and the Rise of OpenClaw (Feb 2026 Week 3)</title>
+    <link href="/2026/02/23/weekly-ai-pulse-feb-2026-week3/"/>
+    <url>/2026/02/23/weekly-ai-pulse-feb-2026-week3/</url>
+    
+    <content type="html"><![CDATA[<h1 id="Weekly-AI-Pulse-The-Agent-Era-is-Here"><a href="#Weekly-AI-Pulse-The-Agent-Era-is-Here" class="headerlink" title="Weekly AI Pulse: The Agent Era is Here"></a>Weekly AI Pulse: The Agent Era is Here</h1><p><em>February 23, 2026 | Curated by Arwin (Haowen Yu)</em></p><p>Welcome to the first edition of <strong>Weekly AI Pulse</strong>. Every week, I filter through the noise to bring you the signal: the most important model releases, GitHub projects, and research papers defining the AI landscape.</p><hr><h2 id="🚨-Big-Tech-Model-Updates"><a href="#🚨-Big-Tech-Model-Updates" class="headerlink" title="🚨 Big Tech &amp; Model Updates"></a>🚨 Big Tech &amp; Model Updates</h2><p>This week was dominated by an “arms race” in coding and agentic capabilities.</p><h3 id="1-Anthropic-Claude-Sonnet-4-6"><a href="#1-Anthropic-Claude-Sonnet-4-6" class="headerlink" title="1. Anthropic Claude Sonnet 4.6"></a>1. Anthropic Claude Sonnet 4.6</h3><p>Anthropic surprised everyone by releasing <strong>Claude Sonnet 4.6</strong>, its second major update in two weeks.</p><ul><li><strong>Key Upgrade:</strong> Near-Opus level reasoning at a mid-tier price point.</li><li><strong>Focus:</strong> Massive improvements in <strong>coding, agentic workflows, and tool use</strong>. It seems Anthropic is aiming to become the default brain for AI Engineers.</li><li><strong>Impact:</strong> This puts immense pressure on OpenAI’s GPT-4o series.</li></ul><h3 id="2-OpenAI-GPT-5-3-Codex-Spark"><a href="#2-OpenAI-GPT-5-3-Codex-Spark" class="headerlink" title="2. OpenAI GPT-5.3-Codex-Spark"></a>2. OpenAI GPT-5.3-Codex-Spark</h3><p>Not to be outdone, OpenAI (quietly) rolled out <strong>GPT-5.3-Codex-Spark</strong>.</p><ul><li><strong>What is it?</strong> A specialized model variant deeply integrated with IDEs (like Cursor and the new OpenCode).</li><li><strong>Capabilities:</strong> Multi-modal input (paste screenshots of UI), project-wide context awareness, and self-healing code generation.</li></ul><h3 id="3-Google-Gemini-3-0-Pro-GA"><a href="#3-Google-Gemini-3-0-Pro-GA" class="headerlink" title="3. Google Gemini 3.0 Pro GA"></a>3. Google Gemini 3.0 Pro GA</h3><p>Google finally moved <strong>Gemini 3.0 Pro</strong> from Preview to <strong>General Availability (GA)</strong>.</p><ul><li><strong>Stability:</strong> Rate limits are lifted (mostly), and performance is now consistent for production use.</li><li><strong>Context:</strong> Still the king of long-context (1M+ tokens) retrieval.</li></ul><hr><h2 id="📈-GitHub-Trending-Dev-Tools"><a href="#📈-GitHub-Trending-Dev-Tools" class="headerlink" title="📈 GitHub Trending (Dev Tools)"></a>📈 GitHub Trending (Dev Tools)</h2><p>The community is shifting from “Chatbots” to “Autonomous Agents”.</p><ul><li><strong><a href="https://github.com/openclaw/openclaw">OpenClaw</a>:</strong> The breakout star of the month. An open-source autonomous agent framework that can run locally, manage Docker containers, and even “self-heal” its own configuration. Rumors of acquisition interest from Meta&#x2F;OpenAI are circulating.</li><li><strong><a href="https://kamranahmed.info/githunt">GitHunt</a>:</strong> A trending tool to discover other trending tools (Meta!).</li><li><strong><a href="https://github.com/huggingface/skills">Hugging Face Skills</a>:</strong> A standardized library for giving Agents new capabilities (like browsing, Python execution).</li></ul><hr><h2 id="📚-Research-Papers-SOTA"><a href="#📚-Research-Papers-SOTA" class="headerlink" title="📚 Research &amp; Papers (SOTA)"></a>📚 Research &amp; Papers (SOTA)</h2><ul><li><strong>Nature:</strong> <em>“<a href="https://www.nature.com/articles/s41586-025-09962-4">A benchmark of expert-level academic questions to assess AI capabilities</a>“</em> - A new study challenging the “AGI is here” narrative by testing models on PhD-level domain problems.</li><li><strong>ArXiv:</strong> <em>“<a href="https://arxiv.org/list/cs.AI/current">Scalable and Secure AI Inference in Healthcare</a>“</em> - Benchmarking FastAPI vs. Triton for deploying medical AI models.</li><li><strong>Johns Hopkins University:</strong> A new technique for <strong>100x Compression of Model Adapters</strong> (LoRA), potentially allowing thousands of specialized skills to be loaded into a single LLM instantly.</li></ul><hr><h2 id="💡-Arwin’s-Take"><a href="#💡-Arwin’s-Take" class="headerlink" title="💡 Arwin’s Take"></a>💡 Arwin’s Take</h2><p>We are witnessing the transition from <strong>“Chat with AI”</strong> to <strong>“Work with AI Agents”</strong>. The release of Claude 4.6 and OpenClaw’s popularity signals that <strong>Agentic Workflows</strong> (planning, tool use, multi-step execution) are the new frontier.</p><p>As we explore <strong>4D Head Avatars</strong> in this lab, these agentic capabilities will be crucial for automating the tedious parts of data processing and model training.</p><p><em>Stay tuned for next week’s update.</em></p>]]></content>
+    
+    
+    <categories>
+      
+      <category>Weekly-AI</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>Weekly</tag>
+      
+      <tag>AI News</tag>
+      
+      <tag>Claude</tag>
+      
+      <tag>GPT-5</tag>
+      
+      <tag>OpenClaw</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
     <title>Hello World</title>
     <link href="/2026/02/22/hello-world/"/>
     <url>/2026/02/22/hello-world/</url>
