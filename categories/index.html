@@ -478,7 +478,7 @@
 (function() {
   if (document.getElementById('data-ocean-canvas')) return;
 
-  console.log("🌊 Data Ocean Inline Script Running...");
+  console.log("🌊 Data Ocean v3.0 Initializing...");
 
   function initOcean() {
     var canvas = document.createElement('canvas');
@@ -488,84 +488,136 @@
     canvas.style.left = '0';
     canvas.style.width = '100vw';
     canvas.style.height = '100vh';
-    canvas.style.zIndex = '1';
-    canvas.style.pointerEvents = 'none';
-    canvas.style.mixBlendMode = 'screen';
+    canvas.style.zIndex = '0'; // Behind text
+    canvas.style.pointerEvents = 'none'; 
     document.body.appendChild(canvas);
 
     var ctx = canvas.getContext('2d');
     var width, height;
+    var time = 0;
 
+    // Config
+    var WAVE_COLOR_1 = "rgba(0, 255, 255, 0.1)"; 
+    var WAVE_COLOR_2 = "rgba(0, 100, 255, 0.15)";
+    var SHIP_COLOR = "#e0ffff";
+    var LIGHTHOUSE_X_RATIO = 0.85;
+
+    // Data
     var shipsData = [
-      { name: "OpenClaw", url: "/2026/02/23/spotlight-openclaw/" },
-      { name: "Claude-Code", url: "https://github.com/anthropics/claude-code" },
-      { name: "AutoGPT", url: "https://github.com/Significant-Gravitas/AutoGPT" },
-      { name: "Llama-3", url: "https://github.com/meta-llama/llama3" }
+      { name: "OpenClaw", stars: 5000, url: "/2026/02/23/spotlight-openclaw/" },
+      { name: "Claude-Code", stars: 3000, url: "https://github.com/anthropics/claude-code" },
+      { name: "AutoGPT", stars: 15000, url: "https://github.com/Significant-Gravitas/AutoGPT" },
+      { name: "Llama-3", stars: 8000, url: "https://github.com/meta-llama/llama3" }
     ];
 
-    var particles = [];
     var ships = [];
+    var lighthouse = null;
 
-    function Particle() {
-      this.reset();
-    }
-    Particle.prototype.reset = function() {
-      this.x = Math.random() * width;
-      this.y = Math.random() * height;
-      this.vx = (Math.random() - 0.5) * 0.5;
-      this.vy = (Math.random() - 0.5) * 0.5;
-      this.size = Math.random() * 2;
-      this.alpha = Math.random() * 0.5 + 0.2;
-    };
-    Particle.prototype.update = function() {
-      this.x += this.vx;
-      this.y += this.vy;
-      if (this.x < 0 || this.x > width) this.vx *= -1;
-      if (this.y < 0 || this.y > height) this.vy *= -1;
-    };
-    Particle.prototype.draw = function() {
-      ctx.fillStyle = "rgba(0, 255, 255, " + this.alpha + ")";
-      ctx.beginPath();
-      ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-      ctx.fill();
-    };
+    // --- Classes ---
 
     function Ship(data) {
       this.name = data.name;
       this.url = data.url;
-      this.x = Math.random() * width;
-      this.y = Math.random() * height;
-      this.vx = (Math.random() - 0.5) * 0.2;
-      this.vy = (Math.random() - 0.5) * 0.2;
+      this.x = Math.random() * (width * 0.6); // Left side
+      this.baseY = 0;
+      this.size = Math.max(15, Math.log(data.stars) * 2); // Size by heat
+      this.speed = Math.random() * 0.5 + 0.2;
+      this.floatOffset = Math.random() * 100;
     }
-    Ship.prototype.update = function() {
-      this.x += this.vx;
-      this.y += this.vy;
-      if(this.x < 0) this.x = width;
-      if(this.x > width) this.x = 0;
-      if(this.y < 0) this.y = height;
-      if(this.y > height) this.y = 0;
-    };
-    Ship.prototype.draw = function() {
-      var pulse = Math.sin(Date.now() * 0.005) * 5 + 10;
-      ctx.shadowBlur = 15;
-      ctx.shadowColor = "#00ffff";
+    
+    Ship.prototype.update = function(t) {
+      this.x += this.speed;
+      if (this.x > width * 0.7) this.x = -50; // Loop back
+
+      // Calculate Wave Height at this X
+      // Must match the wave formula in drawOcean
+      var waveH = Math.sin(this.x * 0.003 + t * 0.02) * 20 + 
+                  Math.sin(this.x * 0.01 + t * 0.01) * 10;
       
-      ctx.strokeStyle = "rgba(0, 255, 255, 0.5)";
-      ctx.lineWidth = 2;
-      ctx.beginPath();
-      ctx.arc(this.x, this.y, 15 + pulse, 0, Math.PI * 2);
-      ctx.stroke();
+      this.baseY = (height * 0.6) + waveH; // Ride the wave
+    };
 
-      ctx.fillStyle = "#ffffff";
+    Ship.prototype.draw = function(isHovered) {
+      ctx.save();
+      ctx.translate(this.x, this.baseY);
+
+      // Glow
+      ctx.shadowBlur = isHovered ? 40 : 20;
+      ctx.shadowColor = isHovered ? "#ffffff" : "#00ffff";
+
+      // The Droplet (Teardrop shape ish - circle for now but shiny)
+      var grad = ctx.createRadialGradient(-5, -5, 2, 0, 0, this.size);
+      grad.addColorStop(0, "#ffffff");
+      grad.addColorStop(0.5, "#00ffff");
+      grad.addColorStop(1, "#0044aa");
+      
+      ctx.fillStyle = grad;
       ctx.beginPath();
-      ctx.arc(this.x, this.y, 5, 0, Math.PI * 2);
+      ctx.arc(0, 0, this.size, 0, Math.PI * 2);
       ctx.fill();
-      ctx.shadowBlur = 0;
 
-      ctx.fillStyle = "white";
-      ctx.font = "bold 14px sans-serif";
-      ctx.fillText(this.name, this.x + 15, this.y + 5);
+      // Reflection on "Water"
+      ctx.save();
+      ctx.scale(1, 0.3);
+      ctx.fillStyle = "rgba(0, 255, 255, 0.2)";
+      ctx.beginPath();
+      ctx.arc(0, this.size * 4, this.size, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.restore();
+
+      ctx.restore();
+
+      // Label
+      if (isHovered) {
+        ctx.fillStyle = "#ffffff";
+        ctx.font = "bold 16px sans-serif";
+        ctx.textAlign = "center";
+        ctx.shadowBlur = 4;
+        ctx.shadowColor = "black";
+        ctx.fillText(this.name, this.x, this.baseY - this.size - 15);
+      }
+    };
+
+    function Lighthouse() {
+      this.x = 0; 
+      this.y = 0;
+    }
+    
+    Lighthouse.prototype.update = function() {
+      this.x = width * LIGHTHOUSE_X_RATIO;
+      this.y = height * 0.55; // Horizon
+    };
+
+    Lighthouse.prototype.draw = function(t, isHovered) {
+      var pulse = (Math.sin(t * 0.05) + 1) / 2;
+      
+      // Light Beam (Rotating or Pulsing)
+      var glowSize = 40 + pulse * 40;
+      var grad = ctx.createRadialGradient(this.x, this.y, 5, this.x, this.y, glowSize);
+      grad.addColorStop(0, "rgba(255, 160, 0, 1)"); // Orange
+      grad.addColorStop(1, "rgba(255, 100, 0, 0)"); // Fade
+
+      ctx.fillStyle = grad;
+      ctx.beginPath();
+      ctx.arc(this.x, this.y, glowSize, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Tower
+      ctx.fillStyle = "#111"; // Silhouette
+      ctx.beginPath();
+      ctx.moveTo(this.x - 10, this.y);
+      ctx.lineTo(this.x + 10, this.y);
+      ctx.lineTo(this.x + 20, this.y + 150);
+      ctx.lineTo(this.x - 20, this.y + 150);
+      ctx.fill();
+
+      // Label
+      if (isHovered) {
+        ctx.fillStyle = "#ffaa00";
+        ctx.font = "14px monospace";
+        ctx.textAlign = "center";
+        ctx.fillText("AI NEWS HUB", this.x, this.y + 140);
+      }
     };
 
     function resize() {
@@ -575,45 +627,109 @@
       canvas.height = height;
     }
 
+    // Interaction
+    var mouseX = 0, mouseY = 0;
     window.addEventListener('mousemove', function(e) {
-        var hit = false;
-        ships.forEach(function(ship) {
-            var dx = e.clientX - ship.x;
-            var dy = e.clientY - ship.y;
-            if (Math.sqrt(dx*dx + dy*dy) < 50) hit = true;
-        });
-        
-        if (hit) {
-            canvas.style.pointerEvents = 'auto';
-            canvas.style.cursor = 'pointer';
-        } else {
-            canvas.style.pointerEvents = 'none';
-            canvas.style.cursor = 'default';
-        }
+      mouseX = e.clientX;
+      mouseY = e.clientY;
+      
+      var hit = false;
+      ships.forEach(function(s) {
+        var dx = mouseX - s.x;
+        var dy = mouseY - s.baseY;
+        if (dx*dx + dy*dy < 2500) hit = true;
+      });
+      
+      // Lighthouse hit
+      if (lighthouse) {
+         var dx = mouseX - lighthouse.x;
+         var dy = mouseY - lighthouse.y;
+         if (dx*dx + dy*dy < 3600) hit = true;
+      }
+
+      if (hit) {
+        canvas.style.pointerEvents = 'auto';
+        canvas.style.cursor = 'pointer';
+      } else {
+        canvas.style.pointerEvents = 'none';
+        canvas.style.cursor = 'default';
+      }
     });
 
     window.addEventListener('click', function(e) {
-       ships.forEach(function(ship) {
-            var dx = e.clientX - ship.x;
-            var dy = e.clientY - ship.y;
-            if (Math.sqrt(dx*dx + dy*dy) < 50) {
-                window.location.href = ship.url;
-            }
-        });
+       // Ships
+       ships.forEach(function(s) {
+         var dx = e.clientX - s.x;
+         var dy = e.clientY - s.baseY;
+         if (dx*dx + dy*dy < 2500) window.location.href = s.url;
+       });
+       
+       // Lighthouse
+       if (lighthouse) {
+         var dx = e.clientX - lighthouse.x;
+         var dy = e.clientY - lighthouse.y;
+         if (dx*dx + dy*dy < 3600) window.location.href = '/categories/Weekly-AI/';
+       }
     });
 
+    function drawOcean(t) {
+      // Background Gradient (Cyberpunk Deep Sea)
+      var bgGrad = ctx.createLinearGradient(0, 0, 0, height);
+      bgGrad.addColorStop(0, "#02020a"); // Space Black
+      bgGrad.addColorStop(1, "#0a0a2a"); // Deep Purple/Blue
+      ctx.fillStyle = bgGrad;
+      ctx.fillRect(0, 0, width, height);
+
+      // Waves
+      for(var i=0; i<3; i++) {
+        ctx.beginPath();
+        ctx.fillStyle = (i===2) ? WAVE_COLOR_1 : WAVE_COLOR_2;
+        
+        var offset = i * 100;
+        var speed = t * (0.01 + i*0.005);
+        
+        ctx.moveTo(0, height);
+        for(var x=0; x<=width; x+=10) {
+           var y = (height * 0.6) + 
+                   Math.sin(x * 0.003 + speed) * 30 + 
+                   Math.sin(x * 0.01 + speed) * 10 + offset;
+           ctx.lineTo(x, y);
+        }
+        ctx.lineTo(width, height);
+        ctx.lineTo(0, height);
+        ctx.fill();
+      }
+    }
+
     function animate() {
+      time++;
       ctx.clearRect(0, 0, width, height);
-      particles.forEach(function(p) { p.update(); p.draw(); });
-      ships.forEach(function(s) { s.update(); s.draw(); });
+      
+      drawOcean(time);
+      
+      if(lighthouse) {
+        lighthouse.update();
+        var ldx = mouseX - lighthouse.x;
+        var ldy = mouseY - lighthouse.y;
+        lighthouse.draw(time, ldx*ldx + ldy*ldy < 3600);
+      }
+
+      ships.forEach(function(s) {
+        s.update(time);
+        var dx = mouseX - s.x;
+        var dy = mouseY - s.baseY;
+        s.draw(dx*dx + dy*dy < 2500);
+      });
+
       requestAnimationFrame(animate);
     }
 
     resize();
     window.addEventListener('resize', resize);
     
-    for(var i=0; i<60; i++) particles.push(new Particle());
+    // Init Ships
     shipsData.forEach(function(d) { ships.push(new Ship(d)); });
+    lighthouse = new Lighthouse();
     
     animate();
   }
