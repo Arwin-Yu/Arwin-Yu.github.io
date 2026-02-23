@@ -356,14 +356,111 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/vanta/0.5.24/vanta.waves.min.js"></script>
 
+<style>
+  /* --- The Ships (CSS Objects) --- */
+  .ocean-ship {
+    position: fixed;
+    z-index: 1;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    transition: transform 0.3s ease;
+  }
+  .ocean-ship:hover {
+    transform: scale(1.2);
+    z-index: 10;
+  }
+  
+  /* The "Droplet" Visual */
+  .ship-body {
+    width: 20px;
+    height: 20px;
+    background: radial-gradient(circle at 30% 30%, #ffffff, #00ffff);
+    border-radius: 50%;
+    box-shadow: 0 0 15px #00ffff, 0 0 30px #0000ff;
+    position: relative;
+  }
+  /* Engine Trail */
+  .ship-body::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: -20px;
+    width: 30px;
+    height: 2px;
+    background: linear-gradient(90deg, rgba(0,255,255,0), rgba(0,255,255,0.8));
+    transform: translateY(-50%);
+  }
+
+  .ship-label {
+    margin-top: 8px;
+    color: rgba(255,255,255,0.8);
+    font-size: 12px;
+    font-weight: bold;
+    text-shadow: 0 0 5px #000;
+    pointer-events: none;
+  }
+
+  /* Animations */
+  @keyframes float1 { 0% { transform: translateY(0px); } 50% { transform: translateY(-15px); } 100% { transform: translateY(0px); } }
+  @keyframes float2 { 0% { transform: translateY(0px); } 50% { transform: translateY(-25px); } 100% { transform: translateY(0px); } }
+  @keyframes float3 { 0% { transform: translateY(0px); } 50% { transform: translateY(-10px); } 100% { transform: translateY(0px); } }
+
+  /* --- The Lighthouse --- */
+  .ocean-lighthouse {
+    position: fixed;
+    right: 15%;
+    bottom: 40%;
+    z-index: 0;
+    cursor: pointer;
+    width: 40px;
+    height: 120px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .lighthouse-beam {
+    width: 6px;
+    height: 100%;
+    background: linear-gradient(to top, rgba(255,160,0,0), rgba(255,160,0,1));
+    box-shadow: 0 0 20px rgba(255,100,0,0.8);
+    animation: pulseBeam 2s infinite ease-in-out;
+  }
+  
+  .lighthouse-core {
+    width: 20px;
+    height: 20px;
+    background: #ffaa00;
+    border-radius: 50%;
+    box-shadow: 0 0 40px #ffaa00;
+    margin-bottom: -10px; /* Connect to beam */
+    z-index: 2;
+  }
+
+  .lighthouse-label {
+    margin-top: 10px;
+    color: #ffaa00;
+    font-family: monospace;
+    font-weight: bold;
+    text-shadow: 0 0 10px black;
+  }
+
+  @keyframes pulseBeam {
+    0%, 100% { opacity: 0.6; height: 80%; }
+    50% { opacity: 1; height: 120%; }
+  }
+
+</style>
+
 <script>
 (function() {
-  // Prevent duplicate
   if (document.getElementById('vanta-bg')) return;
 
-  console.log("🌊 Hybrid Ocean Initializing...");
+  console.log("🌊 Data Ocean v5.0 (CSS) Initializing...");
 
-  // --- Layer 1: Vanta Background (The Ocean) ---
+  // 1. Vanta Background
   var vantaBg = document.createElement('div');
   vantaBg.id = 'vanta-bg';
   vantaBg.style.position = 'fixed';
@@ -371,11 +468,10 @@
   vantaBg.style.left = '0';
   vantaBg.style.width = '100vw';
   vantaBg.style.height = '100vh';
-  vantaBg.style.zIndex = '-2'; // Deepest layer
+  vantaBg.style.zIndex = '-2';
   vantaBg.style.pointerEvents = 'none';
   document.body.appendChild(vantaBg);
 
-  // Init Vanta
   try {
       VANTA.WAVES({
         el: "#vanta-bg",
@@ -386,222 +482,61 @@
         minWidth: 200.00,
         scale: 1.00,
         scaleMobile: 1.00,
-        color: 0x051020,       // Darker Navy Blue
-        shininess: 20.00,      // Reduced for performance/smoothness
-        waveHeight: 15.00,
-        waveSpeed: 0.8,        // Natural flow
-        zoom: 0.9
+        color: 0x051020,
+        shininess: 10.00,      // Lower shininess = Better FPS
+        waveHeight: 10.00,     // Smoother waves
+        waveSpeed: 0.5,        // Slower, majestic speed
+        zoom: 0.8
       });
   } catch(e) { console.error("Vanta failed:", e); }
 
-  // --- Layer 2: Custom Canvas (Ships & Lighthouse) ---
-  var canvas = document.createElement('canvas');
-  canvas.id = 'overlay-canvas';
-  canvas.style.position = 'fixed';
-  canvas.style.top = '0';
-  canvas.style.left = '0';
-  canvas.style.width = '100vw';
-  canvas.style.height = '100vh';
-  canvas.style.zIndex = '-1'; // Above Vanta, below text
-  canvas.style.pointerEvents = 'none'; // Passthrough unless hit
-  document.body.appendChild(canvas);
-
-  var ctx = canvas.getContext('2d');
-  var width, height;
-  var time = 0;
-
-  // Ships Data
+  // 2. Spawn Ships (DOM Elements)
   var shipsData = [
-      { name: "OpenClaw", url: "/2026/02/23/spotlight-openclaw/" },
-      { name: "Claude-Code", url: "https://github.com/anthropics/claude-code" },
-      { name: "AutoGPT", url: "https://github.com/Significant-Gravitas/AutoGPT" },
-      { name: "Llama-3", url: "https://github.com/meta-llama/llama3" }
+      { name: "OpenClaw", url: "/2026/02/23/spotlight-openclaw/", top: "60%", left: "20%", anim: "float1 4s infinite ease-in-out" },
+      { name: "Claude-Code", url: "https://github.com/anthropics/claude-code", top: "55%", left: "40%", anim: "float2 5s infinite ease-in-out" },
+      { name: "AutoGPT", url: "https://github.com/Significant-Gravitas/AutoGPT", top: "65%", left: "60%", anim: "float3 6s infinite ease-in-out" },
+      { name: "Llama-3", url: "https://github.com/meta-llama/llama3", top: "50%", left: "80%", anim: "float1 4.5s infinite ease-in-out" }
   ];
+
+  shipsData.forEach(function(d) {
+      var ship = document.createElement('div');
+      ship.className = 'ocean-ship';
+      ship.style.top = d.top;
+      ship.style.left = d.left;
+      ship.style.animation = d.anim; // CSS Animation
+      ship.onclick = function() { window.location.href = d.url; };
+      
+      var body = document.createElement('div');
+      body.className = 'ship-body';
+      
+      var label = document.createElement('div');
+      label.className = 'ship-label';
+      label.innerText = d.name;
+      
+      ship.appendChild(body);
+      ship.appendChild(label);
+      document.body.appendChild(ship);
+  });
+
+  // 3. Spawn Lighthouse
+  var lh = document.createElement('div');
+  lh.className = 'ocean-lighthouse';
+  lh.onclick = function() { window.location.href = '/categories/Weekly-AI/'; };
   
-  var ships = [];
-  var lighthouse = { x:0, y:0 };
-
-  // --- Object Classes ---
-
-  function Ship(data) {
-      this.name = data.name;
-      this.url = data.url;
-      this.x = Math.random() * (window.innerWidth * 0.6);
-      this.y = 0;
-      this.speed = Math.random() * 0.5 + 0.2;
-      this.offset = Math.random() * 100;
-  }
-
-  Ship.prototype.update = function(t) {
-      this.x += this.speed;
-      if (this.x > window.innerWidth * 0.7) this.x = -50;
-      
-      // Fake bobbing to match Vanta waves visual
-      // Vanta waves are complex, so we use a simple sine approximation
-      this.y = (window.innerHeight * 0.55) + Math.sin(t * 0.02 + this.offset) * 10;
-  };
-
-  Ship.prototype.draw = function(isHovered) {
-      ctx.save();
-      ctx.translate(this.x, this.y);
-      
-      // Glow
-      ctx.shadowBlur = isHovered ? 40 : 15;
-      ctx.shadowColor = isHovered ? "white" : "cyan";
-
-      // Hull (Teardrop)
-      var grad = ctx.createLinearGradient(-10, -10, 10, 10);
-      grad.addColorStop(0, "#ffffff");
-      grad.addColorStop(1, "#00aaaa");
-      ctx.fillStyle = grad;
-      
-      ctx.beginPath();
-      ctx.moveTo(15, 0);
-      ctx.bezierCurveTo(5, 8, -10, 8, -15, 0);
-      ctx.bezierCurveTo(-10, -8, 5, -8, 15, 0);
-      ctx.fill();
-
-      // Label
-      if (isHovered) {
-          ctx.fillStyle = "white";
-          ctx.font = "bold 14px sans-serif";
-          ctx.shadowColor = "black";
-          ctx.shadowBlur = 4;
-          ctx.fillText(this.name, -20, -20);
-      }
-      ctx.restore();
-  };
-
-  // Lighthouse Logic
-  function drawLighthouse(t, isHovered) {
-      var lx = width * 0.85;
-      var ly = height * 0.5; // Horizon
-      
-      // Rotating Beam
-      var angle = t * 0.02;
-      ctx.save();
-      ctx.translate(lx, ly);
-      ctx.rotate(angle);
-      
-      var grad = ctx.createLinearGradient(0, 0, 600, 0);
-      grad.addColorStop(0, "rgba(255, 150, 0, 0.3)");
-      grad.addColorStop(1, "rgba(0,0,0,0)");
-      
-      ctx.fillStyle = grad;
-      ctx.beginPath();
-      ctx.moveTo(0, -2);
-      ctx.lineTo(600, -80);
-      ctx.lineTo(600, 80);
-      ctx.lineTo(0, 2);
-      ctx.fill();
-      
-      // Opposite beam
-      ctx.rotate(Math.PI);
-      ctx.beginPath();
-      ctx.moveTo(0, -2);
-      ctx.lineTo(600, -80);
-      ctx.lineTo(600, 80);
-      ctx.lineTo(0, 2);
-      ctx.fill();
-      
-      ctx.restore();
-
-      // Core
-      ctx.fillStyle = isHovered ? "#ffaa00" : "#cc8800";
-      ctx.shadowColor = "orange";
-      ctx.shadowBlur = 20;
-      ctx.beginPath();
-      ctx.arc(lx, ly, 8, 0, Math.PI*2);
-      ctx.fill();
-      
-      // Base (Simple)
-      ctx.fillStyle = "#112";
-      ctx.shadowBlur = 0;
-      ctx.beginPath();
-      ctx.moveTo(lx-8, ly);
-      ctx.lineTo(lx+8, ly);
-      ctx.lineTo(lx+12, ly+200);
-      ctx.lineTo(lx-12, ly+200);
-      ctx.fill();
-      
-      if(isHovered) {
-          ctx.fillStyle = "orange";
-          ctx.font = "bold 14px monospace";
-          ctx.fillText("WEEKLY AI", lx - 30, ly + 50);
-      }
-      
-      lighthouse.x = lx;
-      lighthouse.y = ly;
-  }
-
-  function resize() {
-      width = window.innerWidth;
-      height = window.innerHeight;
-      canvas.width = width;
-      canvas.height = height;
-  }
-
-  // Interactions
-  var mouseX = 0, mouseY = 0;
-  window.addEventListener('mousemove', function(e) {
-      mouseX = e.clientX;
-      mouseY = e.clientY;
-      
-      var hit = false;
-      ships.forEach(function(s) {
-          var dx = mouseX - s.x;
-          var dy = mouseY - s.y;
-          if (dx*dx + dy*dy < 1600) hit = true;
-      });
-      
-      var ldx = mouseX - lighthouse.x;
-      var ldy = mouseY - lighthouse.y;
-      if (ldx*ldx + ldy*ldy < 2500) hit = true;
-
-      if (hit) {
-          canvas.style.pointerEvents = 'auto';
-          canvas.style.cursor = 'pointer';
-      } else {
-          canvas.style.pointerEvents = 'none';
-          canvas.style.cursor = 'default';
-      }
-  });
-
-  window.addEventListener('click', function(e) {
-      ships.forEach(function(s) {
-          var dx = e.clientX - s.x;
-          var dy = e.clientY - s.y;
-          if (dx*dx + dy*dy < 1600) window.location.href = s.url;
-      });
-      
-      var ldx = e.clientX - lighthouse.x;
-      var ldy = e.clientY - lighthouse.y;
-      if (ldx*ldx + ldy*ldy < 2500) window.location.href = '/categories/Weekly-AI/';
-  });
-
-  function animate() {
-      time++;
-      ctx.clearRect(0, 0, width, height); // Clear to let Vanta show through
-      
-      // Draw Lighthouse
-      drawLighthouse(time, (mouseX - lighthouse.x)**2 + (mouseY - lighthouse.y)**2 < 2500);
-
-      // Draw Ships
-      ships.forEach(function(s) {
-          s.update(time);
-          var dx = mouseX - s.x;
-          var dy = mouseY - s.y;
-          s.draw(dx*dx + dy*dy < 1600);
-      });
-
-      requestAnimationFrame(animate);
-  }
-
-  // Start
-  resize();
-  window.addEventListener('resize', resize);
-  shipsData.forEach(function(d) { ships.push(new Ship(d)); });
-  animate();
+  var core = document.createElement('div');
+  core.className = 'lighthouse-core';
+  
+  var beam = document.createElement('div');
+  beam.className = 'lighthouse-beam';
+  
+  var label = document.createElement('div');
+  label.className = 'lighthouse-label';
+  label.innerText = 'AI HUB';
+  
+  lh.appendChild(core);
+  lh.appendChild(beam);
+  lh.appendChild(label);
+  document.body.appendChild(lh);
 
 })();
 </script>
