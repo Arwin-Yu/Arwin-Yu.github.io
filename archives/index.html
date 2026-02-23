@@ -77,7 +77,23 @@
 
 
   
-<meta name="generator" content="Hexo 8.1.1"></head>
+<!-- hexo injector head_end start -->
+<style>
+  /* Make Fluid Banner Transparent so Vanta.js shows through */
+  .banner {
+    background: transparent !important;
+    background-image: none !important;
+  }
+  #board {
+    background-color: rgba(255, 255, 255, 0.8) !important; /* Semi-transparent content area */
+    backdrop-filter: blur(10px);
+  }
+  /* Dark Mode adjustments if needed */
+  [data-user-color-scheme='dark'] #board {
+    background-color: rgba(30, 30, 40, 0.8) !important;
+  }
+</style>
+<!-- hexo injector head_end end --><meta name="generator" content="Hexo 8.1.1"></head>
 
 
 <body>
@@ -376,293 +392,46 @@
     <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
   </noscript>
 <script src="/js/data-ocean.js"></script><!-- hexo injector body_end start -->
+<!-- 1. Load Three.js (Required for Vanta) -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
+
+<!-- 2. Load Vanta Waves -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/vanta/0.5.24/vanta.waves.min.js"></script>
+
+<!-- 3. Init Vanta -->
 <script>
 (function() {
-  if (document.getElementById('data-ocean-canvas')) return;
+  // Create Background Container
+  var bg = document.createElement('div');
+  bg.id = 'vanta-bg';
+  bg.style.position = 'fixed';
+  bg.style.top = '0';
+  bg.style.left = '0';
+  bg.style.width = '100vw';
+  bg.style.height = '100vh';
+  bg.style.zIndex = '-1'; // Background
+  bg.style.pointerEvents = 'none';
+  document.body.appendChild(bg);
 
-  console.log("🌊 Data Ocean v4.0 (Storm) Initializing...");
+  // Initialize Vanta Effect
+  // Docs: https://www.vantajs.com/?effect=waves
+  VANTA.WAVES({
+    el: "#vanta-bg",
+    mouseControls: true,
+    touchControls: true,
+    gyroControls: false,
+    minHeight: 200.00,
+    minWidth: 200.00,
+    scale: 1.00,
+    scaleMobile: 1.00,
+    color: 0x0a1a2f,       // Dark Blue Base
+    shininess: 35.00,      // Metallic Shine
+    waveHeight: 20.00,     // Epic Waves
+    waveSpeed: 0.75,       // Slow motion
+    zoom: 0.8
+  });
 
-  function initOcean() {
-    var canvas = document.createElement('canvas');
-    canvas.id = 'data-ocean-canvas';
-    canvas.style.position = 'fixed';
-    canvas.style.top = '0';
-    canvas.style.left = '0';
-    canvas.style.width = '100vw';
-    canvas.style.height = '100vh';
-    canvas.style.zIndex = '0'; 
-    canvas.style.pointerEvents = 'none'; 
-    document.body.appendChild(canvas);
-
-    var ctx = canvas.getContext('2d');
-    var width, height;
-    var time = 0;
-
-    // Config
-    var WAVE_COLOR_1 = "rgba(0, 255, 255, 0.2)"; 
-    var WAVE_COLOR_2 = "rgba(0, 100, 200, 0.3)";
-    var BEAM_COLOR = "rgba(255, 150, 0, 0.4)";
-
-    // Data
-    var shipsData = [
-      { name: "OpenClaw", url: "/2026/02/23/spotlight-openclaw/" },
-      { name: "Claude-Code", url: "https://github.com/anthropics/claude-code" },
-      { name: "AutoGPT", url: "https://github.com/Significant-Gravitas/AutoGPT" },
-      { name: "Llama-3", url: "https://github.com/meta-llama/llama3" }
-    ];
-
-    var ships = [];
-    var lighthouse = null;
-
-    // --- Wave Function ---
-    function getWaveHeight(x, t) {
-        // Combine multiple sine waves for "Stormy" look
-        return Math.sin(x * 0.003 + t * 0.02) * 60 + 
-               Math.sin(x * 0.01 - t * 0.03) * 30 + 
-               Math.sin(x * 0.02 + t * 0.05) * 15;
-    }
-    
-    function getWaveSlope(x, t) {
-        // Derivative for rotation
-        var delta = 1;
-        var y1 = getWaveHeight(x, t);
-        var y2 = getWaveHeight(x + delta, t);
-        return Math.atan2(y2 - y1, delta);
-    }
-
-    // --- Classes ---
-
-    function Ship(data) {
-      this.name = data.name;
-      this.url = data.url;
-      this.x = Math.random() * (width * 0.6);
-      this.y = 0;
-      this.size = 20; 
-      this.speed = Math.random() * 0.8 + 0.5; // Faster
-      this.angle = 0;
-    }
-    
-    Ship.prototype.update = function(t) {
-      this.x += this.speed;
-      if (this.x > width * 0.7) this.x = -50; 
-
-      var waveH = getWaveHeight(this.x, t);
-      this.y = (height * 0.6) + waveH;
-      this.angle = getWaveSlope(this.x, t); // Tilt with wave
-    };
-
-    Ship.prototype.draw = function(isHovered) {
-      ctx.save();
-      ctx.translate(this.x, this.y);
-      ctx.rotate(this.angle); // Rotate ship
-
-      // Glow
-      ctx.shadowBlur = isHovered ? 50 : 20;
-      ctx.shadowColor = isHovered ? "#ffffff" : "#00ffff";
-
-      // Hull (Teardrop)
-      ctx.fillStyle = isHovered ? "#ffffff" : "#e0ffff";
-      ctx.beginPath();
-      ctx.moveTo(15, 0); // Nose
-      ctx.bezierCurveTo(5, 10, -10, 10, -15, 0); // Tail
-      ctx.bezierCurveTo(-10, -10, 5, -10, 15, 0);
-      ctx.fill();
-
-      // Engine Trail
-      ctx.fillStyle = "rgba(0, 255, 255, 0.8)";
-      ctx.beginPath();
-      ctx.arc(-15, 0, 3 + Math.random()*2, 0, Math.PI*2);
-      ctx.fill();
-
-      ctx.restore();
-
-      // Label (No rotation)
-      if (isHovered) {
-        ctx.fillStyle = "#ffffff";
-        ctx.font = "bold 16px sans-serif";
-        ctx.textAlign = "center";
-        ctx.shadowBlur = 4;
-        ctx.shadowColor = "black";
-        ctx.fillText(this.name, this.x, this.y - 30);
-      }
-    };
-
-    function Lighthouse() {
-      this.x = 0; 
-      this.y = 0;
-    }
-    
-    Lighthouse.prototype.update = function() {
-      this.x = width * 0.85;
-      this.y = height * 0.5; 
-    };
-
-    Lighthouse.prototype.draw = function(t, isHovered) {
-      // Rotating Beam
-      var angle = t * 0.02;
-      
-      ctx.save();
-      ctx.translate(this.x, this.y);
-      
-      // Beam 1
-      ctx.rotate(angle);
-      var grad = ctx.createLinearGradient(0, 0, 800, 0);
-      grad.addColorStop(0, BEAM_COLOR);
-      grad.addColorStop(1, "rgba(0,0,0,0)");
-      ctx.fillStyle = grad;
-      ctx.beginPath();
-      ctx.moveTo(0, -5);
-      ctx.lineTo(800, -100);
-      ctx.lineTo(800, 100);
-      ctx.lineTo(0, 5);
-      ctx.fill();
-      
-      // Beam 2 (Opposite)
-      ctx.rotate(Math.PI);
-      ctx.fillStyle = grad;
-      ctx.beginPath();
-      ctx.moveTo(0, -5);
-      ctx.lineTo(800, -100);
-      ctx.lineTo(800, 100);
-      ctx.lineTo(0, 5);
-      ctx.fill();
-
-      ctx.restore();
-
-      // Tower Core
-      ctx.fillStyle = "#ffaa00";
-      ctx.shadowBlur = 50;
-      ctx.shadowColor = "#ffaa00";
-      ctx.beginPath();
-      ctx.arc(this.x, this.y, 10, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.shadowBlur = 0;
-
-      // Label
-      if (isHovered) {
-        ctx.fillStyle = "#ffaa00";
-        ctx.font = "14px monospace";
-        ctx.textAlign = "center";
-        ctx.fillText("AI NEWS HUB", this.x, this.y + 60);
-      }
-    };
-
-    function resize() {
-      width = window.innerWidth;
-      height = window.innerHeight;
-      canvas.width = width;
-      canvas.height = height;
-    }
-
-    // Interaction
-    var mouseX = 0, mouseY = 0;
-    window.addEventListener('mousemove', function(e) {
-      mouseX = e.clientX;
-      mouseY = e.clientY;
-      
-      var hit = false;
-      ships.forEach(function(s) {
-        var dx = mouseX - s.x;
-        var dy = mouseY - s.y;
-        if (dx*dx + dy*dy < 2500) hit = true;
-      });
-      
-      if (lighthouse) {
-         var dx = mouseX - lighthouse.x;
-         var dy = mouseY - lighthouse.y;
-         if (dx*dx + dy*dy < 3600) hit = true;
-      }
-
-      if (hit) {
-        canvas.style.pointerEvents = 'auto';
-        canvas.style.cursor = 'pointer';
-      } else {
-        canvas.style.pointerEvents = 'none';
-        canvas.style.cursor = 'default';
-      }
-    });
-
-    window.addEventListener('click', function(e) {
-       ships.forEach(function(s) {
-         var dx = e.clientX - s.x;
-         var dy = e.clientY - s.y;
-         if (dx*dx + dy*dy < 2500) window.location.href = s.url;
-       });
-       
-       if (lighthouse) {
-         var dx = e.clientX - lighthouse.x;
-         var dy = e.clientY - lighthouse.y;
-         if (dx*dx + dy*dy < 3600) window.location.href = '/categories/Weekly-AI/';
-       }
-    });
-
-    function drawOcean(t) {
-      // Deep Background
-      var bgGrad = ctx.createLinearGradient(0, 0, 0, height);
-      bgGrad.addColorStop(0, "#050510"); 
-      bgGrad.addColorStop(1, "#001133"); 
-      ctx.fillStyle = bgGrad;
-      ctx.fillRect(0, 0, width, height);
-
-      // Stormy Waves
-      for(var i=0; i<4; i++) {
-        ctx.beginPath();
-        // Alternating colors
-        ctx.fillStyle = (i%2===0) ? WAVE_COLOR_1 : WAVE_COLOR_2;
-        
-        var offset = i * 50;
-        var speed = t * (0.02 + i*0.01);
-        
-        ctx.moveTo(0, height);
-        for(var x=0; x<=width; x+=10) {
-           var y = (height * 0.6) + getWaveHeight(x, time + i*100) + offset;
-           ctx.lineTo(x, y);
-        }
-        ctx.lineTo(width, height);
-        ctx.lineTo(0, height);
-        ctx.fill();
-      }
-    }
-
-    function animate() {
-      time++;
-      ctx.clearRect(0, 0, width, height);
-      
-      // 1. Ocean
-      drawOcean(time);
-      
-      // 2. Lighthouse Beam (Behind ships)
-      if(lighthouse) {
-        lighthouse.update();
-        lighthouse.draw(time, false); // Beam
-      }
-
-      // 3. Ships (Riding the waves)
-      ships.forEach(function(s) {
-        s.update(time);
-        var dx = mouseX - s.x;
-        var dy = mouseY - s.y;
-        s.draw(dx*dx + dy*dy < 2500);
-      });
-
-      requestAnimationFrame(animate);
-    }
-
-    resize();
-    window.addEventListener('resize', resize);
-    
-    // Init
-    shipsData.forEach(function(d) { ships.push(new Ship(d)); });
-    lighthouse = new Lighthouse();
-    
-    animate();
-  }
-
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initOcean);
-  } else {
-    initOcean();
-  }
+  console.log("🌊 Vanta.js Waves Initialized!");
 })();
 </script>
 <!-- hexo injector body_end end --></body>
