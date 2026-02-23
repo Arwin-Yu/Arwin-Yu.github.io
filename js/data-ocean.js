@@ -45,7 +45,8 @@ document.addEventListener('DOMContentLoaded', function () {
     ships.forEach(ship => {
         const dx = mouseX - ship.x;
         const dy = mouseY - ship.y;
-        if (Math.sqrt(dx*dx + dy*dy) < 20) hit = true;
+        // Increased hitbox to 50px
+        if (Math.sqrt(dx*dx + dy*dy) < 50) hit = true;
     });
     
     if (hit) {
@@ -62,7 +63,7 @@ document.addEventListener('DOMContentLoaded', function () {
     ships.forEach(ship => {
         const dx = mouseX - ship.x;
         const dy = mouseY - ship.y;
-        if (Math.sqrt(dx*dx + dy*dy) < 20) {
+        if (Math.sqrt(dx*dx + dy*dy) < 50) {
             window.location.href = ship.url;
         }
     });
@@ -106,23 +107,39 @@ document.addEventListener('DOMContentLoaded', function () {
       if(this.y > height) this.y = 0;
     }
     draw() {
-      // Glowing Core
-      ctx.shadowBlur = 20;
+      // Pulsating Glow (Bigger)
+      const pulse = Math.sin(Date.now() * 0.005) * 5 + 10; // 5-15px fluctuation
+      
+      ctx.shadowBlur = 30;
       ctx.shadowColor = "#00ffff";
+      
+      // Outer Ring
+      ctx.strokeStyle = `rgba(0, 255, 255, ${0.3 + Math.sin(Date.now() * 0.005)*0.2})`;
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.arc(this.x, this.y, 25 + pulse, 0, Math.PI * 2); // Big visible target
+      ctx.stroke();
+
+      // Core
       ctx.fillStyle = "#ffffff";
       ctx.beginPath();
-      ctx.arc(this.x, this.y, 5, 0, Math.PI * 2);
+      ctx.arc(this.x, this.y, 8, 0, Math.PI * 2); // Solid core
       ctx.fill();
       ctx.shadowBlur = 0;
 
-      // Label
-      ctx.fillStyle = "rgba(255,255,255,0.7)";
-      ctx.font = "12px monospace";
-      ctx.fillText(this.name, this.x + 10, this.y);
+      // Label (Bigger & Clearer)
+      ctx.fillStyle = "#ffffff";
+      ctx.font = "bold 14px sans-serif";
+      ctx.textAlign = "center";
+      ctx.fillText(this.name, this.x, this.y + 45); // Text below ring
     }
   }
 
   function init() {
+    // Clear array to prevent duplication if init runs twice
+    particles = [];
+    ships = [];
+    
     resize();
     window.addEventListener('resize', resize);
     for(let i=0; i<50; i++) particles.push(new Particle());
