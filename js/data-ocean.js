@@ -2,8 +2,18 @@
 // Powered by OpenClaw
 
 document.addEventListener('DOMContentLoaded', function () {
-  const banner = document.getElementById('banner');
-  if (!banner) return;
+  // Fluid Theme Banner Selector Strategy
+  // 1. Try .banner (class)
+  // 2. Try #banner (id)
+  // 3. Try header (tag)
+  let banner = document.querySelector('.banner');
+  if (!banner) banner = document.getElementById('banner');
+  if (!banner) banner = document.querySelector('header');
+  
+  if (!banner) {
+    console.error("Data Ocean: Banner not found!");
+    return;
+  }
 
   // Create Canvas
   const canvas = document.createElement('canvas');
@@ -13,8 +23,15 @@ document.addEventListener('DOMContentLoaded', function () {
   canvas.style.left = '0';
   canvas.style.width = '100%';
   canvas.style.height = '100%';
-  canvas.style.zIndex = '0'; // Behind text, above bg
+  canvas.style.zIndex = '1'; // Above bg
   canvas.style.pointerEvents = 'auto'; // Enable clicks
+  
+  // Ensure banner container is relative so absolute canvas works
+  const style = window.getComputedStyle(banner);
+  if (style.position === 'static') {
+    banner.style.position = 'relative';
+  }
+  
   banner.insertBefore(canvas, banner.firstChild);
 
   const ctx = canvas.getContext('2d');
