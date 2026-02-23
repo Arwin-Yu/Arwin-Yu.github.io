@@ -713,46 +713,257 @@
     <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
   </noscript>
 <script src="/js/data-ocean.js"></script><!-- hexo injector body_end start -->
-<!-- 1. Load Three.js (Required for Vanta) -->
+<!-- Load Vanta Libs -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
-
-<!-- 2. Load Vanta Waves -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/vanta/0.5.24/vanta.waves.min.js"></script>
 
-<!-- 3. Init Vanta -->
 <script>
 (function() {
-  // Create Background Container
-  var bg = document.createElement('div');
-  bg.id = 'vanta-bg';
-  bg.style.position = 'fixed';
-  bg.style.top = '0';
-  bg.style.left = '0';
-  bg.style.width = '100vw';
-  bg.style.height = '100vh';
-  bg.style.zIndex = '-1'; // Background
-  bg.style.pointerEvents = 'none';
-  document.body.appendChild(bg);
+  // Prevent duplicate
+  if (document.getElementById('vanta-bg')) return;
 
-  // Initialize Vanta Effect
-  // Docs: https://www.vantajs.com/?effect=waves
-  VANTA.WAVES({
-    el: "#vanta-bg",
-    mouseControls: true,
-    touchControls: true,
-    gyroControls: false,
-    minHeight: 200.00,
-    minWidth: 200.00,
-    scale: 1.00,
-    scaleMobile: 1.00,
-    color: 0x0a1a2f,       // Dark Blue Base
-    shininess: 35.00,      // Metallic Shine
-    waveHeight: 20.00,     // Epic Waves
-    waveSpeed: 0.75,       // Slow motion
-    zoom: 0.8
+  console.log("🌊 Hybrid Ocean Initializing...");
+
+  // --- Layer 1: Vanta Background (The Ocean) ---
+  var vantaBg = document.createElement('div');
+  vantaBg.id = 'vanta-bg';
+  vantaBg.style.position = 'fixed';
+  vantaBg.style.top = '0';
+  vantaBg.style.left = '0';
+  vantaBg.style.width = '100vw';
+  vantaBg.style.height = '100vh';
+  vantaBg.style.zIndex = '-2'; // Deepest layer
+  vantaBg.style.pointerEvents = 'none';
+  document.body.appendChild(vantaBg);
+
+  // Init Vanta
+  try {
+      VANTA.WAVES({
+        el: "#vanta-bg",
+        mouseControls: true,
+        touchControls: true,
+        gyroControls: false,
+        minHeight: 200.00,
+        minWidth: 200.00,
+        scale: 1.00,
+        scaleMobile: 1.00,
+        color: 0x051020,       // Darker Navy Blue
+        shininess: 20.00,      // Reduced for performance/smoothness
+        waveHeight: 15.00,
+        waveSpeed: 0.8,        // Natural flow
+        zoom: 0.9
+      });
+  } catch(e) { console.error("Vanta failed:", e); }
+
+  // --- Layer 2: Custom Canvas (Ships & Lighthouse) ---
+  var canvas = document.createElement('canvas');
+  canvas.id = 'overlay-canvas';
+  canvas.style.position = 'fixed';
+  canvas.style.top = '0';
+  canvas.style.left = '0';
+  canvas.style.width = '100vw';
+  canvas.style.height = '100vh';
+  canvas.style.zIndex = '-1'; // Above Vanta, below text
+  canvas.style.pointerEvents = 'none'; // Passthrough unless hit
+  document.body.appendChild(canvas);
+
+  var ctx = canvas.getContext('2d');
+  var width, height;
+  var time = 0;
+
+  // Ships Data
+  var shipsData = [
+      { name: "OpenClaw", url: "/2026/02/23/spotlight-openclaw/" },
+      { name: "Claude-Code", url: "https://github.com/anthropics/claude-code" },
+      { name: "AutoGPT", url: "https://github.com/Significant-Gravitas/AutoGPT" },
+      { name: "Llama-3", url: "https://github.com/meta-llama/llama3" }
+  ];
+  
+  var ships = [];
+  var lighthouse = { x:0, y:0 };
+
+  // --- Object Classes ---
+
+  function Ship(data) {
+      this.name = data.name;
+      this.url = data.url;
+      this.x = Math.random() * (window.innerWidth * 0.6);
+      this.y = 0;
+      this.speed = Math.random() * 0.5 + 0.2;
+      this.offset = Math.random() * 100;
+  }
+
+  Ship.prototype.update = function(t) {
+      this.x += this.speed;
+      if (this.x > window.innerWidth * 0.7) this.x = -50;
+      
+      // Fake bobbing to match Vanta waves visual
+      // Vanta waves are complex, so we use a simple sine approximation
+      this.y = (window.innerHeight * 0.55) + Math.sin(t * 0.02 + this.offset) * 10;
+  };
+
+  Ship.prototype.draw = function(isHovered) {
+      ctx.save();
+      ctx.translate(this.x, this.y);
+      
+      // Glow
+      ctx.shadowBlur = isHovered ? 40 : 15;
+      ctx.shadowColor = isHovered ? "white" : "cyan";
+
+      // Hull (Teardrop)
+      var grad = ctx.createLinearGradient(-10, -10, 10, 10);
+      grad.addColorStop(0, "#ffffff");
+      grad.addColorStop(1, "#00aaaa");
+      ctx.fillStyle = grad;
+      
+      ctx.beginPath();
+      ctx.moveTo(15, 0);
+      ctx.bezierCurveTo(5, 8, -10, 8, -15, 0);
+      ctx.bezierCurveTo(-10, -8, 5, -8, 15, 0);
+      ctx.fill();
+
+      // Label
+      if (isHovered) {
+          ctx.fillStyle = "white";
+          ctx.font = "bold 14px sans-serif";
+          ctx.shadowColor = "black";
+          ctx.shadowBlur = 4;
+          ctx.fillText(this.name, -20, -20);
+      }
+      ctx.restore();
+  };
+
+  // Lighthouse Logic
+  function drawLighthouse(t, isHovered) {
+      var lx = width * 0.85;
+      var ly = height * 0.5; // Horizon
+      
+      // Rotating Beam
+      var angle = t * 0.02;
+      ctx.save();
+      ctx.translate(lx, ly);
+      ctx.rotate(angle);
+      
+      var grad = ctx.createLinearGradient(0, 0, 600, 0);
+      grad.addColorStop(0, "rgba(255, 150, 0, 0.3)");
+      grad.addColorStop(1, "rgba(0,0,0,0)");
+      
+      ctx.fillStyle = grad;
+      ctx.beginPath();
+      ctx.moveTo(0, -2);
+      ctx.lineTo(600, -80);
+      ctx.lineTo(600, 80);
+      ctx.lineTo(0, 2);
+      ctx.fill();
+      
+      // Opposite beam
+      ctx.rotate(Math.PI);
+      ctx.beginPath();
+      ctx.moveTo(0, -2);
+      ctx.lineTo(600, -80);
+      ctx.lineTo(600, 80);
+      ctx.lineTo(0, 2);
+      ctx.fill();
+      
+      ctx.restore();
+
+      // Core
+      ctx.fillStyle = isHovered ? "#ffaa00" : "#cc8800";
+      ctx.shadowColor = "orange";
+      ctx.shadowBlur = 20;
+      ctx.beginPath();
+      ctx.arc(lx, ly, 8, 0, Math.PI*2);
+      ctx.fill();
+      
+      // Base (Simple)
+      ctx.fillStyle = "#112";
+      ctx.shadowBlur = 0;
+      ctx.beginPath();
+      ctx.moveTo(lx-8, ly);
+      ctx.lineTo(lx+8, ly);
+      ctx.lineTo(lx+12, ly+200);
+      ctx.lineTo(lx-12, ly+200);
+      ctx.fill();
+      
+      if(isHovered) {
+          ctx.fillStyle = "orange";
+          ctx.font = "bold 14px monospace";
+          ctx.fillText("WEEKLY AI", lx - 30, ly + 50);
+      }
+      
+      lighthouse.x = lx;
+      lighthouse.y = ly;
+  }
+
+  function resize() {
+      width = window.innerWidth;
+      height = window.innerHeight;
+      canvas.width = width;
+      canvas.height = height;
+  }
+
+  // Interactions
+  var mouseX = 0, mouseY = 0;
+  window.addEventListener('mousemove', function(e) {
+      mouseX = e.clientX;
+      mouseY = e.clientY;
+      
+      var hit = false;
+      ships.forEach(function(s) {
+          var dx = mouseX - s.x;
+          var dy = mouseY - s.y;
+          if (dx*dx + dy*dy < 1600) hit = true;
+      });
+      
+      var ldx = mouseX - lighthouse.x;
+      var ldy = mouseY - lighthouse.y;
+      if (ldx*ldx + ldy*ldy < 2500) hit = true;
+
+      if (hit) {
+          canvas.style.pointerEvents = 'auto';
+          canvas.style.cursor = 'pointer';
+      } else {
+          canvas.style.pointerEvents = 'none';
+          canvas.style.cursor = 'default';
+      }
   });
 
-  console.log("🌊 Vanta.js Waves Initialized!");
+  window.addEventListener('click', function(e) {
+      ships.forEach(function(s) {
+          var dx = e.clientX - s.x;
+          var dy = e.clientY - s.y;
+          if (dx*dx + dy*dy < 1600) window.location.href = s.url;
+      });
+      
+      var ldx = e.clientX - lighthouse.x;
+      var ldy = e.clientY - lighthouse.y;
+      if (ldx*ldx + ldy*ldy < 2500) window.location.href = '/categories/Weekly-AI/';
+  });
+
+  function animate() {
+      time++;
+      ctx.clearRect(0, 0, width, height); // Clear to let Vanta show through
+      
+      // Draw Lighthouse
+      drawLighthouse(time, (mouseX - lighthouse.x)**2 + (mouseY - lighthouse.y)**2 < 2500);
+
+      // Draw Ships
+      ships.forEach(function(s) {
+          s.update(time);
+          var dx = mouseX - s.x;
+          var dy = mouseY - s.y;
+          s.draw(dx*dx + dy*dy < 1600);
+      });
+
+      requestAnimationFrame(animate);
+  }
+
+  // Start
+  resize();
+  window.addEventListener('resize', resize);
+  shipsData.forEach(function(d) { ships.push(new Ship(d)); });
+  animate();
+
 })();
 </script>
 <!-- hexo injector body_end end --></body>
