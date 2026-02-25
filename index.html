@@ -79,7 +79,7 @@
   
 <!-- hexo injector head_end start -->
 <style>
-  /* Make Fluid Banner Transparent so Vanta.js shows through */
+  /* Make Fluid banner transparent so custom ocean background shows through */
   .banner {
     background: transparent !important;
     background-image: none !important;
@@ -592,169 +592,205 @@
   <noscript>
     <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
   </noscript>
-<script src="/js/data-ocean.js"></script><!-- hexo injector body_end start -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/vanta/0.5.24/vanta.waves.min.js"></script>
-
+<!-- hexo injector body_end start -->
 <style>
-  /* --- The Ships (PNG Sprites) --- */
-  .ocean-ship {
+  :root {
+    --ocean-bg-1: #041423;
+    --ocean-bg-2: #08314d;
+    --ocean-glow: #58e6ff;
+  }
+
+  #ocean-scene {
     position: fixed;
-    z-index: 1;
-    cursor: pointer;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    background: radial-gradient(1200px 400px at 50% 110%, #0d4166 0%, transparent 65%),
+                linear-gradient(180deg, var(--ocean-bg-1) 0%, var(--ocean-bg-2) 70%, #0a446d 100%);
+  }
+
+  #ocean-ships {
+    position: fixed;
+    inset: 0;
+    z-index: 2;
+    pointer-events: none;
+  }
+
+  .ocean-ship {
+    position: absolute;
+    pointer-events: auto;
+    transform: translate(-50%, -50%);
     display: flex;
     flex-direction: column;
     align-items: center;
-    transition: transform 0.3s ease;
-    filter: drop-shadow(0 0 10px cyan); /* Neon Glow */
+    text-decoration: none;
+    color: #fff;
+    will-change: transform;
+    animation: drift 6s ease-in-out infinite;
   }
+
   .ocean-ship:hover {
-    transform: scale(1.2) translateY(-10px);
-    z-index: 10;
-    filter: drop-shadow(0 0 20px cyan);
+    filter: drop-shadow(0 0 12px var(--ocean-glow));
   }
-  
+
   .ship-body {
-    width: 64px;
-    height: 64px;
-    /* High quality 3D icon */
-    background-image: url('https://img.icons8.com/external-flaticons-lineal-color-flat-icons/64/external-spaceship-space-flaticons-lineal-color-flat-icons-3.png'); 
-    background-size: contain;
-    background-repeat: no-repeat;
+    display: grid;
+    place-items: center;
+    border-radius: 999px;
+    background: linear-gradient(145deg, #7ee8ff 0%, #4db8ff 60%, #1f74ff 100%);
+    box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.25), 0 8px 18px rgba(0, 0, 0, 0.35);
+    font-size: calc(var(--ship-size, 56px) * 0.45);
+    width: var(--ship-size, 56px);
+    height: var(--ship-size, 56px);
   }
 
   .ship-label {
-    margin-top: 5px;
-    color: white;
+    margin-top: 6px;
+    max-width: 180px;
+    padding: 2px 8px;
     font-size: 12px;
-    font-weight: bold;
-    text-shadow: 0 0 5px black;
-    background: rgba(0,0,0,0.5);
-    padding: 2px 6px;
-    border-radius: 4px;
+    border-radius: 999px;
+    background: rgba(0, 0, 0, 0.45);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
-  /* --- The Lighthouse (PNG Sprite) --- */
-  .ocean-lighthouse {
-    position: fixed;
-    right: 10%;
-    bottom: 30%; /* Sit on the "horizon" */
-    z-index: 0;
-    cursor: pointer;
-    width: 100px;
-    height: 150px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    filter: drop-shadow(0 0 15px orange);
-  }
-  .ocean-lighthouse:hover {
-    filter: drop-shadow(0 0 30px orange);
-    transform: scale(1.05);
-  }
-  
-  .lighthouse-body {
-    width: 100%;
-    height: 100%;
-    background-image: url('https://img.icons8.com/external-flaticons-lineal-color-flat-icons/100/external-lighthouse-sea-life-flaticons-lineal-color-flat-icons-2.png');
-    background-size: contain;
-    background-repeat: no-repeat;
-    background-position: bottom center;
+  .ship-stars {
+    margin-top: 4px;
+    font-size: 11px;
+    opacity: 0.88;
   }
 
-  .lighthouse-label {
-    position: absolute;
-    bottom: -25px;
-    color: #ffaa00;
-    font-family: monospace;
-    font-weight: bold;
-    text-shadow: 0 0 10px black;
+  @keyframes drift {
+    0%,100% { transform: translate(-50%, -50%) translate3d(0, 0, 0); }
+    50% { transform: translate(-50%, -50%) translate3d(0, -10px, 0); }
   }
 
-  /* Animations */
-  @keyframes float1 { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
-  @keyframes float2 { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-20px); } }
-
+  @media (prefers-reduced-motion: reduce), (max-width: 768px) {
+    .ocean-ship { animation: none; }
+  }
 </style>
 
 <script>
-(function() {
-  if (document.getElementById('vanta-bg')) return;
+(function () {
+  if (document.getElementById('ocean-ships')) return;
 
-  // 1. Vanta Background
-  var vantaBg = document.createElement('div');
-  vantaBg.id = 'vanta-bg';
-  vantaBg.style.position = 'fixed';
-  vantaBg.style.top = '0';
-  vantaBg.style.left = '0';
-  vantaBg.style.width = '100vw';
-  vantaBg.style.height = '100vh';
-  vantaBg.style.zIndex = '-2';
-  vantaBg.style.pointerEvents = 'none';
-  document.body.appendChild(vantaBg);
+  var scene = document.createElement('div');
+  scene.id = 'ocean-scene';
+  document.body.appendChild(scene);
 
-  try {
-      VANTA.WAVES({
-        el: "#vanta-bg",
-        mouseControls: true,
-        touchControls: true,
-        gyroControls: false,
-        minHeight: 200.00,
-        minWidth: 200.00,
-        scale: 1.00,
-        scaleMobile: 1.00,
-        color: 0x051020,
-        shininess: 25.00,
-        waveHeight: 15.00,
-        waveSpeed: 0.6,
-        zoom: 0.8
-      });
-  } catch(e) {}
+  var layer = document.createElement('div');
+  layer.id = 'ocean-ships';
+  document.body.appendChild(layer);
 
-  // 2. Spawn Ships (PNGs)
-  var shipsData = [
-      { name: "OpenClaw", url: "/2026/02/23/spotlight-openclaw/", top: "60%", left: "15%", anim: "float1 4s infinite ease-in-out" },
-      { name: "Claude-Code", url: "https://github.com/anthropics/claude-code", top: "50%", left: "35%", anim: "float2 5s infinite ease-in-out" },
-      { name: "AutoGPT", url: "https://github.com/Significant-Gravitas/AutoGPT", top: "65%", left: "55%", anim: "float1 6s infinite ease-in-out" },
-      { name: "Llama-3", url: "https://github.com/meta-llama/llama3", top: "45%", left: "75%", anim: "float2 4.5s infinite ease-in-out" }
+  var FALLBACK_REPOS = [
+    { full_name: 'anthropics/claude-code', stargazers_count: 24000, html_url: 'https://github.com/anthropics/claude-code' },
+    { full_name: 'microsoft/vscode', stargazers_count: 170000, html_url: 'https://github.com/microsoft/vscode' },
+    { full_name: 'Significant-Gravitas/AutoGPT', stargazers_count: 175000, html_url: 'https://github.com/Significant-Gravitas/AutoGPT' },
+    { full_name: 'langchain-ai/langchain', stargazers_count: 105000, html_url: 'https://github.com/langchain-ai/langchain' },
+    { full_name: 'openai/openai-cookbook', stargazers_count: 68000, html_url: 'https://github.com/openai/openai-cookbook' },
+    { full_name: 'meta-llama/llama3', stargazers_count: 29000, html_url: 'https://github.com/meta-llama/llama3' }
   ];
 
-  shipsData.forEach(function(d) {
-      var ship = document.createElement('div');
+  var POSITIONS = [
+    [14, 62], [30, 48], [46, 67], [62, 42], [77, 58], [87, 36]
+  ];
+
+  function short(n) {
+    if (n >= 1000) return (n / 1000).toFixed(1).replace(/\.0$/, '') + 'k';
+    return String(n);
+  }
+
+  function sizeByStars(stars, min, max) {
+    if (max <= min) return 56;
+    var normalized = (Math.log10(stars + 1) - Math.log10(min + 1)) / (Math.log10(max + 1) - Math.log10(min + 1));
+    return Math.round(42 + normalized * 44);
+  }
+
+  function render(items) {
+    var stars = items.map(function (i) { return i.stargazers_count || 0; });
+    var min = Math.min.apply(null, stars);
+    var max = Math.max.apply(null, stars);
+
+    items.slice(0, POSITIONS.length).forEach(function (repo, idx) {
+      var pos = POSITIONS[idx];
+      var size = sizeByStars(repo.stargazers_count || 0, min, max);
+
+      var ship = document.createElement('a');
       ship.className = 'ocean-ship';
-      ship.style.top = d.top;
-      ship.style.left = d.left;
-      ship.style.animation = d.anim; 
-      ship.onclick = function() { window.location.href = d.url; };
-      
+      ship.href = repo.html_url;
+      ship.target = '_blank';
+      ship.rel = 'noopener noreferrer';
+      ship.style.left = pos[0] + '%';
+      ship.style.top = pos[1] + '%';
+      ship.style.setProperty('--ship-size', size + 'px');
+      ship.style.animationDuration = (4.5 + idx * 0.6) + 's';
+
       var body = document.createElement('div');
       body.className = 'ship-body';
-      
+      body.textContent = '🚢';
+
       var label = document.createElement('div');
       label.className = 'ship-label';
-      label.innerText = d.name;
-      
+      label.textContent = repo.full_name;
+
+      var starsLabel = document.createElement('div');
+      starsLabel.className = 'ship-stars';
+      starsLabel.textContent = '★ ' + short(repo.stargazers_count || 0);
+
       ship.appendChild(body);
       ship.appendChild(label);
-      document.body.appendChild(ship);
-  });
+      ship.appendChild(starsLabel);
+      layer.appendChild(ship);
+    });
+  }
 
-  // 3. Spawn Lighthouse (PNG)
-  var lh = document.createElement('div');
-  lh.className = 'ocean-lighthouse';
-  lh.onclick = function() { window.location.href = '/categories/Weekly-AI/'; };
-  
-  var body = document.createElement('div');
-  body.className = 'lighthouse-body';
-  
-  var label = document.createElement('div');
-  label.className = 'lighthouse-label';
-  label.innerText = 'AI HUB';
-  
-  lh.appendChild(body);
-  lh.appendChild(label);
-  document.body.appendChild(lh);
+  function getCached() {
+    try {
+      var raw = localStorage.getItem('hot_repos_cache_v1');
+      if (!raw) return null;
+      var data = JSON.parse(raw);
+      if (Date.now() - data.time > 6 * 60 * 60 * 1000) return null;
+      return data.items;
+    } catch (_) { return null; }
+  }
 
+  function setCached(items) {
+    try {
+      localStorage.setItem('hot_repos_cache_v1', JSON.stringify({ time: Date.now(), items: items }));
+    } catch (_) {}
+  }
+
+  function boot() {
+    var cached = getCached();
+    if (cached && cached.length) {
+      render(cached);
+      return;
+    }
+
+    fetch('https://api.github.com/search/repositories?q=stars:%3E20000&sort=stars&order=desc&per_page=6', {
+      headers: { 'Accept': 'application/vnd.github+json' }
+    })
+      .then(function (r) { return r.ok ? r.json() : Promise.reject(); })
+      .then(function (data) {
+        var items = (data.items || []).map(function (r) {
+          return { full_name: r.full_name, stargazers_count: r.stargazers_count, html_url: r.html_url };
+        });
+        if (!items.length) throw new Error('empty');
+        setCached(items);
+        render(items);
+      })
+      .catch(function () {
+        render(FALLBACK_REPOS);
+      });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', boot, { once: true });
+  } else {
+    boot();
+  }
 })();
 </script>
 <!-- hexo injector body_end end --></body>
