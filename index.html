@@ -635,7 +635,7 @@
 
   #planet-link-hotspot {
     position: absolute;
-    left: 52%;
+    left: 49.6%;
     top: 58%;
     width: min(44vw, 620px);
     height: min(28vw, 360px);
@@ -664,6 +664,31 @@
 
   #planet-link-hotspot.guide-pulse::before {
     animation: hotspotPulse 1.2s ease-in-out 2;
+  }
+
+  #planet-link-hint {
+    position: absolute;
+    left: 49.6%;
+    top: calc(58% + min(17vw, 220px));
+    transform: translateX(-50%);
+    font-size: 12px;
+    letter-spacing: .2px;
+    color: rgba(210, 236, 255, 0.95);
+    background: rgba(6, 12, 24, 0.56);
+    border: 1px solid rgba(132, 209, 255, 0.42);
+    border-radius: 999px;
+    padding: 4px 10px;
+    backdrop-filter: blur(4px);
+    text-shadow: 0 1px 2px rgba(0,0,0,.35);
+    opacity: .88;
+    pointer-events: none;
+    white-space: nowrap;
+    transition: opacity .2s ease, transform .2s ease;
+  }
+
+  #planet-link-hotspot:hover + #planet-link-hint {
+    opacity: 1;
+    transform: translateX(-50%) translateY(-1px);
   }
 
 
@@ -770,6 +795,14 @@
   @keyframes wakeLine { 0%{ opacity:.42; transform:translateX(-105%) scaleX(.9);} 50%{ opacity:.95; transform:translateX(-98%) scaleX(1.06);} 100%{ opacity:.42; transform:translateX(-90%) scaleX(.9);} }
   @keyframes jetPulse { 0%,100%{ opacity:.55; transform: translateX(-78%) scaleX(.9);} 50%{ opacity:1; transform: translateX(-82%) scaleX(1.15);} }
 
+  @media (max-width: 900px) {
+    #planet-link-hint {
+      font-size: 11px;
+      top: calc(58% + min(20vw, 180px));
+      padding: 3px 8px;
+    }
+  }
+
   @media (prefers-reduced-motion: reduce), (max-width: 900px) {
     #cosmic-ocean,
     #planet-art,
@@ -789,7 +822,7 @@
 
   var planet = document.createElement('div');
   planet.id = 'planet-system';
-  planet.innerHTML = '<div id="planet-art"></div><a id="planet-link-hotspot" href="/2026/02/26/ai-projects-100k/" aria-label="Top AI GitHub projects"></a>';
+  planet.innerHTML = '<div id="planet-art"></div><a id="planet-link-hotspot" href="/2026/02/26/ai-projects-100k/" aria-label="Top AI GitHub projects"></a><div id="planet-link-hint">点击星球 · 查看 AI 100k+ 项目</div>';
   document.body.appendChild(planet);
 
   var layer = document.createElement('div');
