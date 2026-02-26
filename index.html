@@ -611,29 +611,44 @@
 
   <script>
     (function (window, document) {
-      var box = document.getElementById('hero-typewriter');
-      if (!box || box.dataset.typedOnce === '1') return;
-      box.dataset.typedOnce = '1';
+      if (document.getElementById('hero-overlay-typewriter')) return;
 
       var text = '点击星球探索 GitHub 高赞项目\n点击飞船探索每月最热项目，项目越火飞船越大';
-      box.textContent = '';
 
-      var host = box.parentNode;
+      // Detach from theme subtitle pipeline completely
+      var subtitle = document.getElementById('subtitle');
+      if (subtitle) subtitle.remove();
+      var inBanner = document.getElementById('hero-typewriter');
+      if (inBanner) inBanner.remove();
+
+      var box = document.createElement('div');
+      box.id = 'hero-overlay-typewriter';
+      box.style.position = 'fixed';
+      box.style.left = '50%';
+      box.style.top = '37%';
+      box.style.transform = 'translate(-50%, -50%)';
+      box.style.zIndex = '2147483647';
+      box.style.pointerEvents = 'none';
       box.style.color = '#ffffff';
+      box.style.fontWeight = '900';
+      box.style.fontSize = 'clamp(1.3rem, 2.25vw, 2.1rem)';
+      box.style.lineHeight = '1.45';
+      box.style.whiteSpace = 'pre-line';
+      box.style.letterSpacing = '0.25px';
+      box.style.textShadow = '0 2px 4px rgba(0,0,0,.95)';
+      box.style.background = 'rgba(0,0,0,.94)';
+      box.style.border = '1px solid rgba(255,255,255,.22)';
+      box.style.borderRadius = '12px';
+      box.style.padding = '12px 16px';
       box.style.opacity = '1';
-      box.style.animation = 'none';
-      box.style.transition = 'none';
-      if (host) {
-        host.style.opacity = '1';
-        host.style.animation = 'none';
-        host.style.transition = 'none';
-        host.classList.remove('fade-in-up');
-      }
+      box.style.mixBlendMode = 'normal';
+      box.textContent = '';
+      document.body.appendChild(box);
 
       var cursor = document.createElement('span');
-      cursor.id = 'custom-cursor';
       cursor.textContent = '_';
       cursor.style.color = '#ffffff';
+      cursor.style.marginLeft = '2px';
 
       var i = 0;
       function tick() {
