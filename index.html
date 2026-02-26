@@ -98,20 +98,18 @@
     color: #ffffff !important;
     opacity: 1 !important;
     font-weight: 800 !important;
-    text-shadow: 0 3px 16px rgba(0, 0, 0, 0.78) !important;
+    text-shadow: 0 4px 18px rgba(0, 0, 0, 0.9) !important;
+    -webkit-text-stroke: 0.45px rgba(0, 0, 0, 0.55);
     white-space: pre-line !important;
     letter-spacing: 0.2px;
   }
 
-  .banner .typed-cursor {
+  .banner .typed-cursor,
+  .banner #custom-cursor {
     color: #ffffff !important;
     opacity: 1 !important;
     font-weight: 800 !important;
     animation: cursorBlink 0.9s steps(1,end) infinite !important;
-  }
-
-  .banner #subtitle.typed-fade-out {
-    opacity: 1 !important;
   }
 
   @keyframes cursorBlink {
@@ -574,18 +572,29 @@
 <script  src="/js/plugins.js" ></script>
 
 
-  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
   <script>
     (function (window, document) {
-      var typing = Fluid.plugins.typing;
       var subtitle = document.getElementById('subtitle');
-      if (!subtitle || !typing) {
-        return;
+      if (!subtitle) return;
+
+      var text = (subtitle.getAttribute('data-typed-text') || '').replace(/&#10;/g, '\n');
+      subtitle.textContent = '';
+
+      var cursor = document.createElement('span');
+      cursor.id = 'custom-cursor';
+      cursor.textContent = '_';
+
+      var i = 0;
+      function tick() {
+        if (i < text.length) {
+          subtitle.textContent += text[i] === '\n' ? '\n' : text[i];
+          i += 1;
+          setTimeout(tick, 42);
+        } else {
+          subtitle.appendChild(cursor);
+        }
       }
-      var text = subtitle.getAttribute('data-typed-text');
-      
-        typing(text);
-      
+      tick();
     })(window, document);
   </script>
 
