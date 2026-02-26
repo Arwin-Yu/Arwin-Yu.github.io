@@ -623,11 +623,12 @@
 
   #planet-art {
     position: absolute;
-    inset: 0;
+    inset: -2%;
     background: url('/img/generated-space/002-cinematic-deep-space-scene-with-a-giant-.png') center/cover no-repeat;
+    background-size: 86% auto;
     filter: saturate(1.04) contrast(1.02);
-    opacity: 0.96;
-    animation: planetBreath 12s ease-in-out infinite;
+    opacity: 0.95;
+    animation: planetBreath 8.6s ease-in-out infinite;
     transform-origin: center center;
   }
 
@@ -722,10 +723,17 @@
   .hud-meta { font-size:11px; opacity:.86; }
 
   @keyframes cosmosDrift { 0% { transform: scale(1.01) translate3d(0,0,0);} 100% { transform: scale(1.03) translate3d(-0.5%, -0.4%, 0);} }
-  @keyframes planetBreath { 0%,100% { transform: scale(0.99); opacity: .9; } 50% { transform: scale(1.01); opacity: 1; } }
+  @keyframes planetBreath {
+    0%,100% { transform: scale(0.965) translateY(0.4%); opacity: .86; filter: saturate(0.98) brightness(0.94); }
+    50% { transform: scale(1.02) translateY(-0.4%); opacity: 1; filter: saturate(1.08) brightness(1.04); }
+  }
   @keyframes cruise { 0%,100%{ transform: rotate(calc(-2deg + var(--tilt))) translate3d(0,0,0);} 50%{ transform: rotate(calc(2deg + var(--tilt))) translate3d(0,-9px,0);} }
   @keyframes wakeLine { 0%{ opacity:.42; transform:translateX(-105%) scaleX(.9);} 50%{ opacity:.95; transform:translateX(-98%) scaleX(1.06);} 100%{ opacity:.42; transform:translateX(-90%) scaleX(.9);} }
   @keyframes jetPulse { 0%,100%{ opacity:.55; transform: translateX(-78%) scaleX(.9);} 50%{ opacity:1; transform: translateX(-82%) scaleX(1.15);} }
+
+  @media (max-width: 900px) {
+    #planet-art { background-size: 94% auto; }
+  }
 
   @media (prefers-reduced-motion: reduce), (max-width: 900px) {
     #cosmic-ocean,
