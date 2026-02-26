@@ -9,25 +9,13 @@ HTMLElement.prototype.wrap = function(wrapper) {
 Fluid.plugins = {
 
   typing: function(text) {
-    if (!('Typed' in window)) { return; }
-
-    var typed = new window.Typed('#subtitle', {
-      strings: [
-        '  ',
-        text
-      ],
-      cursorChar: CONFIG.typing.cursorChar,
-      typeSpeed : CONFIG.typing.typeSpeed,
-      loop      : CONFIG.typing.loop
-    });
-    typed.stop();
+    // Disabled globally to avoid runtime subtitle/cursor reinjection conflicts.
+    // Homepage uses a standalone typewriter renderer in index.html.
     var subtitle = document.getElementById('subtitle');
     if (subtitle) {
       subtitle.innerText = '';
     }
-    jQuery(document).ready(function() {
-      typed.start();
-    });
+    return;
   },
 
   fancyBox: function(selector) {
