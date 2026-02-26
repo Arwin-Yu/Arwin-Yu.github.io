@@ -1,0 +1,28 @@
+/* Global cosmic style for all pages */
+:root {
+  --cosmic-bg-1: #080b16;
+  --cosmic-bg-2: #141b33;
+  --cosmic-bg-3: #202c52;
+}
+
+body {
+  background: linear-gradient(180deg, var(--cosmic-bg-1) 0%, var(--cosmic-bg-2) 55%, var(--cosmic-bg-3) 100%) !important;
+}
+
+.banner {
+  background: transparent !important;
+  background-image: none !important;
+}
+
+#board {
+  background-color: rgba(10, 15, 31, 0.68) !important;
+  backdrop-filter: blur(8px);
+}
+
+[data-user-color-scheme='light'] #board {
+  background-color: rgba(14, 20, 39, 0.62) !important;
+}
+
+#planet-system {
+  pointer-events: none;
+}

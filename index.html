@@ -93,7 +93,8 @@
     background-color: rgba(30, 30, 40, 0.8) !important;
   }
 </style>
-<!-- hexo injector head_end end --><meta name="generator" content="Hexo 8.1.1"></head>
+<!-- hexo injector head_end end --><meta name="generator" content="Hexo 8.1.1">  <link rel="stylesheet" href="/css/cosmic-theme.css">
+</head>
 
 
 <body>
@@ -617,7 +618,7 @@
     position: fixed;
     inset: 0;
     z-index: 0;
-    pointer-events: none;
+    pointer-events: auto;
     overflow: hidden;
   }
 
@@ -629,6 +630,20 @@
     opacity: 0.96;
     animation: planetBreath 8.6s ease-in-out infinite;
     transform-origin: center center;
+    pointer-events: none;
+  }
+
+  #planet-link-hotspot {
+    position: absolute;
+    left: 52%;
+    top: 58%;
+    width: min(34vw, 440px);
+    aspect-ratio: 1/1;
+    transform: translate(-50%, -50%);
+    border-radius: 50%;
+    pointer-events: auto;
+    cursor: pointer;
+    background: transparent;
   }
 
 
@@ -749,7 +764,7 @@
 
   var planet = document.createElement('div');
   planet.id = 'planet-system';
-  planet.innerHTML = '<div id="planet-art"></div>';
+  planet.innerHTML = '<div id="planet-art"></div><a id="planet-link-hotspot" href="/2026/02/26/ai-projects-100k/" aria-label="Top AI GitHub projects"></a>';
   document.body.appendChild(planet);
 
   var layer = document.createElement('div');
@@ -860,5 +875,6 @@
   } else { boot(); }
 })();
 </script>
-<!-- hexo injector body_end end --></body>
+<!-- hexo injector body_end end --><script src="/js/cosmic-theme.js"></script>
+</body>
 </html>
