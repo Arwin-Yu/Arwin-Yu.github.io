@@ -637,7 +637,7 @@
       }
       tick();
 
-      // hard-disable any theme leftovers
+      // one-shot cleanup (avoid heavy observer loops)
       function cleanup() {
         document.querySelectorAll('.typed-cursor').forEach(function (c) { c.remove(); });
         var subtitle = document.getElementById('subtitle');
@@ -645,10 +645,8 @@
         lockStyles();
       }
       cleanup();
-      setInterval(cleanup, 600);
-
-      var mo = new MutationObserver(cleanup);
-      mo.observe(document.body, { childList: true, subtree: true, attributes: true });
+      setTimeout(cleanup, 1200);
+      setTimeout(cleanup, 2800);
     })(window, document);
   </script>
 
