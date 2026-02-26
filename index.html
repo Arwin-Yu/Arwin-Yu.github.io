@@ -646,6 +646,26 @@
     background: transparent;
   }
 
+  #planet-link-hotspot::before {
+    content: '';
+    position: absolute;
+    inset: -10%;
+    border-radius: 50%;
+    border: 2px solid rgba(146, 221, 255, 0.0);
+    box-shadow: 0 0 0 rgba(120, 210, 255, 0);
+    transition: all .25s ease;
+  }
+
+  #planet-link-hotspot:hover::before {
+    border-color: rgba(146, 221, 255, 0.75);
+    box-shadow: 0 0 28px rgba(120, 210, 255, 0.45), inset 0 0 20px rgba(120, 210, 255, 0.15);
+    transform: scale(1.03);
+  }
+
+  #planet-link-hotspot.guide-pulse::before {
+    animation: hotspotPulse 1.2s ease-in-out 2;
+  }
+
 
   #fleet-layer {
     position: fixed;
@@ -740,6 +760,11 @@
   @keyframes planetBreath {
     0%,100% { transform: scale(0.965) translateY(0.4%); opacity: .86; filter: saturate(0.98) brightness(0.94); }
     50% { transform: scale(1.02) translateY(-0.4%); opacity: 1; filter: saturate(1.08) brightness(1.04); }
+  }
+  @keyframes hotspotPulse {
+    0% { border-color: rgba(146, 221, 255, 0); box-shadow: 0 0 0 rgba(120, 210, 255, 0); transform: scale(1); }
+    45% { border-color: rgba(146, 221, 255, 0.75); box-shadow: 0 0 32px rgba(120, 210, 255, 0.5); transform: scale(1.05); }
+    100% { border-color: rgba(146, 221, 255, 0.05); box-shadow: 0 0 0 rgba(120, 210, 255, 0); transform: scale(1); }
   }
   @keyframes cruise { 0%,100%{ transform: rotate(calc(-2deg + var(--tilt))) translate3d(0,0,0);} 50%{ transform: rotate(calc(2deg + var(--tilt))) translate3d(0,-9px,0);} }
   @keyframes wakeLine { 0%{ opacity:.42; transform:translateX(-105%) scaleX(.9);} 50%{ opacity:.95; transform:translateX(-98%) scaleX(1.06);} 100%{ opacity:.42; transform:translateX(-90%) scaleX(.9);} }
@@ -859,6 +884,14 @@
   }
 
   function boot(){
+    var hotspot = document.getElementById('planet-link-hotspot');
+    if (hotspot) {
+      setTimeout(function () {
+        hotspot.classList.add('guide-pulse');
+        setTimeout(function(){ hotspot.classList.remove('guide-pulse'); }, 2800);
+      }, 1600);
+    }
+
     var c=getCache(); if(c && c.length) { render(c); return; }
     fetch('https://api.github.com/search/repositories?q=(agent%20OR%20ai%20OR%20llm)%20in:name,description%20stars:%3E3000&sort=stars&order=desc&per_page=6', { headers:{Accept:'application/vnd.github+json'} })
       .then(function(r){ return r.ok ? r.json() : Promise.reject(new Error('api')); })
