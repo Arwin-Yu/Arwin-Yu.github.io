@@ -134,14 +134,8 @@
     color: #ffffff !important;
     font-weight: 800 !important;
     margin-left: 2px;
-    animation: cursorBlink 1.05s steps(1,end) infinite !important;
     transition: none !important;
     opacity: 1 !important;
-  }
-
-  @keyframes cursorBlink {
-    0%, 49% { opacity: 1; }
-    50%, 100% { opacity: 0; }
   }
 </style>
 <!-- hexo injector head_end end --><meta name="generator" content="Hexo 8.1.1">  <link rel="stylesheet" href="/css/cosmic-theme.css">
@@ -609,24 +603,21 @@
       box.textContent = '';
 
       var host = box.parentNode;
-      function lockStyles() {
-        box.style.color = '#ffffff';
-        box.style.opacity = '1';
-        box.style.animation = 'none';
-        box.style.transition = 'none';
-        if (host) {
-          host.style.opacity = '1';
-          host.style.animation = 'none';
-          host.style.transition = 'none';
-          host.classList.remove('fade-in-up');
-        }
+      box.style.color = '#ffffff';
+      box.style.opacity = '1';
+      box.style.animation = 'none';
+      box.style.transition = 'none';
+      if (host) {
+        host.style.opacity = '1';
+        host.style.animation = 'none';
+        host.style.transition = 'none';
+        host.classList.remove('fade-in-up');
       }
-      lockStyles();
 
       var cursor = document.createElement('span');
       cursor.id = 'custom-cursor';
       cursor.textContent = '_';
-      cursor.style.color = '#7fd2ff';
+      cursor.style.color = '#ffffff';
 
       var i = 0;
       function tick() {
@@ -644,17 +635,6 @@
         }
       }
       tick();
-
-      // one-shot cleanup (avoid heavy observer loops)
-      function cleanup() {
-        document.querySelectorAll('.typed-cursor').forEach(function (c) { c.remove(); });
-        var subtitle = document.getElementById('subtitle');
-        if (subtitle) subtitle.remove();
-        lockStyles();
-      }
-      cleanup();
-      setTimeout(cleanup, 1200);
-      setTimeout(cleanup, 2800);
     })(window, document);
   </script>
 
