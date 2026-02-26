@@ -611,7 +611,10 @@
       linear-gradient(180deg, rgba(6,10,20,0.8) 0%, rgba(8,12,24,0.5) 100%),
       url('https://images-assets.nasa.gov/image/GSFC_20171208_Archive_e001861/GSFC_20171208_Archive_e001861~orig.jpg') center/cover no-repeat,
       linear-gradient(180deg,var(--nebula-1) 0%, var(--nebula-2) 55%, var(--nebula-3) 100%);
+    animation: cosmosDrift 40s ease-in-out infinite alternate;
+    transform-origin: center center;
   }
+
 
   #cosmic-ocean::before,
   #cosmic-ocean::after {
@@ -644,6 +647,30 @@
     z-index: 0;
     pointer-events: none;
     overflow: hidden;
+  }
+
+  #nebula-layer,
+  #dust-layer {
+    position: fixed;
+    inset: -8%;
+    pointer-events: none;
+    z-index: 0;
+    mix-blend-mode: screen;
+  }
+
+  #nebula-layer {
+    background:
+      radial-gradient(560px 320px at 22% 34%, rgba(123, 88, 255, 0.23), transparent 70%),
+      radial-gradient(680px 360px at 74% 62%, rgba(82, 201, 255, 0.2), transparent 72%),
+      radial-gradient(500px 300px at 52% 24%, rgba(255, 130, 210, 0.12), transparent 70%);
+    animation: nebulaDriftA 32s ease-in-out infinite alternate;
+  }
+
+  #dust-layer {
+    opacity: .35;
+    background: repeating-radial-gradient(circle at 20% 30%, rgba(183,223,255,.2) 0 1px, rgba(0,0,0,0) 1px 8px);
+    background-size: 220px 220px;
+    animation: nebulaDriftB 44s linear infinite;
   }
 
   .star-dot {
@@ -800,6 +827,9 @@
   .hud-desc { font-size:11px; line-height:1.35; opacity:.9; margin-bottom:7px; }
   .hud-meta { font-size:11px; opacity:.86; }
 
+  @keyframes cosmosDrift { 0% { transform: scale(1.02) translate3d(0,0,0);} 100% { transform: scale(1.07) translate3d(-1.2%, -0.8%, 0);} }
+  @keyframes nebulaDriftA { 0% { transform: translate3d(0,0,0) rotate(0deg);} 100% { transform: translate3d(2.2%, -1.8%, 0) rotate(1.2deg);} }
+  @keyframes nebulaDriftB { 0% { transform: translate3d(0,0,0);} 100% { transform: translate3d(-3.5%, -2.5%,0);} }
   @keyframes windflow { from { background-position: 0 0, 0 0;} to { background-position: 180% 0, 140% 0;} }
   @keyframes twinkle { 0%,100% { opacity:.32; transform: scale(.8);} 50% { opacity:1; transform: scale(1.15);} }
   @keyframes arcPulse { 0%,100% { opacity:0; transform: translateX(0) rotate(-12deg);} 45% { opacity:.45; } 75% { opacity:.1; transform: translateX(16px) rotate(-12deg);} }
@@ -811,8 +841,11 @@
   @keyframes jetPulse { 0%,100%{ opacity:.55; transform: translateX(-78%) scaleX(.9);} 50%{ opacity:1; transform: translateX(-82%) scaleX(1.15);} }
 
   @media (prefers-reduced-motion: reduce), (max-width: 900px) {
+    #cosmic-ocean,
     #cosmic-ocean::before,
     #cosmic-ocean::after,
+    #nebula-layer,
+    #dust-layer,
     #ocean-grid,
     .star-dot,
     .storm-arc,
@@ -833,6 +866,14 @@
   var starfield = document.createElement('div');
   starfield.id = 'starfield';
   document.body.appendChild(starfield);
+
+  var nebula = document.createElement('div');
+  nebula.id = 'nebula-layer';
+  document.body.appendChild(nebula);
+
+  var dust = document.createElement('div');
+  dust.id = 'dust-layer';
+  document.body.appendChild(dust);
 
   var storm = document.createElement('div');
   storm.id = 'storm-layer';
@@ -896,6 +937,17 @@
     m.style.top = (4 + Math.random() * 26) + '%';
     storm.appendChild(m);
     setTimeout(function(){ if (m.parentNode) m.parentNode.removeChild(m); }, 1500);
+  }
+
+  function bindParallax(){
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches || window.innerWidth < 900) return;
+    window.addEventListener('mousemove', function(e){
+      var px = (e.clientX / window.innerWidth - 0.5);
+      var py = (e.clientY / window.innerHeight - 0.5);
+      nebula.style.transform = 'translate3d(' + (px * 16).toFixed(2) + 'px,' + (py * 12).toFixed(2) + 'px,0)';
+      dust.style.transform = 'translate3d(' + (px * 24).toFixed(2) + 'px,' + (py * 16).toFixed(2) + 'px,0)';
+      starfield.style.transform = 'translate3d(' + (px * 10).toFixed(2) + 'px,' + (py * 8).toFixed(2) + 'px,0)';
+    }, { passive: true });
   }
 
   function shipSVG(){
@@ -969,6 +1021,7 @@
 
   function boot(){
     seedSpace();
+    bindParallax();
     setInterval(launchMeteor, 5200 + Math.random() * 3000);
 
     var c=getCache(); if(c && c.length) { render(c); return; }
