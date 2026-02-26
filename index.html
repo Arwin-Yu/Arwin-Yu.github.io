@@ -93,16 +93,30 @@
     background-color: rgba(30, 30, 40, 0.8) !important;
   }
 
-  .banner #subtitle {
+  .banner #subtitle,
+  .banner #subtitle * {
     color: #ffffff !important;
-    font-weight: 700 !important;
-    text-shadow: 0 2px 12px rgba(0, 0, 0, 0.65) !important;
+    opacity: 1 !important;
+    font-weight: 800 !important;
+    text-shadow: 0 3px 16px rgba(0, 0, 0, 0.78) !important;
     white-space: pre-line !important;
+    letter-spacing: 0.2px;
   }
 
   .banner .typed-cursor {
     color: #ffffff !important;
     opacity: 1 !important;
+    font-weight: 800 !important;
+    animation: cursorBlink 0.9s steps(1,end) infinite !important;
+  }
+
+  .banner #subtitle.typed-fade-out {
+    opacity: 1 !important;
+  }
+
+  @keyframes cursorBlink {
+    0%, 49% { opacity: 1; }
+    50%, 100% { opacity: 0; }
   }
 </style>
 <!-- hexo injector head_end end --><meta name="generator" content="Hexo 8.1.1">  <link rel="stylesheet" href="/css/cosmic-theme.css">
