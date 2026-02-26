@@ -103,22 +103,31 @@
 
   .banner #hero-typewriter {
     display: inline-block;
-    color: #ffffff !important;
+    color: #7fc7ff !important;
     font-weight: 800 !important;
     text-shadow: 0 4px 18px rgba(0, 0, 0, 0.92) !important;
-    -webkit-text-stroke: 0.5px rgba(0, 0, 0, 0.6);
+    -webkit-text-stroke: 0.35px rgba(5, 18, 40, 0.72);
     white-space: pre-line !important;
     letter-spacing: 0.2px;
-    background: rgba(6, 12, 24, 0.52);
+    background: rgba(6, 12, 24, 0.58);
     padding: 8px 12px;
     border-radius: 10px;
     animation: none !important;
     transition: none !important;
+    opacity: 1 !important;
+    filter: none !important;
+  }
+
+  .banner #hero-typewriter,
+  .banner #hero-typewriter * {
+    animation: none !important;
+    transition: none !important;
+    opacity: 1 !important;
   }
 
   .banner #custom-cursor {
     display: inline-block;
-    color: #ffffff !important;
+    color: #9bd8ff !important;
     font-weight: 800 !important;
     margin-left: 2px;
     animation: cursorBlink 0.9s steps(1,end) infinite !important;
@@ -594,12 +603,12 @@
       var host = subtitle.parentNode;
       var box = document.createElement('span');
       box.id = 'hero-typewriter';
-      box.style.color = '#ffffff';
+      box.style.color = '#7fc7ff';
       box.style.fontWeight = '800';
       box.style.textShadow = '0 4px 18px rgba(0,0,0,.92)';
-      box.style.webkitTextStroke = '0.5px rgba(0,0,0,.6)';
+      box.style.webkitTextStroke = '0.35px rgba(5,18,40,.72)';
       box.style.whiteSpace = 'pre-line';
-      box.style.background = 'rgba(6,12,24,.64)';
+      box.style.background = 'rgba(6,12,24,.58)';
       box.style.padding = '8px 12px';
       box.style.borderRadius = '10px';
       box.style.display = 'inline-block';
@@ -610,7 +619,7 @@
       var cursor = document.createElement('span');
       cursor.id = 'custom-cursor';
       cursor.textContent = '_';
-      cursor.style.color = '#ffffff';
+      cursor.style.color = '#9bd8ff';
       cursor.style.fontWeight = '800';
 
       var i = 0;
@@ -630,13 +639,7 @@
       }
       tick();
 
-      // Remove theme cursor if injected later
-      setInterval(function () {
-        var cursors = document.querySelectorAll('.typed-cursor');
-        cursors.forEach(function (c) { c.remove(); });
-        box.style.opacity = '1';
-        host.style.opacity = '1';
-      }, 1000);
+      // no extra fade/loop logic after typing finishes
     })(window, document);
   </script>
 
