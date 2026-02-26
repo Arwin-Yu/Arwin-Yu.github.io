@@ -588,11 +588,24 @@
       var host = subtitle.parentNode;
       var box = document.createElement('span');
       box.id = 'hero-typewriter';
+      box.style.color = '#ffffff';
+      box.style.fontWeight = '800';
+      box.style.textShadow = '0 4px 18px rgba(0,0,0,.92)';
+      box.style.webkitTextStroke = '0.5px rgba(0,0,0,.6)';
+      box.style.whiteSpace = 'pre-line';
+      box.style.background = 'rgba(6,12,24,.64)';
+      box.style.padding = '8px 12px';
+      box.style.borderRadius = '10px';
+      box.style.display = 'inline-block';
+      box.style.opacity = '1';
+      host.style.opacity = '1';
       host.appendChild(box);
 
       var cursor = document.createElement('span');
       cursor.id = 'custom-cursor';
       cursor.textContent = '_';
+      cursor.style.color = '#ffffff';
+      cursor.style.fontWeight = '800';
 
       var i = 0;
       function tick() {
@@ -602,6 +615,11 @@
           setTimeout(tick, 42);
         } else {
           box.appendChild(cursor);
+          var visible = true;
+          setInterval(function(){
+            visible = !visible;
+            cursor.style.opacity = visible ? '1' : '0';
+          }, 500);
         }
       }
       tick();
@@ -610,6 +628,8 @@
       setInterval(function () {
         var cursors = document.querySelectorAll('.typed-cursor');
         cursors.forEach(function (c) { c.remove(); });
+        box.style.opacity = '1';
+        host.style.opacity = '1';
       }, 1000);
     })(window, document);
   </script>
