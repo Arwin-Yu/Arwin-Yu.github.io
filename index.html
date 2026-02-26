@@ -623,139 +623,14 @@
 
   #planet-art {
     position: absolute;
-    left: 52%;
-    top: 58%;
-    width: min(76vw, 1120px);
-    aspect-ratio: 3 / 2;
-    transform: translate(-50%, -50%);
+    inset: 0;
     background: url('/img/generated-space/002-cinematic-deep-space-scene-with-a-giant-.png') center/cover no-repeat;
-    filter: saturate(1.08) contrast(1.04) drop-shadow(0 0 22px rgba(122, 170, 255, 0.35));
+    filter: saturate(1.04) contrast(1.02);
     opacity: 0.96;
-    animation: planetBreath 11s ease-in-out infinite;
+    animation: planetBreath 12s ease-in-out infinite;
+    transform-origin: center center;
   }
 
-
-  #cosmic-ocean::before,
-  #cosmic-ocean::after {
-    content:'';
-    position:absolute;
-    left:-30%;
-    width:160%;
-    border-radius:46% 54% 50% 50%;
-    mix-blend-mode: screen;
-  }
-
-  #cosmic-ocean::before {
-    bottom:-18%;
-    height:48%;
-    background: radial-gradient(circle at 45% 35%, rgba(126,227,255,.28), rgba(126,227,255,0) 64%);
-    animation: swellA 12s ease-in-out infinite;
-  }
-
-  #cosmic-ocean::after {
-    bottom:-28%;
-    height:52%;
-    opacity:.72;
-    background: radial-gradient(circle at 52% 35%, rgba(86,191,255,.24), rgba(86,191,255,0) 68%);
-    animation: swellB 17s ease-in-out infinite;
-  }
-
-  #starfield {
-    position: fixed;
-    inset: 0;
-    z-index: 0;
-    pointer-events: none;
-    overflow: hidden;
-  }
-
-  #nebula-layer,
-  #dust-layer {
-    position: fixed;
-    inset: -8%;
-    pointer-events: none;
-    z-index: 0;
-    mix-blend-mode: screen;
-  }
-
-  #nebula-layer {
-    background:
-      radial-gradient(560px 320px at 22% 34%, rgba(123, 88, 255, 0.23), transparent 70%),
-      radial-gradient(680px 360px at 74% 62%, rgba(82, 201, 255, 0.2), transparent 72%),
-      radial-gradient(500px 300px at 52% 24%, rgba(255, 130, 210, 0.12), transparent 70%);
-    animation: nebulaDriftA 32s ease-in-out infinite alternate;
-  }
-
-  #dust-layer {
-    opacity: .35;
-    background: repeating-radial-gradient(circle at 20% 30%, rgba(183,223,255,.2) 0 1px, rgba(0,0,0,0) 1px 8px);
-    background-size: 220px 220px;
-    animation: nebulaDriftB 44s linear infinite;
-  }
-
-  .star-dot {
-    position: absolute;
-    width: var(--s,2px);
-    height: var(--s,2px);
-    border-radius: 999px;
-    background: rgba(214, 246, 255, 0.95);
-    box-shadow: 0 0 10px rgba(140, 230, 255, 0.6);
-    animation: twinkle var(--tw, 4s) ease-in-out infinite;
-    opacity: 0.6;
-  }
-
-  #storm-layer {
-    position: fixed;
-    inset: 0;
-    z-index: 1;
-    pointer-events: none;
-    overflow: hidden;
-  }
-
-  #ocean-grid {
-    position: fixed;
-    inset: 0;
-    z-index: 1;
-    pointer-events: none;
-    opacity:.08;
-    background:
-      repeating-linear-gradient(-12deg, rgba(167,210,255,.14) 0 1px, rgba(255,255,255,0) 1px 40px),
-      repeating-linear-gradient(168deg, rgba(125,183,255,.08) 0 1px, rgba(255,255,255,0) 1px 64px);
-    background-size: 280% 180%, 230% 160%;
-    animation: windflow 22s linear infinite;
-  }
-
-  .storm-arc {
-    position: absolute;
-    width: 140px;
-    height: 1px;
-    background: linear-gradient(90deg, rgba(126,233,255,0), rgba(126,233,255,.65), rgba(126,233,255,0));
-    filter: drop-shadow(0 0 6px rgba(126,233,255,.5));
-    transform: rotate(-12deg);
-    opacity: 0;
-    animation: arcPulse var(--a,5.2s) ease-in-out infinite;
-  }
-
-  .meteor {
-    position: absolute;
-    width: 140px;
-    height: 1px;
-    background: linear-gradient(90deg, rgba(160,236,255,0), rgba(160,236,255,.88), rgba(160,236,255,0));
-    transform: rotate(-26deg);
-    filter: drop-shadow(0 0 6px rgba(160,236,255,.6));
-    opacity: 0;
-    animation: meteorFly 1.8s ease-out forwards;
-  }
-
-  #horizon-glow {
-    position: fixed;
-    left:0; right:0;
-    bottom: 27%;
-    height:2px;
-    z-index:1;
-    pointer-events:none;
-    background: linear-gradient(90deg, transparent, rgba(120,225,255,.95), transparent);
-    box-shadow: 0 0 18px rgba(120,225,255,.8);
-  }
 
   #fleet-layer {
     position: fixed;
@@ -787,7 +662,7 @@
   .ship-svg {
     width:100%;
     height:100%;
-    filter: drop-shadow(0 0 7px rgba(117,232,255,.8)) drop-shadow(0 0 16px rgba(95,182,255,.45));
+    filter: drop-shadow(0 0 5px rgba(117,232,255,.55));
   }
 
   .wake {
@@ -846,30 +721,15 @@
   .hud-desc { font-size:11px; line-height:1.35; opacity:.9; margin-bottom:7px; }
   .hud-meta { font-size:11px; opacity:.86; }
 
-  @keyframes cosmosDrift { 0% { transform: scale(1.02) translate3d(0,0,0);} 100% { transform: scale(1.07) translate3d(-1.2%, -0.8%, 0);} }
-  @keyframes planetBreath { 0%,100% { transform: translate(-50%, -50%) scale(0.985); opacity: .88; } 50% { transform: translate(-50%, -50%) scale(1.02); opacity: 1; } }
-  @keyframes nebulaDriftA { 0% { transform: translate3d(0,0,0) rotate(0deg);} 100% { transform: translate3d(2.2%, -1.8%, 0) rotate(1.2deg);} }
-  @keyframes nebulaDriftB { 0% { transform: translate3d(0,0,0);} 100% { transform: translate3d(-3.5%, -2.5%,0);} }
-  @keyframes windflow { from { background-position: 0 0, 0 0;} to { background-position: 180% 0, 140% 0;} }
-  @keyframes twinkle { 0%,100% { opacity:.32; transform: scale(.8);} 50% { opacity:1; transform: scale(1.15);} }
-  @keyframes arcPulse { 0%,100% { opacity:0; transform: translateX(0) rotate(-12deg);} 45% { opacity:.45; } 75% { opacity:.1; transform: translateX(16px) rotate(-12deg);} }
-  @keyframes meteorFly { 0% { opacity:0; transform: translate3d(0,0,0) rotate(-26deg);} 18% { opacity:.85;} 100% { opacity:0; transform: translate3d(180px,100px,0) rotate(-26deg);} }
-  @keyframes swellA { 0%,100%{ transform:translate3d(0,0,0);} 50%{ transform:translate3d(-3%,-12px,0);} }
-  @keyframes swellB { 0%,100%{ transform:translate3d(0,0,0);} 50%{ transform:translate3d(4%,-10px,0);} }
+  @keyframes cosmosDrift { 0% { transform: scale(1.01) translate3d(0,0,0);} 100% { transform: scale(1.03) translate3d(-0.5%, -0.4%, 0);} }
+  @keyframes planetBreath { 0%,100% { transform: scale(0.99); opacity: .9; } 50% { transform: scale(1.01); opacity: 1; } }
   @keyframes cruise { 0%,100%{ transform: rotate(calc(-2deg + var(--tilt))) translate3d(0,0,0);} 50%{ transform: rotate(calc(2deg + var(--tilt))) translate3d(0,-9px,0);} }
   @keyframes wakeLine { 0%{ opacity:.42; transform:translateX(-105%) scaleX(.9);} 50%{ opacity:.95; transform:translateX(-98%) scaleX(1.06);} 100%{ opacity:.42; transform:translateX(-90%) scaleX(.9);} }
   @keyframes jetPulse { 0%,100%{ opacity:.55; transform: translateX(-78%) scaleX(.9);} 50%{ opacity:1; transform: translateX(-82%) scaleX(1.15);} }
 
   @media (prefers-reduced-motion: reduce), (max-width: 900px) {
     #cosmic-ocean,
-    #cosmic-ocean::before,
-    #cosmic-ocean::after,
     #planet-art,
-    #nebula-layer,
-    #dust-layer,
-    #ocean-grid,
-    .star-dot,
-    .storm-arc,
     .ship-core,
     .wake,
     .jet { animation: none !important; }
@@ -888,30 +748,6 @@
   planet.id = 'planet-system';
   planet.innerHTML = '<div id="planet-art"></div>';
   document.body.appendChild(planet);
-
-  var starfield = document.createElement('div');
-  starfield.id = 'starfield';
-  document.body.appendChild(starfield);
-
-  var nebula = document.createElement('div');
-  nebula.id = 'nebula-layer';
-  document.body.appendChild(nebula);
-
-  var dust = document.createElement('div');
-  dust.id = 'dust-layer';
-  document.body.appendChild(dust);
-
-  var storm = document.createElement('div');
-  storm.id = 'storm-layer';
-  document.body.appendChild(storm);
-
-  var grid = document.createElement('div');
-  grid.id = 'ocean-grid';
-  document.body.appendChild(grid);
-
-  var horizon = document.createElement('div');
-  horizon.id = 'horizon-glow';
-  document.body.appendChild(horizon);
 
   var layer = document.createElement('div');
   layer.id = 'fleet-layer';
@@ -933,47 +769,6 @@
     if(max<=min) return 58;
     var t=(Math.log10(stars+1)-Math.log10(min+1))/(Math.log10(max+1)-Math.log10(min+1));
     return Math.round(50 + t*64);
-  }
-
-  function seedSpace(){
-    for (var i = 0; i < 120; i++) {
-      var s = document.createElement('span');
-      s.className = 'star-dot';
-      s.style.left = (Math.random() * 100) + '%';
-      s.style.top = (Math.random() * 72) + '%';
-      s.style.setProperty('--s', (1 + Math.random() * 2.2).toFixed(2) + 'px');
-      s.style.setProperty('--tw', (2.4 + Math.random() * 4.8).toFixed(2) + 's');
-      starfield.appendChild(s);
-    }
-
-    for (var j = 0; j < 3; j++) {
-      var arc = document.createElement('div');
-      arc.className = 'storm-arc';
-      arc.style.left = (8 + Math.random() * 80) + '%';
-      arc.style.top = (8 + Math.random() * 50) + '%';
-      arc.style.setProperty('--a', (2.6 + Math.random() * 2.8).toFixed(2) + 's');
-      storm.appendChild(arc);
-    }
-  }
-
-  function launchMeteor(){
-    var m = document.createElement('div');
-    m.className = 'meteor';
-    m.style.left = (10 + Math.random() * 70) + '%';
-    m.style.top = (4 + Math.random() * 26) + '%';
-    storm.appendChild(m);
-    setTimeout(function(){ if (m.parentNode) m.parentNode.removeChild(m); }, 1500);
-  }
-
-  function bindParallax(){
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches || window.innerWidth < 900) return;
-    window.addEventListener('mousemove', function(e){
-      var px = (e.clientX / window.innerWidth - 0.5);
-      var py = (e.clientY / window.innerHeight - 0.5);
-      nebula.style.transform = 'translate3d(' + (px * 16).toFixed(2) + 'px,' + (py * 12).toFixed(2) + 'px,0)';
-      dust.style.transform = 'translate3d(' + (px * 24).toFixed(2) + 'px,' + (py * 16).toFixed(2) + 'px,0)';
-      starfield.style.transform = 'translate3d(' + (px * 10).toFixed(2) + 'px,' + (py * 8).toFixed(2) + 'px,0)';
-    }, { passive: true });
   }
 
   function shipSVG(){
@@ -1046,10 +841,6 @@
   }
 
   function boot(){
-    seedSpace();
-    bindParallax();
-    setInterval(launchMeteor, 5200 + Math.random() * 3000);
-
     var c=getCache(); if(c && c.length) { render(c); return; }
     fetch('https://api.github.com/search/repositories?q=(agent%20OR%20ai%20OR%20llm)%20in:name,description%20stars:%3E3000&sort=stars&order=desc&per_page=6', { headers:{Accept:'application/vnd.github+json'} })
       .then(function(r){ return r.ok ? r.json() : Promise.reject(new Error('api')); })
