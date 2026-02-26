@@ -93,15 +93,17 @@
     background-color: rgba(30, 30, 40, 0.8) !important;
   }
 
-  .banner .banner-text {
+  .banner .banner-text,
+  .banner .banner-text * {
     opacity: 1 !important;
     animation: none !important;
     transition: none !important;
+    filter: none !important;
   }
 
   .banner #hero-typewriter {
     display: inline-block;
-    color: #eaf6ff !important;
+    color: #ffffff !important;
     font-weight: 900 !important;
     font-size: clamp(1.3rem, 2.25vw, 2.1rem);
     line-height: 1.45;
@@ -133,6 +135,8 @@
     font-weight: 800 !important;
     margin-left: 2px;
     animation: cursorBlink 1.05s steps(1,end) infinite !important;
+    transition: none !important;
+    opacity: 1 !important;
   }
 
   @keyframes cursorBlink {
@@ -592,7 +596,7 @@
 <script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
 <script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
 <script  src="/js/events.js" ></script>
-<script  src="/js/plugins.js" ></script>
+<script  src="/js/plugins.js?v=20260226b" ></script>
 
 
   <script>
@@ -606,7 +610,7 @@
 
       var host = box.parentNode;
       function lockStyles() {
-        box.style.color = '#eaf6ff';
+        box.style.color = '#ffffff';
         box.style.opacity = '1';
         box.style.animation = 'none';
         box.style.transition = 'none';
