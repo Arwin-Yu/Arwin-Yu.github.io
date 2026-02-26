@@ -103,7 +103,7 @@
 
   .banner #hero-typewriter {
     display: inline-block;
-    color: #7fc7ff !important;
+    color: #4db8ff !important;
     font-weight: 800 !important;
     text-shadow: 0 4px 18px rgba(0, 0, 0, 0.92) !important;
     -webkit-text-stroke: 0.35px rgba(5, 18, 40, 0.72);
@@ -127,7 +127,7 @@
 
   .banner #custom-cursor {
     display: inline-block;
-    color: #9bd8ff !important;
+    color: #7fd2ff !important;
     font-weight: 800 !important;
     margin-left: 2px;
     animation: cursorBlink 0.9s steps(1,end) infinite !important;
@@ -601,10 +601,22 @@
 
       var text = '点击星球探索 GitHub 高赞项目\n点击飞船探索每月最热项目，项目越火飞船越大';
       box.textContent = '';
+      box.style.color = '#4db8ff';
+      box.style.opacity = '1';
+      box.style.animation = 'none';
+      box.style.transition = 'none';
+
+      var host = box.parentNode;
+      if (host) {
+        host.style.opacity = '1';
+        host.style.animation = 'none';
+        host.style.transition = 'none';
+      }
 
       var cursor = document.createElement('span');
       cursor.id = 'custom-cursor';
       cursor.textContent = '_';
+      cursor.style.color = '#7fd2ff';
 
       var i = 0;
       function tick() {
@@ -614,6 +626,11 @@
           setTimeout(tick, 48);
         } else {
           box.appendChild(cursor);
+          var visible = true;
+          setInterval(function () {
+            visible = !visible;
+            cursor.style.opacity = visible ? '1' : '0';
+          }, 500);
         }
       }
       tick();
@@ -622,6 +639,18 @@
       var subtitle = document.getElementById('subtitle');
       if (subtitle) subtitle.remove();
       document.querySelectorAll('.typed-cursor').forEach(function (c) { c.remove(); });
+      setInterval(function () {
+        box.style.opacity = '1';
+        box.style.animation = 'none';
+        box.style.transition = 'none';
+        box.style.color = '#4db8ff';
+        if (host) {
+          host.style.opacity = '1';
+          host.style.animation = 'none';
+          host.style.transition = 'none';
+          host.classList.remove('fade-in-up');
+        }
+      }, 700);
     })(window, document);
   </script>
 
