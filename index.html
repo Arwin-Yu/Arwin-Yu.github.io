@@ -635,7 +635,7 @@
 
   #planet-link-hotspot {
     position: absolute;
-    left: 49.6%;
+    left: 45%;
     top: 58%;
     width: min(44vw, 620px);
     height: min(28vw, 360px);
@@ -668,27 +668,27 @@
 
   #planet-link-hint {
     position: absolute;
-    left: 49.6%;
-    top: calc(58% + min(17vw, 220px));
-    transform: translateX(-50%);
+    left: 24px;
+    top: 18px;
+    max-width: 360px;
     font-size: 12px;
+    line-height: 1.45;
     letter-spacing: .2px;
-    color: rgba(210, 236, 255, 0.95);
-    background: rgba(6, 12, 24, 0.56);
+    color: rgba(210, 236, 255, 0.96);
+    background: rgba(6, 12, 24, 0.62);
     border: 1px solid rgba(132, 209, 255, 0.42);
-    border-radius: 999px;
-    padding: 4px 10px;
+    border-radius: 10px;
+    padding: 8px 10px;
     backdrop-filter: blur(4px);
     text-shadow: 0 1px 2px rgba(0,0,0,.35);
-    opacity: .88;
+    opacity: .9;
     pointer-events: none;
-    white-space: nowrap;
     transition: opacity .2s ease, transform .2s ease;
   }
 
   #planet-link-hotspot:hover + #planet-link-hint {
     opacity: 1;
-    transform: translateX(-50%) translateY(-1px);
+    transform: translateY(-1px);
   }
 
 
@@ -797,9 +797,11 @@
 
   @media (max-width: 900px) {
     #planet-link-hint {
+      left: 12px;
+      top: 12px;
+      max-width: 85vw;
       font-size: 11px;
-      top: calc(58% + min(20vw, 180px));
-      padding: 3px 8px;
+      padding: 6px 8px;
     }
   }
 
@@ -822,7 +824,7 @@
 
   var planet = document.createElement('div');
   planet.id = 'planet-system';
-  planet.innerHTML = '<div id="planet-art"></div><a id="planet-link-hotspot" href="/2026/02/26/ai-projects-100k/" aria-label="Top AI GitHub projects"></a><div id="planet-link-hint">点击星球 · 查看 AI 100k+ 项目</div>';
+  planet.innerHTML = '<div id="planet-art"></div><a id="planet-link-hotspot" href="/2026/02/26/ai-projects-100k/" aria-label="Top AI GitHub projects"></a><div id="planet-link-hint">飞船：近一个月星标增长最快项目（最热）<br>星球：GitHub 星标 &gt;100k 的 AI 项目（最火，点击进入）</div>';
   document.body.appendChild(planet);
 
   var layer = document.createElement('div');
