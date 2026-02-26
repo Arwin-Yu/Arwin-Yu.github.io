@@ -93,26 +93,23 @@
     background-color: rgba(30, 30, 40, 0.8) !important;
   }
 
-  .banner #subtitle,
-  .banner #subtitle * {
+  .banner #subtitle { display: none !important; }
+
+  .banner #hero-typewriter {
+    display: inline-block;
     color: #ffffff !important;
     font-weight: 800 !important;
     text-shadow: 0 4px 18px rgba(0, 0, 0, 0.92) !important;
     -webkit-text-stroke: 0.5px rgba(0, 0, 0, 0.6);
     white-space: pre-line !important;
     letter-spacing: 0.2px;
-  }
-
-  .banner #subtitle {
-    display: inline-block;
-    background: rgba(6, 12, 24, 0.42);
+    background: rgba(6, 12, 24, 0.52);
     padding: 8px 12px;
     border-radius: 10px;
     animation: none !important;
     transition: none !important;
   }
 
-  .banner .typed-cursor,
   .banner #custom-cursor {
     display: inline-block;
     color: #ffffff !important;
@@ -587,41 +584,33 @@
       if (!subtitle || subtitle.dataset.typedOnce === '1') return;
       subtitle.dataset.typedOnce = '1';
 
-      // Hard-enforce readability regardless of theme runtime classes
-      subtitle.classList.remove('typed-fade-out');
-      subtitle.style.color = '#ffffff';
-      subtitle.style.opacity = '1';
-      subtitle.style.fontWeight = '800';
-      subtitle.style.textShadow = '0 4px 18px rgba(0,0,0,.92)';
-      subtitle.style.whiteSpace = 'pre-line';
-
       var text = (subtitle.getAttribute('data-typed-text') || '').replace(/&#10;/g, '\n');
-      subtitle.textContent = '';
+      var host = subtitle.parentNode;
+      var box = document.createElement('span');
+      box.id = 'hero-typewriter';
+      host.appendChild(box);
 
       var cursor = document.createElement('span');
       cursor.id = 'custom-cursor';
       cursor.textContent = '_';
-      cursor.style.color = '#ffffff';
 
       var i = 0;
       function tick() {
         if (i < text.length) {
-          subtitle.textContent += text[i] === '\n' ? '\n' : text[i];
+          box.textContent += text[i] === '\n' ? '\n' : text[i];
           i += 1;
           setTimeout(tick, 42);
         } else {
-          subtitle.appendChild(cursor);
+          box.appendChild(cursor);
         }
       }
       tick();
 
-      // Kill any late runtime fade/cursor injections from other scripts
+      // Remove theme cursor if injected later
       setInterval(function () {
-        subtitle.classList.remove('typed-fade-out');
-        subtitle.style.opacity = '1';
         var cursors = document.querySelectorAll('.typed-cursor');
-        cursors.forEach(function (c) { if (c.id !== 'custom-cursor') c.remove(); });
-      }, 800);
+        cursors.forEach(function (c) { c.remove(); });
+      }, 1000);
     })(window, document);
   </script>
 
