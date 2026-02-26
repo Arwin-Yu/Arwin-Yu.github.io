@@ -209,7 +209,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle" data-typed-text="Decoding Human Intelligence, Reconstructing Digital Life."></span>
+            <span id="subtitle" data-typed-text="点击星球探索 GitHub 高赞项目，点击飞船探索每月最热项目（项目越火，飞船越大）"></span>
           
         </div>
 
@@ -662,62 +662,6 @@
     transform: scale(1.03);
   }
 
-  #planet-link-hotspot.guide-pulse::before {
-    animation: hotspotPulse 1.2s ease-in-out 2;
-  }
-
-  #planet-click-badge {
-    position: absolute;
-    right: 8%;
-    top: 10%;
-    min-width: 88px;
-    height: 28px;
-    border-radius: 999px;
-    background: linear-gradient(90deg, rgba(8,22,42,.86), rgba(12,34,63,.78));
-    border: 1px solid rgba(146, 221, 255, 0.72);
-    box-shadow: 0 0 14px rgba(120, 210, 255, 0.32);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 6px;
-    color: rgba(213, 240, 255, 0.98);
-    font-size: 11px;
-    font-weight: 600;
-    letter-spacing: .2px;
-    pointer-events: none;
-    animation: badgeFloat 2.2s ease-in-out infinite;
-  }
-
-  #planet-click-badge::before {
-    content: '◎';
-    font-size: 12px;
-    opacity: .9;
-  }
-
-  #planet-hover-tip {
-    position: absolute;
-    left: 50%;
-    top: 52%;
-    transform: translate(-50%, -50%);
-    font-size: 12px;
-    line-height: 1.4;
-    color: rgba(220, 242, 255, 0.98);
-    background: rgba(6, 12, 24, 0.62);
-    border: 1px solid rgba(132, 209, 255, 0.45);
-    border-radius: 10px;
-    padding: 7px 10px;
-    text-align: center;
-    text-shadow: 0 1px 2px rgba(0,0,0,.35);
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity .18s ease, transform .18s ease;
-    white-space: nowrap;
-  }
-
-  #planet-link-hotspot:hover #planet-hover-tip {
-    opacity: 1;
-    transform: translate(-50%, -50%) scale(1.02);
-  }
 
 
   #fleet-layer {
@@ -814,16 +758,6 @@
     0%,100% { transform: scale(0.965) translateY(0.4%); opacity: .86; filter: saturate(0.98) brightness(0.94); }
     50% { transform: scale(1.02) translateY(-0.4%); opacity: 1; filter: saturate(1.08) brightness(1.04); }
   }
-  @keyframes hotspotPulse {
-    0% { opacity: 0; transform: scale(0.95); }
-    45% { opacity: .95; transform: scale(1.06); }
-    100% { opacity: 0; transform: scale(0.98); }
-  }
-
-  @keyframes badgeFloat {
-    0%,100% { transform: translateY(0); opacity: .9; }
-    50% { transform: translateY(-2px); opacity: 1; }
-  }
   @keyframes cruise { 0%,100%{ transform: rotate(calc(-2deg + var(--tilt))) translate3d(0,0,0);} 50%{ transform: rotate(calc(2deg + var(--tilt))) translate3d(0,-9px,0);} }
   @keyframes wakeLine { 0%{ opacity:.42; transform:translateX(-105%) scaleX(.9);} 50%{ opacity:.95; transform:translateX(-98%) scaleX(1.06);} 100%{ opacity:.42; transform:translateX(-90%) scaleX(.9);} }
   @keyframes jetPulse { 0%,100%{ opacity:.55; transform: translateX(-78%) scaleX(.9);} 50%{ opacity:1; transform: translateX(-82%) scaleX(1.15);} }
@@ -834,20 +768,6 @@
       height: 50vw;
       left: 48%;
       top: 58%;
-    }
-
-    #planet-click-badge {
-      min-width: 72px;
-      height: 24px;
-      font-size: 10px;
-      top: 8%;
-      right: 7%;
-    }
-
-    #planet-hover-tip {
-      font-size: 11px;
-      max-width: 78vw;
-      white-space: normal;
     }
   }
 
@@ -870,7 +790,7 @@
 
   var planet = document.createElement('div');
   planet.id = 'planet-system';
-  planet.innerHTML = '<div id="planet-art"></div><a id="planet-link-hotspot" href="/2026/02/26/ai-projects-100k/" aria-label="Top AI GitHub projects"><span id="planet-click-badge">可探索</span><span id="planet-hover-tip">飞船：近一个月星标增长最快（最热）<br>星球：AI 项目 100k+（最火，点击进入）</span></a>';
+  planet.innerHTML = '<div id="planet-art"></div><a id="planet-link-hotspot" href="/2026/02/26/ai-projects-100k/" aria-label="Top AI GitHub projects"></a>';
   document.body.appendChild(planet);
 
   var layer = document.createElement('div');
@@ -920,7 +840,7 @@
   function createShip(repo, idx, s, x, y){
     var a=document.createElement('a');
     a.className='starship';
-    a.href=repo.html_url; a.target='_blank'; a.rel='noopener noreferrer';
+    a.href='/2026/02/26/monthly-hot-ai-projects/'; a.target='_self';
     a.style.left=x+'%'; a.style.top=y+'%';
     a.style.setProperty('--ship-size', s+'px');
     a.style.setProperty('--tilt', ((idx%2?1:-1)*(1+idx*.28))+'deg');
@@ -965,16 +885,12 @@
   }
 
   function boot(){
-    var hotspot = document.getElementById('planet-link-hotspot');
-    if (hotspot) {
-      setTimeout(function () {
-        hotspot.classList.add('guide-pulse');
-        setTimeout(function(){ hotspot.classList.remove('guide-pulse'); }, 2800);
-      }, 1600);
-    }
-
     var c=getCache(); if(c && c.length) { render(c); return; }
-    fetch('https://api.github.com/search/repositories?q=(agent%20OR%20ai%20OR%20llm)%20in:name,description%20stars:%3E3000&sort=stars&order=desc&per_page=6', { headers:{Accept:'application/vnd.github+json'} })
+    var d = new Date();
+    d.setDate(d.getDate() - 30);
+    var iso = d.toISOString().slice(0,10);
+    var q = 'https://api.github.com/search/repositories?q=(agent%20OR%20ai%20OR%20llm)%20in:name,description%20created:%3E' + iso + '%20stars:%3E200&sort=stars&order=desc&per_page=6';
+    fetch(q, { headers:{Accept:'application/vnd.github+json'} })
       .then(function(r){ return r.ok ? r.json() : Promise.reject(new Error('api')); })
       .then(function(data){
         var items=(data.items||[]).map(function(r){ return { full_name:r.full_name, stargazers_count:r.stargazers_count, html_url:r.html_url, description:r.description, language:r.language};});
