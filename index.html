@@ -595,9 +595,9 @@
 <!-- hexo injector body_end start -->
 <style>
   :root {
-    --nebula-1:#020816;
-    --nebula-2:#05203d;
-    --nebula-3:#0b4c7e;
+    --nebula-1:#070911;
+    --nebula-2:#121833;
+    --nebula-3:#1c2b56;
   }
 
   #cosmic-ocean {
@@ -607,7 +607,9 @@
     pointer-events: none;
     overflow: hidden;
     background:
-      radial-gradient(1400px 600px at 50% 110%, rgba(74,165,255,.42), transparent 62%),
+      radial-gradient(1200px 520px at 50% 108%, rgba(85, 148, 255, 0.2), transparent 68%),
+      linear-gradient(180deg, rgba(6,10,20,0.8) 0%, rgba(8,12,24,0.5) 100%),
+      url('https://images-assets.nasa.gov/image/GSFC_20171208_Archive_e001861/GSFC_20171208_Archive_e001861~orig.jpg') center/cover no-repeat,
       linear-gradient(180deg,var(--nebula-1) 0%, var(--nebula-2) 55%, var(--nebula-3) 100%);
   }
 
@@ -668,34 +670,34 @@
     inset: 0;
     z-index: 1;
     pointer-events: none;
-    opacity:.22;
+    opacity:.08;
     background:
-      repeating-linear-gradient(-10deg, rgba(255,255,255,.22) 0 1px, rgba(255,255,255,0) 1px 26px),
-      repeating-linear-gradient(170deg, rgba(121,228,255,.1) 0 1px, rgba(121,228,255,0) 1px 44px);
-    background-size: 230% 160%, 200% 140%;
-    animation: windflow 15s linear infinite;
+      repeating-linear-gradient(-12deg, rgba(167,210,255,.14) 0 1px, rgba(255,255,255,0) 1px 40px),
+      repeating-linear-gradient(168deg, rgba(125,183,255,.08) 0 1px, rgba(255,255,255,0) 1px 64px);
+    background-size: 280% 180%, 230% 160%;
+    animation: windflow 22s linear infinite;
   }
 
   .storm-arc {
     position: absolute;
-    width: 180px;
-    height: 2px;
-    background: linear-gradient(90deg, rgba(126,233,255,0), rgba(126,233,255,.95), rgba(126,233,255,0));
-    filter: drop-shadow(0 0 8px rgba(126,233,255,.9));
+    width: 140px;
+    height: 1px;
+    background: linear-gradient(90deg, rgba(126,233,255,0), rgba(126,233,255,.65), rgba(126,233,255,0));
+    filter: drop-shadow(0 0 6px rgba(126,233,255,.5));
     transform: rotate(-12deg);
     opacity: 0;
-    animation: arcPulse var(--a,3.4s) ease-in-out infinite;
+    animation: arcPulse var(--a,5.2s) ease-in-out infinite;
   }
 
   .meteor {
     position: absolute;
-    width: 180px;
-    height: 2px;
-    background: linear-gradient(90deg, rgba(160,236,255,0), rgba(160,236,255,.98), rgba(160,236,255,0));
+    width: 140px;
+    height: 1px;
+    background: linear-gradient(90deg, rgba(160,236,255,0), rgba(160,236,255,.88), rgba(160,236,255,0));
     transform: rotate(-26deg);
-    filter: drop-shadow(0 0 8px rgba(160,236,255,.85));
+    filter: drop-shadow(0 0 6px rgba(160,236,255,.6));
     opacity: 0;
-    animation: meteorFly 1.4s ease-out forwards;
+    animation: meteorFly 1.8s ease-out forwards;
   }
 
   #horizon-glow {
@@ -800,8 +802,8 @@
 
   @keyframes windflow { from { background-position: 0 0, 0 0;} to { background-position: 180% 0, 140% 0;} }
   @keyframes twinkle { 0%,100% { opacity:.32; transform: scale(.8);} 50% { opacity:1; transform: scale(1.15);} }
-  @keyframes arcPulse { 0%,100% { opacity:0; transform: translateX(0) rotate(-12deg);} 40% { opacity:.8; } 70% { opacity:.2; transform: translateX(24px) rotate(-12deg);} }
-  @keyframes meteorFly { 0% { opacity:0; transform: translate3d(0,0,0) rotate(-26deg);} 15% { opacity:1;} 100% { opacity:0; transform: translate3d(220px,120px,0) rotate(-26deg);} }
+  @keyframes arcPulse { 0%,100% { opacity:0; transform: translateX(0) rotate(-12deg);} 45% { opacity:.45; } 75% { opacity:.1; transform: translateX(16px) rotate(-12deg);} }
+  @keyframes meteorFly { 0% { opacity:0; transform: translate3d(0,0,0) rotate(-26deg);} 18% { opacity:.85;} 100% { opacity:0; transform: translate3d(180px,100px,0) rotate(-26deg);} }
   @keyframes swellA { 0%,100%{ transform:translate3d(0,0,0);} 50%{ transform:translate3d(-3%,-12px,0);} }
   @keyframes swellB { 0%,100%{ transform:translate3d(0,0,0);} 50%{ transform:translate3d(4%,-10px,0);} }
   @keyframes cruise { 0%,100%{ transform: rotate(calc(-2deg + var(--tilt))) translate3d(0,0,0);} 50%{ transform: rotate(calc(2deg + var(--tilt))) translate3d(0,-9px,0);} }
@@ -867,7 +869,7 @@
   }
 
   function seedSpace(){
-    for (var i = 0; i < 90; i++) {
+    for (var i = 0; i < 120; i++) {
       var s = document.createElement('span');
       s.className = 'star-dot';
       s.style.left = (Math.random() * 100) + '%';
@@ -877,7 +879,7 @@
       starfield.appendChild(s);
     }
 
-    for (var j = 0; j < 5; j++) {
+    for (var j = 0; j < 3; j++) {
       var arc = document.createElement('div');
       arc.className = 'storm-arc';
       arc.style.left = (8 + Math.random() * 80) + '%';
@@ -967,7 +969,7 @@
 
   function boot(){
     seedSpace();
-    setInterval(launchMeteor, 3200 + Math.random() * 2600);
+    setInterval(launchMeteor, 5200 + Math.random() * 3000);
 
     var c=getCache(); if(c && c.length) { render(c); return; }
     fetch('https://api.github.com/search/repositories?q=(agent%20OR%20ai%20OR%20llm)%20in:name,description%20stars:%3E3000&sort=stars&order=desc&per_page=6', { headers:{Accept:'application/vnd.github+json'} })
