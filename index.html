@@ -254,7 +254,7 @@
       <div class="banner-text text-center">
         <div class="h2">
           
-            <span id="subtitle" data-typed-text="点击星球探索 GitHub 高赞项目&#10;点击飞船探索每月最热项目，项目越火飞船越大"></span>
+            <span id="subtitle" data-typed-text=""></span><span id="hero-typewriter" aria-live="polite"></span>
           
         </div>
 
@@ -595,51 +595,33 @@
 
   <script>
     (function (window, document) {
-      var subtitle = document.getElementById('subtitle');
-      if (!subtitle || subtitle.dataset.typedOnce === '1') return;
-      subtitle.dataset.typedOnce = '1';
+      var box = document.getElementById('hero-typewriter');
+      if (!box || box.dataset.typedOnce === '1') return;
+      box.dataset.typedOnce = '1';
 
-      var text = (subtitle.getAttribute('data-typed-text') || '').replace(/&#10;/g, '\n');
-      var host = subtitle.parentNode;
-      var box = document.createElement('span');
-      box.id = 'hero-typewriter';
-      box.style.color = '#7fc7ff';
-      box.style.fontWeight = '800';
-      box.style.textShadow = '0 4px 18px rgba(0,0,0,.92)';
-      box.style.webkitTextStroke = '0.35px rgba(5,18,40,.72)';
-      box.style.whiteSpace = 'pre-line';
-      box.style.background = 'rgba(6,12,24,.58)';
-      box.style.padding = '8px 12px';
-      box.style.borderRadius = '10px';
-      box.style.display = 'inline-block';
-      box.style.opacity = '1';
-      host.style.opacity = '1';
-      host.appendChild(box);
+      var text = '点击星球探索 GitHub 高赞项目\n点击飞船探索每月最热项目，项目越火飞船越大';
+      box.textContent = '';
 
       var cursor = document.createElement('span');
       cursor.id = 'custom-cursor';
       cursor.textContent = '_';
-      cursor.style.color = '#9bd8ff';
-      cursor.style.fontWeight = '800';
 
       var i = 0;
       function tick() {
         if (i < text.length) {
           box.textContent += text[i] === '\n' ? '\n' : text[i];
           i += 1;
-          setTimeout(tick, 42);
+          setTimeout(tick, 48);
         } else {
           box.appendChild(cursor);
-          var visible = true;
-          setInterval(function(){
-            visible = !visible;
-            cursor.style.opacity = visible ? '1' : '0';
-          }, 500);
         }
       }
       tick();
 
-      // no extra fade/loop logic after typing finishes
+      // hard-disable any theme cursor/fade leftovers
+      var subtitle = document.getElementById('subtitle');
+      if (subtitle) subtitle.remove();
+      document.querySelectorAll('.typed-cursor').forEach(function (c) { c.remove(); });
     })(window, document);
   </script>
 
