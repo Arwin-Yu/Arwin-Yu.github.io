@@ -666,29 +666,47 @@
     animation: hotspotPulse 1.2s ease-in-out 2;
   }
 
-  #planet-link-hint {
+  #planet-click-badge {
     position: absolute;
-    left: 24px;
-    top: 18px;
-    max-width: 360px;
-    font-size: 12px;
-    line-height: 1.45;
-    letter-spacing: .2px;
-    color: rgba(210, 236, 255, 0.96);
-    background: rgba(6, 12, 24, 0.62);
-    border: 1px solid rgba(132, 209, 255, 0.42);
-    border-radius: 10px;
-    padding: 8px 10px;
-    backdrop-filter: blur(4px);
-    text-shadow: 0 1px 2px rgba(0,0,0,.35);
-    opacity: .9;
+    right: 6%;
+    top: 8%;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: rgba(10, 24, 44, 0.78);
+    border: 1px solid rgba(146, 221, 255, 0.72);
+    box-shadow: 0 0 14px rgba(120, 210, 255, 0.42);
+    display: grid;
+    place-items: center;
+    color: rgba(198, 237, 255, 0.96);
+    font-size: 14px;
+    font-weight: 700;
     pointer-events: none;
-    transition: opacity .2s ease, transform .2s ease;
   }
 
-  #planet-link-hotspot:hover + #planet-link-hint {
+  #planet-hover-tip {
+    position: absolute;
+    left: 50%;
+    top: 52%;
+    transform: translate(-50%, -50%);
+    font-size: 12px;
+    line-height: 1.4;
+    color: rgba(220, 242, 255, 0.98);
+    background: rgba(6, 12, 24, 0.62);
+    border: 1px solid rgba(132, 209, 255, 0.45);
+    border-radius: 10px;
+    padding: 7px 10px;
+    text-align: center;
+    text-shadow: 0 1px 2px rgba(0,0,0,.35);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .18s ease, transform .18s ease;
+    white-space: nowrap;
+  }
+
+  #planet-link-hotspot:hover #planet-hover-tip {
     opacity: 1;
-    transform: translateY(-1px);
+    transform: translate(-50%, -50%) scale(1.02);
   }
 
 
@@ -796,12 +814,16 @@
   @keyframes jetPulse { 0%,100%{ opacity:.55; transform: translateX(-78%) scaleX(.9);} 50%{ opacity:1; transform: translateX(-82%) scaleX(1.15);} }
 
   @media (max-width: 900px) {
-    #planet-link-hint {
-      left: 12px;
-      top: 12px;
-      max-width: 85vw;
+    #planet-click-badge {
+      width: 24px;
+      height: 24px;
+      font-size: 12px;
+    }
+
+    #planet-hover-tip {
       font-size: 11px;
-      padding: 6px 8px;
+      max-width: 78vw;
+      white-space: normal;
     }
   }
 
@@ -824,7 +846,7 @@
 
   var planet = document.createElement('div');
   planet.id = 'planet-system';
-  planet.innerHTML = '<div id="planet-art"></div><a id="planet-link-hotspot" href="/2026/02/26/ai-projects-100k/" aria-label="Top AI GitHub projects"></a><div id="planet-link-hint">飞船：近一个月星标增长最快项目（最热）<br>星球：GitHub 星标 &gt;100k 的 AI 项目（最火，点击进入）</div>';
+  planet.innerHTML = '<div id="planet-art"></div><a id="planet-link-hotspot" href="/2026/02/26/ai-projects-100k/" aria-label="Top AI GitHub projects"><span id="planet-click-badge">↗</span><span id="planet-hover-tip">飞船：近一个月星标增长最快（最热）<br>星球：AI 项目 100k+（点击进入）</span></a>';
   document.body.appendChild(planet);
 
   var layer = document.createElement('div');
