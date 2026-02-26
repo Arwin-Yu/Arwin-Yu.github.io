@@ -96,19 +96,28 @@
   .banner #subtitle,
   .banner #subtitle * {
     color: #ffffff !important;
-    opacity: 1 !important;
     font-weight: 800 !important;
-    text-shadow: 0 4px 18px rgba(0, 0, 0, 0.9) !important;
-    -webkit-text-stroke: 0.45px rgba(0, 0, 0, 0.55);
+    text-shadow: 0 4px 18px rgba(0, 0, 0, 0.92) !important;
+    -webkit-text-stroke: 0.5px rgba(0, 0, 0, 0.6);
     white-space: pre-line !important;
     letter-spacing: 0.2px;
   }
 
+  .banner #subtitle {
+    display: inline-block;
+    background: rgba(6, 12, 24, 0.42);
+    padding: 8px 12px;
+    border-radius: 10px;
+    animation: none !important;
+    transition: none !important;
+  }
+
   .banner .typed-cursor,
   .banner #custom-cursor {
+    display: inline-block;
     color: #ffffff !important;
-    opacity: 1 !important;
     font-weight: 800 !important;
+    margin-left: 2px;
     animation: cursorBlink 0.9s steps(1,end) infinite !important;
   }
 
@@ -575,7 +584,8 @@
   <script>
     (function (window, document) {
       var subtitle = document.getElementById('subtitle');
-      if (!subtitle) return;
+      if (!subtitle || subtitle.dataset.typedOnce === '1') return;
+      subtitle.dataset.typedOnce = '1';
 
       var text = (subtitle.getAttribute('data-typed-text') || '').replace(/&#10;/g, '\n');
       subtitle.textContent = '';
