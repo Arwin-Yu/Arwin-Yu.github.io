@@ -101,15 +101,18 @@
 
   .banner #hero-typewriter {
     display: inline-block;
-    color: #4db8ff !important;
+    color: #8fd6ff !important;
     font-weight: 800 !important;
-    text-shadow: 0 4px 18px rgba(0, 0, 0, 0.92) !important;
-    -webkit-text-stroke: 0.35px rgba(5, 18, 40, 0.72);
+    font-size: clamp(1.25rem, 2.15vw, 2rem);
+    line-height: 1.45;
+    text-shadow: 0 5px 22px rgba(0, 0, 0, 0.95) !important;
+    -webkit-text-stroke: 0.55px rgba(3, 12, 30, 0.88);
     white-space: pre-line !important;
     letter-spacing: 0.2px;
-    background: rgba(6, 12, 24, 0.58);
-    padding: 8px 12px;
-    border-radius: 10px;
+    background: rgba(4, 10, 24, 0.72);
+    border: 1px solid rgba(130, 205, 255, 0.35);
+    padding: 10px 14px;
+    border-radius: 12px;
     animation: none !important;
     transition: none !important;
     opacity: 1 !important;
@@ -125,10 +128,10 @@
 
   .banner #custom-cursor {
     display: inline-block;
-    color: #7fd2ff !important;
+    color: #b6e6ff !important;
     font-weight: 800 !important;
     margin-left: 2px;
-    animation: cursorBlink 0.9s steps(1,end) infinite !important;
+    animation: cursorBlink 1.05s steps(1,end) infinite !important;
   }
 
   @keyframes cursorBlink {
@@ -625,7 +628,7 @@
         if (i < text.length) {
           box.textContent += text[i] === '\n' ? '\n' : text[i];
           i += 1;
-          setTimeout(tick, 48);
+          setTimeout(tick, 72);
         } else {
           box.appendChild(cursor);
           var visible = true;
