@@ -99,8 +99,6 @@
     transition: none !important;
   }
 
-  .banner #subtitle { display: none !important; }
-
   .banner #hero-typewriter {
     display: inline-block;
     color: #4db8ff !important;
@@ -254,7 +252,7 @@
       <div class="banner-text text-center">
         <div class="h2">
           
-            <span id="subtitle" data-typed-text=""></span><span id="hero-typewriter" aria-live="polite"></span>
+            <span id="hero-typewriter" aria-live="polite"></span>
           
         </div>
 
@@ -601,17 +599,21 @@
 
       var text = '点击星球探索 GitHub 高赞项目\n点击飞船探索每月最热项目，项目越火飞船越大';
       box.textContent = '';
-      box.style.color = '#4db8ff';
-      box.style.opacity = '1';
-      box.style.animation = 'none';
-      box.style.transition = 'none';
 
       var host = box.parentNode;
-      if (host) {
-        host.style.opacity = '1';
-        host.style.animation = 'none';
-        host.style.transition = 'none';
+      function lockStyles() {
+        box.style.color = '#4db8ff';
+        box.style.opacity = '1';
+        box.style.animation = 'none';
+        box.style.transition = 'none';
+        if (host) {
+          host.style.opacity = '1';
+          host.style.animation = 'none';
+          host.style.transition = 'none';
+          host.classList.remove('fade-in-up');
+        }
       }
+      lockStyles();
 
       var cursor = document.createElement('span');
       cursor.id = 'custom-cursor';
@@ -635,22 +637,18 @@
       }
       tick();
 
-      // hard-disable any theme cursor/fade leftovers
-      var subtitle = document.getElementById('subtitle');
-      if (subtitle) subtitle.remove();
-      document.querySelectorAll('.typed-cursor').forEach(function (c) { c.remove(); });
-      setInterval(function () {
-        box.style.opacity = '1';
-        box.style.animation = 'none';
-        box.style.transition = 'none';
-        box.style.color = '#4db8ff';
-        if (host) {
-          host.style.opacity = '1';
-          host.style.animation = 'none';
-          host.style.transition = 'none';
-          host.classList.remove('fade-in-up');
-        }
-      }, 700);
+      // hard-disable any theme leftovers
+      function cleanup() {
+        document.querySelectorAll('.typed-cursor').forEach(function (c) { c.remove(); });
+        var subtitle = document.getElementById('subtitle');
+        if (subtitle) subtitle.remove();
+        lockStyles();
+      }
+      cleanup();
+      setInterval(cleanup, 600);
+
+      var mo = new MutationObserver(cleanup);
+      mo.observe(document.body, { childList: true, subtree: true, attributes: true });
     })(window, document);
   </script>
 
