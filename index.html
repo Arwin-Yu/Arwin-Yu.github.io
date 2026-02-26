@@ -636,6 +636,33 @@
     animation: swellB 17s ease-in-out infinite;
   }
 
+  #starfield {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    overflow: hidden;
+  }
+
+  .star-dot {
+    position: absolute;
+    width: var(--s,2px);
+    height: var(--s,2px);
+    border-radius: 999px;
+    background: rgba(214, 246, 255, 0.95);
+    box-shadow: 0 0 10px rgba(140, 230, 255, 0.6);
+    animation: twinkle var(--tw, 4s) ease-in-out infinite;
+    opacity: 0.6;
+  }
+
+  #storm-layer {
+    position: fixed;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+    overflow: hidden;
+  }
+
   #ocean-grid {
     position: fixed;
     inset: 0;
@@ -647,6 +674,28 @@
       repeating-linear-gradient(170deg, rgba(121,228,255,.1) 0 1px, rgba(121,228,255,0) 1px 44px);
     background-size: 230% 160%, 200% 140%;
     animation: windflow 15s linear infinite;
+  }
+
+  .storm-arc {
+    position: absolute;
+    width: 180px;
+    height: 2px;
+    background: linear-gradient(90deg, rgba(126,233,255,0), rgba(126,233,255,.95), rgba(126,233,255,0));
+    filter: drop-shadow(0 0 8px rgba(126,233,255,.9));
+    transform: rotate(-12deg);
+    opacity: 0;
+    animation: arcPulse var(--a,3.4s) ease-in-out infinite;
+  }
+
+  .meteor {
+    position: absolute;
+    width: 180px;
+    height: 2px;
+    background: linear-gradient(90deg, rgba(160,236,255,0), rgba(160,236,255,.98), rgba(160,236,255,0));
+    transform: rotate(-26deg);
+    filter: drop-shadow(0 0 8px rgba(160,236,255,.85));
+    opacity: 0;
+    animation: meteorFly 1.4s ease-out forwards;
   }
 
   #horizon-glow {
@@ -750,6 +799,9 @@
   .hud-meta { font-size:11px; opacity:.86; }
 
   @keyframes windflow { from { background-position: 0 0, 0 0;} to { background-position: 180% 0, 140% 0;} }
+  @keyframes twinkle { 0%,100% { opacity:.32; transform: scale(.8);} 50% { opacity:1; transform: scale(1.15);} }
+  @keyframes arcPulse { 0%,100% { opacity:0; transform: translateX(0) rotate(-12deg);} 40% { opacity:.8; } 70% { opacity:.2; transform: translateX(24px) rotate(-12deg);} }
+  @keyframes meteorFly { 0% { opacity:0; transform: translate3d(0,0,0) rotate(-26deg);} 15% { opacity:1;} 100% { opacity:0; transform: translate3d(220px,120px,0) rotate(-26deg);} }
   @keyframes swellA { 0%,100%{ transform:translate3d(0,0,0);} 50%{ transform:translate3d(-3%,-12px,0);} }
   @keyframes swellB { 0%,100%{ transform:translate3d(0,0,0);} 50%{ transform:translate3d(4%,-10px,0);} }
   @keyframes cruise { 0%,100%{ transform: rotate(calc(-2deg + var(--tilt))) translate3d(0,0,0);} 50%{ transform: rotate(calc(2deg + var(--tilt))) translate3d(0,-9px,0);} }
@@ -760,6 +812,8 @@
     #cosmic-ocean::before,
     #cosmic-ocean::after,
     #ocean-grid,
+    .star-dot,
+    .storm-arc,
     .ship-core,
     .wake,
     .jet { animation: none !important; }
@@ -773,6 +827,14 @@
   var ocean = document.createElement('div');
   ocean.id = 'cosmic-ocean';
   document.body.appendChild(ocean);
+
+  var starfield = document.createElement('div');
+  starfield.id = 'starfield';
+  document.body.appendChild(starfield);
+
+  var storm = document.createElement('div');
+  storm.id = 'storm-layer';
+  document.body.appendChild(storm);
 
   var grid = document.createElement('div');
   grid.id = 'ocean-grid';
@@ -802,6 +864,36 @@
     if(max<=min) return 58;
     var t=(Math.log10(stars+1)-Math.log10(min+1))/(Math.log10(max+1)-Math.log10(min+1));
     return Math.round(50 + t*64);
+  }
+
+  function seedSpace(){
+    for (var i = 0; i < 90; i++) {
+      var s = document.createElement('span');
+      s.className = 'star-dot';
+      s.style.left = (Math.random() * 100) + '%';
+      s.style.top = (Math.random() * 72) + '%';
+      s.style.setProperty('--s', (1 + Math.random() * 2.2).toFixed(2) + 'px');
+      s.style.setProperty('--tw', (2.4 + Math.random() * 4.8).toFixed(2) + 's');
+      starfield.appendChild(s);
+    }
+
+    for (var j = 0; j < 5; j++) {
+      var arc = document.createElement('div');
+      arc.className = 'storm-arc';
+      arc.style.left = (8 + Math.random() * 80) + '%';
+      arc.style.top = (8 + Math.random() * 50) + '%';
+      arc.style.setProperty('--a', (2.6 + Math.random() * 2.8).toFixed(2) + 's');
+      storm.appendChild(arc);
+    }
+  }
+
+  function launchMeteor(){
+    var m = document.createElement('div');
+    m.className = 'meteor';
+    m.style.left = (10 + Math.random() * 70) + '%';
+    m.style.top = (4 + Math.random() * 26) + '%';
+    storm.appendChild(m);
+    setTimeout(function(){ if (m.parentNode) m.parentNode.removeChild(m); }, 1500);
   }
 
   function shipSVG(){
@@ -874,6 +966,9 @@
   }
 
   function boot(){
+    seedSpace();
+    setInterval(launchMeteor, 3200 + Math.random() * 2600);
+
     var c=getCache(); if(c && c.length) { render(c); return; }
     fetch('https://api.github.com/search/repositories?q=(agent%20OR%20ai%20OR%20llm)%20in:name,description%20stars:%3E3000&sort=stars&order=desc&per_page=6', { headers:{Accept:'application/vnd.github+json'} })
       .then(function(r){ return r.ok ? r.json() : Promise.reject(new Error('api')); })
