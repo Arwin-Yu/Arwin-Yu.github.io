@@ -673,7 +673,8 @@
   }
 
   .ocean-ship:hover {
-    filter: drop-shadow(0 0 14px var(--ship-glow));
+    filter: drop-shadow(0 0 18px var(--ship-glow));
+    z-index: 5;
   }
 
   .ship-core {
@@ -688,12 +689,13 @@
     position: absolute;
     left: 50%;
     bottom: 10%;
-    width: calc(var(--ship-size) * 1.1);
-    height: calc(var(--ship-size) * 0.33);
+    width: calc(var(--ship-size) * 1.12);
+    height: calc(var(--ship-size) * 0.35);
     transform: translateX(-50%) skewX(-8deg);
-    border-radius: 12px 12px 20px 20px;
-    background: linear-gradient(180deg, #1c293a 0%, #0f1a29 100%);
-    box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+    border-radius: 14px 14px 24px 24px;
+    background: linear-gradient(180deg, #143355 0%, #0b1d34 100%);
+    border: 1px solid rgba(140, 225, 255, 0.5);
+    box-shadow: 0 0 12px rgba(95, 205, 255, 0.35), 0 8px 20px rgba(0,0,0,0.4);
   }
 
   .ship-mast {
@@ -711,14 +713,14 @@
     position: absolute;
     left: 50%;
     bottom: calc(var(--ship-size) * 0.35);
-    width: calc(var(--ship-size) * 0.54);
-    height: calc(var(--ship-size) * 0.62);
-    background: linear-gradient(160deg, #f8fdff 0%, #b5e8ff 95%);
+    width: calc(var(--ship-size) * 0.58);
+    height: calc(var(--ship-size) * 0.65);
+    background: linear-gradient(160deg, #ffffff 0%, #b5e8ff 70%, #78d8ff 100%);
     clip-path: polygon(0 98%, 100% 55%, 0 0);
     transform-origin: left center;
     transform: translateX(2px) rotate(calc(10deg + var(--ship-tilt)));
     border-radius: 2px;
-    box-shadow: 0 0 10px rgba(175, 229, 255, 0.4);
+    box-shadow: 0 0 16px rgba(122, 219, 255, 0.7);
   }
 
   .ship-flag {
@@ -741,6 +743,45 @@
     transform: translateY(-4px);
     animation: wakePulse 2.6s ease-in-out infinite;
   }
+
+  .ship-trail {
+    position: absolute;
+    left: 50%;
+    top: 58%;
+    width: calc(var(--ship-size) * 2.2);
+    height: 2px;
+    transform: translateX(-115%);
+    background: linear-gradient(90deg, rgba(120, 220, 255, 0), rgba(120, 220, 255, 0.9), rgba(120, 220, 255, 0));
+    opacity: 0.85;
+    filter: blur(0.3px);
+    animation: trailFlow 2.2s linear infinite;
+  }
+
+  .ship-card {
+    position: absolute;
+    left: 50%;
+    top: calc(100% + 8px);
+    transform: translateX(-50%) translateY(4px);
+    min-width: 200px;
+    max-width: 260px;
+    padding: 8px 10px;
+    border-radius: 10px;
+    background: rgba(3, 12, 24, 0.85);
+    border: 1px solid rgba(120, 220, 255, 0.35);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.35);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .2s ease, transform .2s ease;
+  }
+
+  .ocean-ship:hover .ship-card {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+
+  .ship-card-title { font-size: 12px; font-weight: 700; margin-bottom: 4px; color: #c2eeff; }
+  .ship-card-desc { font-size: 11px; line-height: 1.35; opacity: .9; margin-bottom: 6px; }
+  .ship-card-meta { font-size: 11px; opacity: .85; }
 
   .ship-label,
   .ship-stars {
@@ -788,13 +829,20 @@
     50% { opacity: 0.9; transform: translateY(-4px) scaleX(1.08); }
   }
 
+  @keyframes trailFlow {
+    0% { transform: translateX(-115%) scaleX(0.9); opacity: 0.5; }
+    50% { transform: translateX(-110%) scaleX(1.05); opacity: 0.95; }
+    100% { transform: translateX(-105%) scaleX(0.9); opacity: 0.5; }
+  }
+
   @media (prefers-reduced-motion: reduce), (max-width: 768px) {
     #ocean-scene::before,
     #ocean-scene::after,
     #ocean-wind,
     .ship-core,
     .ship-flag,
-    .ship-wake { animation: none !important; }
+    .ship-wake,
+    .ship-trail { animation: none !important; }
   }
 </style>
 
@@ -815,12 +863,12 @@
   document.body.appendChild(layer);
 
   var FALLBACK_REPOS = [
-    { full_name: 'anthropics/claude-code', stargazers_count: 24000, html_url: 'https://github.com/anthropics/claude-code' },
-    { full_name: 'microsoft/vscode', stargazers_count: 170000, html_url: 'https://github.com/microsoft/vscode' },
-    { full_name: 'Significant-Gravitas/AutoGPT', stargazers_count: 175000, html_url: 'https://github.com/Significant-Gravitas/AutoGPT' },
-    { full_name: 'langchain-ai/langchain', stargazers_count: 105000, html_url: 'https://github.com/langchain-ai/langchain' },
-    { full_name: 'openai/openai-cookbook', stargazers_count: 68000, html_url: 'https://github.com/openai/openai-cookbook' },
-    { full_name: 'meta-llama/llama3', stargazers_count: 29000, html_url: 'https://github.com/meta-llama/llama3' }
+    { full_name: 'anthropics/claude-code', stargazers_count: 24000, html_url: 'https://github.com/anthropics/claude-code', description: 'Agentic coding from terminal', language: 'TypeScript' },
+    { full_name: 'microsoft/vscode', stargazers_count: 170000, html_url: 'https://github.com/microsoft/vscode', description: 'Code editor platform', language: 'TypeScript' },
+    { full_name: 'Significant-Gravitas/AutoGPT', stargazers_count: 175000, html_url: 'https://github.com/Significant-Gravitas/AutoGPT', description: 'Autonomous AI workflows', language: 'Python' },
+    { full_name: 'langchain-ai/langchain', stargazers_count: 105000, html_url: 'https://github.com/langchain-ai/langchain', description: 'LLM app framework', language: 'Python' },
+    { full_name: 'openai/openai-cookbook', stargazers_count: 68000, html_url: 'https://github.com/openai/openai-cookbook', description: 'OpenAI practical patterns', language: 'Jupyter Notebook' },
+    { full_name: 'meta-llama/llama3', stargazers_count: 29000, html_url: 'https://github.com/meta-llama/llama3', description: 'Llama model resources', language: 'Python' }
   ];
 
   var POSITIONS = [[12, 63], [28, 48], [44, 68], [60, 43], [76, 58], [89, 36]];
@@ -854,6 +902,9 @@
     core.className = 'ship-core';
     core.style.setProperty('--bob', (4.8 + idx * 0.55) + 's');
 
+    var trail = document.createElement('div');
+    trail.className = 'ship-trail';
+
     var hull = document.createElement('div');
     hull.className = 'ship-hull';
 
@@ -874,6 +925,26 @@
     stars.className = 'ship-stars';
     stars.textContent = '★ ' + short(repo.stargazers_count || 0);
 
+    var card = document.createElement('div');
+    card.className = 'ship-card';
+
+    var cardTitle = document.createElement('div');
+    cardTitle.className = 'ship-card-title';
+    cardTitle.textContent = repo.full_name;
+
+    var cardDesc = document.createElement('div');
+    cardDesc.className = 'ship-card-desc';
+    cardDesc.textContent = repo.description || 'AI ocean explorer project';
+
+    var cardMeta = document.createElement('div');
+    cardMeta.className = 'ship-card-meta';
+    cardMeta.textContent = '★ ' + short(repo.stargazers_count || 0) + ' · ' + (repo.language || 'Unknown');
+
+    card.appendChild(cardTitle);
+    card.appendChild(cardDesc);
+    card.appendChild(cardMeta);
+
+    core.appendChild(trail);
     core.appendChild(hull);
     core.appendChild(mast);
     core.appendChild(sail);
@@ -883,6 +954,7 @@
     ship.appendChild(core);
     ship.appendChild(label);
     ship.appendChild(stars);
+    ship.appendChild(card);
 
     return ship;
   }
@@ -901,7 +973,7 @@
 
   function getCached() {
     try {
-      var raw = localStorage.getItem('hot_repos_cache_v1');
+      var raw = localStorage.getItem('hot_repos_cache_v2');
       if (!raw) return null;
       var data = JSON.parse(raw);
       if (Date.now() - data.time > 6 * 60 * 60 * 1000) return null;
@@ -913,7 +985,7 @@
 
   function setCached(items) {
     try {
-      localStorage.setItem('hot_repos_cache_v1', JSON.stringify({ time: Date.now(), items: items }));
+      localStorage.setItem('hot_repos_cache_v2', JSON.stringify({ time: Date.now(), items: items }));
     } catch (_) {}
   }
 
@@ -924,7 +996,7 @@
       return;
     }
 
-    fetch('https://api.github.com/search/repositories?q=stars:%3E20000&sort=stars&order=desc&per_page=6', {
+    fetch('https://api.github.com/search/repositories?q=(ai%20OR%20agent%20OR%20llm)%20in:name,description%20stars:%3E5000&sort=stars&order=desc&per_page=6', {
       headers: { Accept: 'application/vnd.github+json' }
     })
       .then(function (r) {
@@ -932,7 +1004,13 @@
       })
       .then(function (data) {
         var items = (data.items || []).map(function (r) {
-          return { full_name: r.full_name, stargazers_count: r.stargazers_count, html_url: r.html_url };
+          return {
+            full_name: r.full_name,
+            stargazers_count: r.stargazers_count,
+            html_url: r.html_url,
+            description: r.description,
+            language: r.language
+          };
         });
         if (!items.length) throw new Error('empty');
         setCached(items);
