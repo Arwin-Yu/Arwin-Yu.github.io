@@ -773,50 +773,44 @@
 
   #ai-news-beacon {
     position: fixed;
-    left: 18px;
+    left: 16px;
     top: 78px;
     z-index: 12;
-    width: 82px;
-    height: 82px;
-    border-radius: 50%;
-    display: grid;
-    place-items: center;
+    height: 46px;
+    min-width: 138px;
+    border-radius: 14px;
+    display: inline-flex;
+    align-items: center;
     text-decoration: none;
-    background: radial-gradient(circle, rgba(92,182,255,.18) 0%, rgba(22,54,92,.78) 62%, rgba(8,20,38,.92) 100%);
-    border: 1.5px solid rgba(190,236,255,.9);
-    box-shadow: 0 0 24px rgba(120,210,255,.8), 0 0 56px rgba(120,210,255,.42);
-    animation: beaconPulse 1.9s ease-in-out infinite;
+    background: rgba(7, 18, 36, 0.82);
+    border: 1px solid rgba(170, 226, 255, 0.62);
+    box-shadow: 0 6px 18px rgba(0,0,0,.35), 0 0 18px rgba(120,210,255,.22);
+    backdrop-filter: blur(4px);
+    padding: 0 14px 0 46px;
+    animation: beaconPulse 2.8s ease-in-out infinite;
     overflow: hidden;
   }
 
   #ai-news-beacon::before {
     content: '';
-    width: 76%;
-    height: 76%;
+    position: absolute;
+    left: 10px;
+    width: 24px;
+    height: 24px;
     background: url('/img/generated-icons/001-futuristic-sci-fi-space-probe-icon-ultra.png') center/contain no-repeat;
-    filter: drop-shadow(0 0 8px rgba(152, 227, 255, .85));
+    filter: drop-shadow(0 0 4px rgba(152, 227, 255, .6));
   }
 
   #ai-news-beacon::after {
     content: 'AI News';
-    position: absolute;
-    left: 72px;
-    top: 50%;
-    transform: translateY(-50%);
     white-space: nowrap;
-    font-size: 13px;
-    font-weight: 600;
-    color: #f2fbff;
-    background: rgba(5, 16, 34, 0.74);
-    border: 1px solid rgba(184,231,255,.55);
-    border-radius: 999px;
-    padding: 6px 12px;
-    opacity: .92;
-    transition: opacity .2s ease;
+    font-size: 14px;
+    font-weight: 700;
+    color: #eaf7ff;
+    letter-spacing: .2px;
+    opacity: 1;
     pointer-events: none;
   }
-
-  #ai-news-beacon:hover::after { opacity: 1; }
 
   .starship {
     position: absolute;
@@ -909,8 +903,8 @@
   @keyframes wakeLine { 0%{ opacity:.42; transform:translateX(-105%) scaleX(.9);} 50%{ opacity:.95; transform:translateX(-98%) scaleX(1.06);} 100%{ opacity:.42; transform:translateX(-90%) scaleX(.9);} }
   @keyframes jetPulse { 0%,100%{ opacity:.55; transform: translateX(-78%) scaleX(.9);} 50%{ opacity:1; transform: translateX(-82%) scaleX(1.15);} }
   @keyframes beaconPulse {
-    0%,100% { box-shadow: 0 0 18px rgba(120,210,255,.65), 0 0 36px rgba(120,210,255,.28); transform: scale(1); }
-    50% { box-shadow: 0 0 30px rgba(120,210,255,.95), 0 0 54px rgba(120,210,255,.42); transform: scale(1.09); }
+    0%,100% { box-shadow: 0 6px 18px rgba(0,0,0,.35), 0 0 16px rgba(120,210,255,.2); transform: translateY(0); }
+    50% { box-shadow: 0 8px 22px rgba(0,0,0,.4), 0 0 24px rgba(120,210,255,.34); transform: translateY(-1px); }
   }
 
   @media (max-width: 900px) {
@@ -924,11 +918,23 @@
     #ai-news-beacon {
       left: 8px;
       top: 68px;
-      width: 62px;
-      height: 62px;
+      height: 40px;
+      min-width: 108px;
+      padding-left: 38px;
+      padding-right: 10px;
+      border-radius: 12px;
     }
 
-    #ai-news-beacon::after { display: none; }
+    #ai-news-beacon::before {
+      left: 8px;
+      width: 20px;
+      height: 20px;
+    }
+
+    #ai-news-beacon::after {
+      display: block;
+      font-size: 12px;
+    }
   }
 
   @media (prefers-reduced-motion: reduce), (max-width: 900px) {
