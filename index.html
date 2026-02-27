@@ -773,44 +773,43 @@
 
   #ai-news-beacon {
     position: fixed;
-    left: 16px;
-    top: 78px;
+    left: 20px;
+    top: 82px;
     z-index: 12;
-    height: 46px;
-    min-width: 138px;
-    border-radius: 14px;
-    display: inline-flex;
-    align-items: center;
+    width: 74px;
+    height: 74px;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
     text-decoration: none;
-    background: rgba(7, 18, 36, 0.82);
-    border: 1px solid rgba(170, 226, 255, 0.62);
-    box-shadow: 0 6px 18px rgba(0,0,0,.35), 0 0 18px rgba(120,210,255,.22);
-    backdrop-filter: blur(4px);
-    padding: 0 14px 0 46px;
-    animation: beaconPulse 2.8s ease-in-out infinite;
-    overflow: hidden;
-  }
-
-  #ai-news-beacon::before {
-    content: '';
-    position: absolute;
-    left: 10px;
-    width: 24px;
-    height: 24px;
-    background: url('/img/generated-icons/001-futuristic-sci-fi-space-probe-icon-ultra.png') center/contain no-repeat;
-    filter: drop-shadow(0 0 4px rgba(152, 227, 255, .6));
+    color: #e8f8ff;
+    font-size: 36px;
+    background: radial-gradient(circle, rgba(92,182,255,.98) 0%, rgba(39,94,156,.95) 56%, rgba(12,32,60,.96) 100%);
+    border: 1.5px solid rgba(190,236,255,.9);
+    box-shadow: 0 0 22px rgba(120,210,255,.75), 0 0 52px rgba(120,210,255,.35);
+    animation: beaconPulse 1.9s ease-in-out infinite;
   }
 
   #ai-news-beacon::after {
     content: 'AI News';
+    position: absolute;
+    left: 84px;
+    top: 50%;
+    transform: translateY(-50%);
     white-space: nowrap;
-    font-size: 14px;
-    font-weight: 700;
-    color: #eaf7ff;
-    letter-spacing: .2px;
-    opacity: 1;
+    font-size: 13px;
+    font-weight: 600;
+    color: #f2fbff;
+    background: rgba(5, 16, 34, 0.74);
+    border: 1px solid rgba(184,231,255,.55);
+    border-radius: 999px;
+    padding: 6px 12px;
+    opacity: .92;
+    transition: opacity .2s ease;
     pointer-events: none;
   }
+
+  #ai-news-beacon:hover::after { opacity: 1; }
 
   .starship {
     position: absolute;
@@ -918,22 +917,15 @@
     #ai-news-beacon {
       left: 8px;
       top: 68px;
-      height: 40px;
-      min-width: 108px;
-      padding-left: 38px;
-      padding-right: 10px;
-      border-radius: 12px;
-    }
-
-    #ai-news-beacon::before {
-      left: 8px;
-      width: 20px;
-      height: 20px;
+      width: 58px;
+      height: 58px;
+      font-size: 26px;
     }
 
     #ai-news-beacon::after {
-      display: block;
+      left: 64px;
       font-size: 12px;
+      padding: 4px 9px;
     }
   }
 
@@ -967,6 +959,7 @@
   beacon.id = 'ai-news-beacon';
   beacon.href = '/categories/Weekly-AI/';
   beacon.setAttribute('aria-label', 'AI News');
+  beacon.textContent = '🛰️';
   document.body.appendChild(beacon);
 
   var TRENDING_AI_WEEKLY = [
