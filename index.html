@@ -105,6 +105,15 @@
     filter: none !important;
   }
 
+  #hero-overlay-typewriter {
+    z-index: 2147483647;
+  }
+
+  body.content-focus #hero-overlay-typewriter {
+    opacity: 0 !important;
+    visibility: hidden !important;
+  }
+
   .banner .banner-text {
     position: relative !important;
     z-index: 9999 !important;
@@ -697,8 +706,9 @@
       if (!board) return;
       function syncFocus(){
         var y = window.scrollY || document.documentElement.scrollTop || 0;
-        var trigger = Math.max(120, board.offsetTop - 140);
-        document.body.classList.toggle('content-focus', y > trigger);
+        var trigger = Math.max(40, board.offsetTop - 140);
+        var boardTopInView = board.getBoundingClientRect().top < 140;
+        document.body.classList.toggle('content-focus', y > trigger || boardTopInView);
       }
       syncFocus();
       window.addEventListener('scroll', syncFocus, { passive: true });
