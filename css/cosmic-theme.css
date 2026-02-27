@@ -44,7 +44,15 @@ body {
 .post-content h3,
 #post h1,
 #post h2,
-#post h3 {
+#post h3,
+.about-name,
+.about-intro,
+.about-content h1,
+.about-content h2,
+.about-content h3,
+.markdown-body h1,
+.markdown-body h2,
+.markdown-body h3 {
   color: #f2f8ff !important;
 }
 
@@ -57,8 +65,26 @@ body {
 .post-content li,
 #post,
 #post p,
-#post li {
+#post li,
+.about-content,
+.about-content p,
+.about-content li,
+.markdown-body,
+.markdown-body p,
+.markdown-body li {
   color: rgba(230, 240, 255, 0.92) !important;
+}
+
+.markdown-body a,
+.about-content a,
+#post a {
+  color: #8fd7ff !important;
+}
+
+.markdown-body hr,
+.about-content hr,
+#post hr {
+  border-color: rgba(170, 220, 255, 0.22) !important;
 }
 
 #planet-system {
