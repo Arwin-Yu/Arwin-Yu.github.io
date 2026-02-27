@@ -769,7 +769,28 @@
     transform: scale(1.03);
   }
 
+  #planet-ring-spin {
+    position: absolute;
+    left: 48%;
+    top: 57%;
+    width: min(76vw, 1160px);
+    height: min(44vw, 580px);
+    transform: translate(-50%, -50%) rotate(-13deg);
+    border-radius: 50%;
+    border: 1.5px solid rgba(164, 223, 255, 0.38);
+    box-shadow: 0 0 24px rgba(130, 206, 255, 0.22), inset 0 0 20px rgba(130, 206, 255, 0.12);
+    pointer-events: none;
+    mix-blend-mode: screen;
+    animation: ringSpin 22s linear infinite;
+  }
 
+  #planet-ring-spin::before {
+    content: '';
+    position: absolute;
+    inset: -8px;
+    border-radius: 50%;
+    border: 1px solid rgba(164, 223, 255, 0.16);
+  }
 
   #fleet-layer {
     position: fixed;
@@ -865,6 +886,10 @@
     0%,100% { transform: scale(0.965) translateY(0.4%); opacity: .86; filter: saturate(0.98) brightness(0.94); }
     50% { transform: scale(1.02) translateY(-0.4%); opacity: 1; filter: saturate(1.08) brightness(1.04); }
   }
+  @keyframes ringSpin {
+    from { transform: translate(-50%, -50%) rotate(-13deg); }
+    to { transform: translate(-50%, -50%) rotate(347deg); }
+  }
   @keyframes cruise { 0%,100%{ transform: rotate(calc(-2deg + var(--tilt))) translate3d(0,0,0);} 50%{ transform: rotate(calc(2deg + var(--tilt))) translate3d(0,-9px,0);} }
   @keyframes wakeLine { 0%{ opacity:.42; transform:translateX(-105%) scaleX(.9);} 50%{ opacity:.95; transform:translateX(-98%) scaleX(1.06);} 100%{ opacity:.42; transform:translateX(-90%) scaleX(.9);} }
   @keyframes jetPulse { 0%,100%{ opacity:.55; transform: translateX(-78%) scaleX(.9);} 50%{ opacity:1; transform: translateX(-82%) scaleX(1.15);} }
@@ -881,6 +906,7 @@
   @media (prefers-reduced-motion: reduce), (max-width: 900px) {
     #cosmic-ocean,
     #planet-art,
+    #planet-ring-spin,
     .ship-core,
     .wake,
     .jet { animation: none !important; }
@@ -897,7 +923,7 @@
 
   var planet = document.createElement('div');
   planet.id = 'planet-system';
-  planet.innerHTML = '<div id="planet-art"></div><a id="planet-link-hotspot" href="/2026/02/26/ai-projects-100k/" aria-label="Top AI GitHub projects"></a>';
+  planet.innerHTML = '<div id="planet-art"></div><div id="planet-ring-spin"></div><a id="planet-link-hotspot" href="/2026/02/26/ai-projects-100k/" aria-label="Top AI GitHub projects"></a>';
   document.body.appendChild(planet);
 
   var layer = document.createElement('div');
@@ -914,7 +940,8 @@
     { full_name: 'RichardAtCT/claude-code-telegram', hot_score: 944, html_url: 'https://github.com/RichardAtCT/claude-code-telegram', description:'Telegram bridge for remote Claude Code workflows.', language:'Python' }
   ];
 
-  var POS = [[10,64],[22,48],[34,68],[50,43],[66,60],[80,45],[90,34]];
+  var POS_RIGHT_BIG = [[84,56],[76,40],[90,70]];
+  var POS_LEFT_SMALL = [[16,62],[24,48],[10,36],[20,76]];
 
   function short(n){ return n>=1000 ? (n/1000).toFixed(1).replace(/\.0$/,'')+'k' : String(n); }
   function size(stars,min,max){
@@ -970,11 +997,21 @@
   }
 
   function render(items){
-    var arr = items.slice(0, POS.length);
+    var arr = items.slice().sort(function(a,b){ return (b.hot_score||0) - (a.hot_score||0); }).slice(0, 7);
     var stars=arr.map(function(i){return i.hot_score||0;});
     var min=Math.min.apply(null, stars), max=Math.max.apply(null, stars);
-    arr.forEach(function(repo,i){
-      layer.appendChild(createShip(repo, i, size(repo.hot_score||0,min,max), POS[i][0], POS[i][1]));
+
+    var big = arr.slice(0, 3);
+    var small = arr.slice(3);
+
+    big.forEach(function(repo,i){
+      var p = POS_RIGHT_BIG[i] || [80, 50];
+      layer.appendChild(createShip(repo, i, size(repo.hot_score||0,min,max), p[0], p[1]));
+    });
+
+    small.forEach(function(repo,i){
+      var p = POS_LEFT_SMALL[i] || [18, 50];
+      layer.appendChild(createShip(repo, i + 3, size(repo.hot_score||0,min,max), p[0], p[1]));
     });
   }
 
