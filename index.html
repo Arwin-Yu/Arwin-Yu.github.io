@@ -769,29 +769,6 @@
     transform: scale(1.03);
   }
 
-  #planet-ring-spin {
-    position: absolute;
-    left: 48%;
-    top: 57%;
-    width: min(76vw, 1160px);
-    height: min(44vw, 580px);
-    transform: translate(-50%, -50%) rotate(-13deg);
-    border-radius: 50%;
-    border: 1.5px solid rgba(164, 223, 255, 0.38);
-    box-shadow: 0 0 24px rgba(130, 206, 255, 0.22), inset 0 0 20px rgba(130, 206, 255, 0.12);
-    pointer-events: none;
-    mix-blend-mode: screen;
-    animation: ringSpin 22s linear infinite;
-  }
-
-  #planet-ring-spin::before {
-    content: '';
-    position: absolute;
-    inset: -8px;
-    border-radius: 50%;
-    border: 1px solid rgba(164, 223, 255, 0.16);
-  }
-
   #fleet-layer {
     position: fixed;
     inset: 0;
@@ -886,10 +863,6 @@
     0%,100% { transform: scale(0.965) translateY(0.4%); opacity: .86; filter: saturate(0.98) brightness(0.94); }
     50% { transform: scale(1.02) translateY(-0.4%); opacity: 1; filter: saturate(1.08) brightness(1.04); }
   }
-  @keyframes ringSpin {
-    from { transform: translate(-50%, -50%) rotate(-13deg); }
-    to { transform: translate(-50%, -50%) rotate(347deg); }
-  }
   @keyframes cruise { 0%,100%{ transform: rotate(calc(-2deg + var(--tilt))) translate3d(0,0,0);} 50%{ transform: rotate(calc(2deg + var(--tilt))) translate3d(0,-9px,0);} }
   @keyframes wakeLine { 0%{ opacity:.42; transform:translateX(-105%) scaleX(.9);} 50%{ opacity:.95; transform:translateX(-98%) scaleX(1.06);} 100%{ opacity:.42; transform:translateX(-90%) scaleX(.9);} }
   @keyframes jetPulse { 0%,100%{ opacity:.55; transform: translateX(-78%) scaleX(.9);} 50%{ opacity:1; transform: translateX(-82%) scaleX(1.15);} }
@@ -906,7 +879,6 @@
   @media (prefers-reduced-motion: reduce), (max-width: 900px) {
     #cosmic-ocean,
     #planet-art,
-    #planet-ring-spin,
     .ship-core,
     .wake,
     .jet { animation: none !important; }
@@ -923,7 +895,7 @@
 
   var planet = document.createElement('div');
   planet.id = 'planet-system';
-  planet.innerHTML = '<div id="planet-art"></div><div id="planet-ring-spin"></div><a id="planet-link-hotspot" href="/2026/02/26/ai-projects-100k/" aria-label="Top AI GitHub projects"></a>';
+  planet.innerHTML = '<div id="planet-art"></div><a id="planet-link-hotspot" href="/2026/02/26/ai-projects-100k/" aria-label="Top AI GitHub projects"></a>';
   document.body.appendChild(planet);
 
   var layer = document.createElement('div');
@@ -940,8 +912,15 @@
     { full_name: 'RichardAtCT/claude-code-telegram', hot_score: 944, html_url: 'https://github.com/RichardAtCT/claude-code-telegram', description:'Telegram bridge for remote Claude Code workflows.', language:'Python' }
   ];
 
-  var POS_RIGHT_BIG = [[84,56],[76,40],[90,70]];
-  var POS_LEFT_SMALL = [[16,62],[24,48],[10,36],[20,76]];
+  var ORBITS = [
+    { a: 46, b: 24, phase: 0.1, speed: 0.34 },
+    { a: 42, b: 22, phase: 1.0, speed: -0.29 },
+    { a: 40, b: 21, phase: 1.9, speed: 0.31 },
+    { a: 48, b: 25, phase: 2.8, speed: -0.26 },
+    { a: 44, b: 23, phase: 3.7, speed: 0.33 },
+    { a: 50, b: 26, phase: 4.6, speed: -0.24 },
+    { a: 38, b: 20, phase: 5.5, speed: 0.36 }
+  ];
 
   function short(n){ return n>=1000 ? (n/1000).toFixed(1).replace(/\.0$/,'')+'k' : String(n); }
   function size(stars,min,max){
@@ -1001,18 +980,28 @@
     var stars=arr.map(function(i){return i.hot_score||0;});
     var min=Math.min.apply(null, stars), max=Math.max.apply(null, stars);
 
-    var big = arr.slice(0, 3);
-    var small = arr.slice(3);
-
-    big.forEach(function(repo,i){
-      var p = POS_RIGHT_BIG[i] || [80, 50];
-      layer.appendChild(createShip(repo, i, size(repo.hot_score||0,min,max), p[0], p[1]));
+    var fleet = [];
+    arr.forEach(function(repo, i){
+      var ship = createShip(repo, i, size(repo.hot_score||0,min,max), 48, 57);
+      layer.appendChild(ship);
+      fleet.push({ el: ship, orbit: ORBITS[i] || { a: 30, b: 12, phase: i, speed: 0.4 } });
     });
 
-    small.forEach(function(repo,i){
-      var p = POS_LEFT_SMALL[i] || [18, 50];
-      layer.appendChild(createShip(repo, i + 3, size(repo.hot_score||0,min,max), p[0], p[1]));
-    });
+    var t0 = performance.now();
+    function animate(ts){
+      var t = (ts - t0) / 1000;
+      for (var k = 0; k < fleet.length; k++) {
+        var it = fleet[k];
+        var o = it.orbit;
+        var ang = o.phase + t * o.speed;
+        var x = 48 + o.a * Math.cos(ang);
+        var y = 57 + o.b * Math.sin(ang);
+        it.el.style.left = x.toFixed(2) + '%';
+        it.el.style.top = y.toFixed(2) + '%';
+      }
+      requestAnimationFrame(animate);
+    }
+    requestAnimationFrame(animate);
   }
 
   function getCache(){
