@@ -646,36 +646,29 @@
       var inBanner = document.getElementById('hero-typewriter');
       if (inBanner) inBanner.remove();
 
-      var box = document.createElement('div');
-      box.id = 'hero-overlay-typewriter';
-      box.style.position = 'absolute';
-      box.style.left = '47%';
-      box.style.top = '50%';
-      box.style.transform = 'translate(-50%, -50%)';
-      box.style.zIndex = '20';
-      box.style.pointerEvents = 'none';
-      box.style.color = '#ffffff';
-      box.style.fontWeight = '500';
-      box.style.fontSize = 'clamp(1.3rem, 2.25vw, 2.1rem)';
-      box.style.lineHeight = '1.45';
-      box.style.whiteSpace = 'pre-line';
-      box.style.letterSpacing = '0.25px';
-      box.style.textShadow = '0 2px 4px rgba(0,0,0,.95)';
-      box.style.background = 'transparent';
-      box.style.border = '0';
-      box.style.borderRadius = '0';
-      box.style.padding = '0';
-      box.style.opacity = '1';
-      box.style.mixBlendMode = 'normal';
-      box.textContent = '';
       var heroLayer = document.querySelector('#banner .mask') || document.getElementById('banner') || document.body;
-      heroLayer.appendChild(box);
+      var host = document.createElement('div');
+      host.id = 'hero-overlay-typewriter';
+      host.style.position = 'absolute';
+      host.style.left = '47%';
+      host.style.top = '50%';
+      host.style.transform = 'translate(-50%, -50%)';
+      host.style.zIndex = '20';
+      host.style.pointerEvents = 'none';
+      heroLayer.appendChild(host);
 
+      var shadow = host.attachShadow({ mode: 'open' });
+      shadow.innerHTML = '<style>'
+        + ':host{all:initial;}'
+        + '.text{color:#fff;font:500 clamp(1.3rem,2.25vw,2.1rem)/1.45 Inter,system-ui,-apple-system,Segoe UI,Roboto,sans-serif;'
+        + 'white-space:pre-line;letter-spacing:.25px;text-shadow:0 2px 4px rgba(0,0,0,.95);}'
+        + '.cursor{color:#fff;margin-left:2px;font-weight:500;}'
+        + '</style><span class="text" id="tw"></span>';
+
+      var box = shadow.getElementById('tw');
       var cursor = document.createElement('span');
+      cursor.className = 'cursor';
       cursor.textContent = '_';
-      cursor.style.color = '#ffffff';
-      cursor.style.marginLeft = '2px';
-      cursor.style.fontWeight = '500';
 
       var i = 0;
       function tick() {
