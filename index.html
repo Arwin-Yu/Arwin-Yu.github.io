@@ -796,6 +796,49 @@
     pointer-events: none;
   }
 
+  #ai-news-beacon {
+    position: fixed;
+    left: 20px;
+    top: 82px;
+    z-index: 12;
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    text-decoration: none;
+    color: #e8f8ff;
+    font-size: 48px;
+    background: radial-gradient(circle, rgba(92,182,255,.98) 0%, rgba(39,94,156,.95) 56%, rgba(12,32,60,.96) 100%);
+    border: 1.5px solid rgba(190,236,255,.9);
+    box-shadow: 0 0 22px rgba(120,210,255,.75), 0 0 52px rgba(120,210,255,.35);
+    animation: beaconPulse 1.9s ease-in-out infinite;
+  }
+
+  #ai-news-beacon .beacon-icon {
+    display: inline-block;
+    transform-origin: center center;
+    animation: beaconSpin 8s linear infinite;
+  }
+
+  #ai-news-beacon::after {
+    content: 'AI Daily News';
+    position: absolute;
+    left: 112px;
+    top: 50%;
+    transform: translateY(-50%);
+    white-space: nowrap;
+    font-size: 16px;
+    font-weight: 700;
+    color: #f2fbff;
+    background: rgba(5, 16, 34, 0.74);
+    border: 1px solid rgba(184,231,255,.55);
+    border-radius: 999px;
+    padding: 7px 14px;
+    opacity: .96;
+    pointer-events: none;
+  }
+
   .starship {
     position: absolute;
     transform: translate(-50%, -50%);
@@ -886,6 +929,14 @@
   @keyframes cruise { 0%,100%{ transform: rotate(calc(-2deg + var(--tilt))) translate3d(0,0,0);} 50%{ transform: rotate(calc(2deg + var(--tilt))) translate3d(0,-9px,0);} }
   @keyframes wakeLine { 0%{ opacity:.42; transform:translateX(-105%) scaleX(.9);} 50%{ opacity:.95; transform:translateX(-98%) scaleX(1.06);} 100%{ opacity:.42; transform:translateX(-90%) scaleX(.9);} }
   @keyframes jetPulse { 0%,100%{ opacity:.55; transform: translateX(-78%) scaleX(.9);} 50%{ opacity:1; transform: translateX(-82%) scaleX(1.15);} }
+  @keyframes beaconPulse {
+    0%,100% { box-shadow: 0 0 18px rgba(120,210,255,.65), 0 0 36px rgba(120,210,255,.28); transform: scale(1); }
+    50% { box-shadow: 0 0 30px rgba(120,210,255,.95), 0 0 54px rgba(120,210,255,.42); transform: scale(1.09); }
+  }
+  @keyframes beaconSpin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
 
   @media (max-width: 900px) {
     #planet-link-hotspot {
@@ -893,6 +944,20 @@
       height: 50vw;
       left: 48%;
       top: 58%;
+    }
+
+    #ai-news-beacon {
+      left: 8px;
+      top: 68px;
+      width: 72px;
+      height: 72px;
+      font-size: 34px;
+    }
+
+    #ai-news-beacon::after {
+      left: 78px;
+      font-size: 13px;
+      padding: 5px 10px;
     }
   }
 
@@ -921,6 +986,13 @@
   var layer = document.createElement('div');
   layer.id = 'fleet-layer';
   document.body.appendChild(layer);
+
+  var beacon = document.createElement('a');
+  beacon.id = 'ai-news-beacon';
+  beacon.href = '/categories/Weekly-AI/';
+  beacon.setAttribute('aria-label', 'AI Daily News');
+  beacon.innerHTML = '<span class="beacon-icon">🛰️</span>';
+  document.body.appendChild(beacon);
 
   var TRENDING_AI_WEEKLY = [
     { full_name: 'x1xhlol/system-prompts-and-models-of-ai-tools', hot_score: 9938, html_url: 'https://github.com/x1xhlol/system-prompts-and-models-of-ai-tools', description:'System prompts, internal tools and model references for popular AI coding tools.', language:'Prompt' },
@@ -980,7 +1052,7 @@
     a.style.setProperty('--tilt', ((idx%2?1:-1)*(1+idx*.28))+'deg');
 
     var core=document.createElement('div'); core.className='ship-core';
-    core.style.setProperty('--cruise', (4.6+idx*.55)+'s');
+    core.style.animation = 'none';
 
     var wake=document.createElement('div'); wake.className='wake';
     var jet=document.createElement('div'); jet.className='jet';
