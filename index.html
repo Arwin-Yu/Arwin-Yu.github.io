@@ -107,6 +107,12 @@
     isolation: isolate;
   }
 
+  body.content-focus #hero-overlay-typewriter {
+    opacity: 0 !important;
+    visibility: hidden !important;
+    transform: translate(-50%, -54%) !important;
+  }
+
   .banner .mask {
     background-color: rgba(0, 0, 0, 0.58) !important;
   }
@@ -642,6 +648,7 @@
       box.style.padding = '0';
       box.style.opacity = '1';
       box.style.mixBlendMode = 'normal';
+      box.style.transition = 'opacity .35s ease, transform .35s ease';
       box.textContent = '';
       document.body.appendChild(box);
 
@@ -670,6 +677,17 @@
     })(window, document);
   </script>
 
+  <script>
+    (function(){
+      function syncFocus(){
+        var y = window.scrollY || document.documentElement.scrollTop || 0;
+        document.body.classList.toggle('content-focus', y > 180);
+      }
+      syncFocus();
+      window.addEventListener('scroll', syncFocus, { passive: true });
+      window.addEventListener('resize', syncFocus);
+    })();
+  </script>
 
 
 
