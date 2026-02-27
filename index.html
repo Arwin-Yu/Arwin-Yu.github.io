@@ -773,21 +773,28 @@
 
   #ai-news-beacon {
     position: fixed;
-    left: 20px;
-    top: 82px;
+    left: 18px;
+    top: 78px;
     z-index: 12;
-    width: 62px;
-    height: 62px;
+    width: 82px;
+    height: 82px;
     border-radius: 50%;
     display: grid;
     place-items: center;
     text-decoration: none;
-    color: #e8f8ff;
-    font-size: 30px;
-    background: radial-gradient(circle, rgba(92,182,255,.98) 0%, rgba(39,94,156,.95) 56%, rgba(12,32,60,.96) 100%);
+    background: radial-gradient(circle, rgba(92,182,255,.18) 0%, rgba(22,54,92,.78) 62%, rgba(8,20,38,.92) 100%);
     border: 1.5px solid rgba(190,236,255,.9);
-    box-shadow: 0 0 20px rgba(120,210,255,.75), 0 0 44px rgba(120,210,255,.35);
+    box-shadow: 0 0 24px rgba(120,210,255,.8), 0 0 56px rgba(120,210,255,.42);
     animation: beaconPulse 1.9s ease-in-out infinite;
+    overflow: hidden;
+  }
+
+  #ai-news-beacon::before {
+    content: '';
+    width: 76%;
+    height: 76%;
+    background: url('/img/generated-icons/001-futuristic-sci-fi-space-probe-icon-ultra.png') center/contain no-repeat;
+    filter: drop-shadow(0 0 8px rgba(152, 227, 255, .85));
   }
 
   #ai-news-beacon::after {
@@ -915,11 +922,10 @@
     }
 
     #ai-news-beacon {
-      left: 10px;
-      top: 70px;
-      width: 50px;
-      height: 50px;
-      font-size: 22px;
+      left: 8px;
+      top: 68px;
+      width: 62px;
+      height: 62px;
     }
 
     #ai-news-beacon::after { display: none; }
@@ -955,7 +961,6 @@
   beacon.id = 'ai-news-beacon';
   beacon.href = '/categories/Weekly-AI/';
   beacon.setAttribute('aria-label', 'AI News');
-  beacon.textContent = '🛰️';
   document.body.appendChild(beacon);
 
   var TRENDING_AI_WEEKLY = [
