@@ -106,12 +106,7 @@
   }
 
   #hero-overlay-typewriter {
-    z-index: 2147483647;
-  }
-
-  body.content-focus #hero-overlay-typewriter {
-    opacity: 0 !important;
-    visibility: hidden !important;
+    z-index: 20;
   }
 
   .banner .banner-text {
@@ -653,11 +648,11 @@
 
       var box = document.createElement('div');
       box.id = 'hero-overlay-typewriter';
-      box.style.position = 'fixed';
+      box.style.position = 'absolute';
       box.style.left = '47%';
       box.style.top = '50%';
       box.style.transform = 'translate(-50%, -50%)';
-      box.style.zIndex = '2147483647';
+      box.style.zIndex = '20';
       box.style.pointerEvents = 'none';
       box.style.color = '#ffffff';
       box.style.fontWeight = '500';
@@ -673,7 +668,8 @@
       box.style.opacity = '1';
       box.style.mixBlendMode = 'normal';
       box.textContent = '';
-      document.body.appendChild(box);
+      var heroLayer = document.querySelector('#banner .mask') || document.getElementById('banner') || document.body;
+      heroLayer.appendChild(box);
 
       var cursor = document.createElement('span');
       cursor.textContent = '_';
