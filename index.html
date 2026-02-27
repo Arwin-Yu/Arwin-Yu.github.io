@@ -85,12 +85,16 @@
     background-image: none !important;
   }
   #board {
-    background-color: rgba(255, 255, 255, 0.8) !important; /* Semi-transparent content area */
-    backdrop-filter: blur(10px);
+    position: relative;
+    z-index: 40 !important;
+    background-color: rgba(6, 10, 20, 0.94) !important;
+    border: 1px solid rgba(142, 204, 255, 0.18);
+    backdrop-filter: blur(6px);
+    box-shadow: 0 16px 46px rgba(0,0,0,.52);
   }
   /* Dark Mode adjustments if needed */
   [data-user-color-scheme='dark'] #board {
-    background-color: rgba(30, 30, 40, 0.8) !important;
+    background-color: rgba(6, 10, 20, 0.95) !important;
   }
 
   .banner .banner-text,
@@ -105,6 +109,28 @@
     position: relative !important;
     z-index: 9999 !important;
     isolation: isolate;
+  }
+
+  .index-card {
+    background: rgba(12, 18, 33, 0.88) !important;
+    border: 1px solid rgba(146, 207, 255, 0.16) !important;
+    border-radius: 12px !important;
+    box-shadow: 0 8px 20px rgba(0,0,0,.28) !important;
+  }
+
+  .index-card .index-header a,
+  .index-card .index-header {
+    color: #eaf6ff !important;
+  }
+
+  .index-card .index-excerpt,
+  .index-card .index-excerpt p {
+    color: rgba(220, 236, 255, 0.88) !important;
+  }
+
+  .index-card .post-meta,
+  .index-card .post-meta * {
+    color: rgba(174, 201, 230, 0.86) !important;
   }
 
   .banner .mask {
@@ -665,6 +691,20 @@
     })(window, document);
   </script>
 
+  <script>
+    (function(){
+      var board = document.getElementById('board');
+      if (!board) return;
+      function syncFocus(){
+        var y = window.scrollY || document.documentElement.scrollTop || 0;
+        var trigger = Math.max(120, board.offsetTop - 140);
+        document.body.classList.toggle('content-focus', y > trigger);
+      }
+      syncFocus();
+      window.addEventListener('scroll', syncFocus, { passive: true });
+      window.addEventListener('resize', syncFocus);
+    })();
+  </script>
 
 
 
@@ -733,7 +773,12 @@
     animation: planetBreath 8.6s ease-in-out infinite;
     transform-origin: center center;
     pointer-events: none;
+    transition: opacity .3s ease;
   }
+
+  body.content-focus #planet-art { opacity: .62; }
+  body.content-focus #fleet-layer { opacity: .35; }
+  body.content-focus #cosmic-ocean { opacity: .72; }
 
   #planet-link-hotspot {
     position: absolute;
