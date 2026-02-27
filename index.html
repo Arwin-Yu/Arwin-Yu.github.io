@@ -105,8 +105,16 @@
     filter: none !important;
   }
 
-  #hero-overlay-typewriter {
+  #custom-hero-module {
+    position: relative;
     z-index: 20;
+    display: inline-block;
+    color: #ffffff;
+    font: 500 clamp(1.2rem, 2.1vw, 1.9rem)/1.45 Inter,system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+    text-shadow: 0 2px 4px rgba(0,0,0,.95);
+    letter-spacing: .2px;
+    background: transparent;
+    text-align: center;
   }
 
   .banner .banner-text {
@@ -141,43 +149,6 @@
     background-color: rgba(0, 0, 0, 0.58) !important;
   }
 
-  .banner #hero-typewriter {
-    display: inline-block;
-    color: #ffffff !important;
-    font-weight: 900 !important;
-    font-size: clamp(1.3rem, 2.25vw, 2.1rem);
-    line-height: 1.45;
-    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.9) !important;
-    -webkit-text-stroke: 0 !important;
-    white-space: pre-line !important;
-    letter-spacing: 0.25px;
-    background: rgba(0, 0, 0, 0.92);
-    border: 1px solid rgba(255, 255, 255, 0.22);
-    box-shadow: 0 8px 24px rgba(0,0,0,.55);
-    padding: 12px 16px;
-    border-radius: 12px;
-    animation: none !important;
-    transition: none !important;
-    opacity: 1 !important;
-    filter: none !important;
-    mix-blend-mode: normal !important;
-  }
-
-  .banner #hero-typewriter,
-  .banner #hero-typewriter * {
-    animation: none !important;
-    transition: none !important;
-    opacity: 1 !important;
-  }
-
-  .banner #custom-cursor {
-    display: inline-block;
-    color: #ffffff !important;
-    font-weight: 800 !important;
-    margin-left: 2px;
-    transition: none !important;
-    opacity: 1 !important;
-  }
 </style>
 <!-- hexo injector head_end end --><meta name="generator" content="Hexo 8.1.1">  <link rel="stylesheet" href="/css/cosmic-theme.css">
 </head>
@@ -295,7 +266,10 @@
       <div class="banner-text text-center">
         <div class="h2">
           
-            <span id="hero-typewriter" aria-live="polite"></span>
+            <div id="custom-hero-module" aria-live="polite">
+              <div>点击星球探索 GitHub 高赞项目</div>
+              <div>点击飞船探索本周最热项目，项目越火飞船越大</div>
+            </div>
           
         </div>
 
@@ -635,58 +609,7 @@
 
 
   <script>
-    (function (window, document) {
-      if (document.getElementById('hero-overlay-typewriter')) return;
-
-      var text = '点击星球探索 GitHub 高赞项目\n点击飞船探索本周最热项目，项目越火飞船越大';
-
-      // Detach from theme subtitle pipeline completely
-      var subtitle = document.getElementById('subtitle');
-      if (subtitle) subtitle.remove();
-      var inBanner = document.getElementById('hero-typewriter');
-      if (inBanner) inBanner.remove();
-
-      var heroLayer = document.querySelector('#banner .mask') || document.getElementById('banner') || document.body;
-      var host = document.createElement('div');
-      host.id = 'hero-overlay-typewriter';
-      host.style.position = 'absolute';
-      host.style.left = '47%';
-      host.style.top = '50%';
-      host.style.transform = 'translate(-50%, -50%)';
-      host.style.zIndex = '20';
-      host.style.pointerEvents = 'none';
-      heroLayer.appendChild(host);
-
-      var shadow = host.attachShadow({ mode: 'open' });
-      shadow.innerHTML = '<style>'
-        + ':host{all:initial;}'
-        + '.text{color:#fff;font:500 clamp(1.3rem,2.25vw,2.1rem)/1.45 Inter,system-ui,-apple-system,Segoe UI,Roboto,sans-serif;'
-        + 'white-space:pre-line;letter-spacing:.25px;text-shadow:0 2px 4px rgba(0,0,0,.95);}'
-        + '.cursor{color:#fff;margin-left:2px;font-weight:500;}'
-        + '</style><span class="text" id="tw"></span>';
-
-      var box = shadow.getElementById('tw');
-      var cursor = document.createElement('span');
-      cursor.className = 'cursor';
-      cursor.textContent = '_';
-
-      var i = 0;
-      function tick() {
-        if (i < text.length) {
-          box.textContent += text[i] === '\n' ? '\n' : text[i];
-          i += 1;
-          setTimeout(tick, 72);
-        } else {
-          box.appendChild(cursor);
-          var visible = true;
-          setInterval(function () {
-            visible = !visible;
-            cursor.style.opacity = visible ? '1' : '0';
-          }, 500);
-        }
-      }
-      tick();
-    })(window, document);
+    // custom-hero-module is pure static DOM/CSS (no theme typing/animation pipeline)
   </script>
 
   <script>
