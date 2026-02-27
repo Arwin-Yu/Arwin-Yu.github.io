@@ -17,6 +17,25 @@
     document.body.appendChild(ocean);
   }
 
+  function cleanupLegacyFloatingBadges() {
+    // Remove legacy subpage floating labels/ships (OpenClaw, AI HUB, etc.)
+    var ids = ['vanta-bg'];
+    ids.forEach(function (id) {
+      var el = document.getElementById(id);
+      if (el) el.remove();
+    });
+
+    var selectors = ['.ocean-ship', '.ocean-lighthouse'];
+    selectors.forEach(function (sel) {
+      document.querySelectorAll(sel).forEach(function (el) { el.remove(); });
+    });
+  }
+
+  cleanupLegacyFloatingBadges();
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', cleanupLegacyFloatingBadges, { once: true });
+  }
+
   var art = document.getElementById('planet-art');
   if (art) {
     art.addEventListener('click', function () {
