@@ -106,20 +106,29 @@
   }
 
   #custom-hero-module {
-    position: relative;
-    z-index: 20000 !important;
+    position: fixed;
+    left: 47%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 2147483646 !important;
     display: inline-block;
     color: #ffffff !important;
     font: 600 clamp(1.2rem, 2.1vw, 1.9rem)/1.45 Inter,system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
     text-shadow: 0 3px 8px rgba(0,0,0,.98) !important;
     letter-spacing: .2px;
-    background: rgba(0,0,0,.72);
-    border: 1px solid rgba(255,255,255,.2);
+    background: rgba(0,0,0,.78);
+    border: 1px solid rgba(255,255,255,.24);
     border-radius: 10px;
     padding: 10px 14px;
     text-align: center;
     opacity: 1 !important;
     mix-blend-mode: normal !important;
+    pointer-events: none;
+  }
+
+  body.content-focus #custom-hero-module {
+    opacity: 0 !important;
+    visibility: hidden !important;
   }
 
   #custom-hero-module,
@@ -707,6 +716,9 @@
     overflow: hidden;
   }
 
+  #cosmic-ocean { z-index: -2; }
+  #fleet-layer { z-index: 1; }
+
   #planet-art {
     position: absolute;
     inset: -4%;
@@ -755,7 +767,7 @@
   #fleet-layer {
     position: fixed;
     inset: 0;
-    z-index: 3;
+    z-index: 1;
     pointer-events: none;
   }
 
