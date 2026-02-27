@@ -776,18 +776,24 @@
     left: 20px;
     top: 82px;
     z-index: 12;
-    width: 74px;
-    height: 74px;
+    width: 100px;
+    height: 100px;
     border-radius: 50%;
     display: grid;
     place-items: center;
     text-decoration: none;
     color: #e8f8ff;
-    font-size: 36px;
+    font-size: 48px;
     background: radial-gradient(circle, rgba(92,182,255,.98) 0%, rgba(39,94,156,.95) 56%, rgba(12,32,60,.96) 100%);
     border: 1.5px solid rgba(190,236,255,.9);
     box-shadow: 0 0 22px rgba(120,210,255,.75), 0 0 52px rgba(120,210,255,.35);
     animation: beaconPulse 1.9s ease-in-out infinite;
+  }
+
+  #ai-news-beacon .beacon-icon {
+    display: inline-block;
+    transform-origin: center center;
+    animation: beaconSpin 8s linear infinite;
   }
 
   #ai-news-beacon::after {
@@ -906,6 +912,11 @@
     50% { box-shadow: 0 8px 22px rgba(0,0,0,.4), 0 0 24px rgba(120,210,255,.34); transform: translateY(-1px); }
   }
 
+  @keyframes beaconSpin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+
   @media (max-width: 900px) {
     #planet-link-hotspot {
       width: 86vw;
@@ -917,9 +928,9 @@
     #ai-news-beacon {
       left: 8px;
       top: 68px;
-      width: 58px;
-      height: 58px;
-      font-size: 26px;
+      width: 72px;
+      height: 72px;
+      font-size: 34px;
     }
 
     #ai-news-beacon::after {
@@ -959,7 +970,7 @@
   beacon.id = 'ai-news-beacon';
   beacon.href = '/categories/Weekly-AI/';
   beacon.setAttribute('aria-label', 'AI News');
-  beacon.textContent = '🛰️';
+  beacon.innerHTML = '<span class="beacon-icon">🛰️</span>';
   document.body.appendChild(beacon);
 
   var TRENDING_AI_WEEKLY = [
