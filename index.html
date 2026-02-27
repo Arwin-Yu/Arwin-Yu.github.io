@@ -913,13 +913,13 @@
   ];
 
   var ORBITS = [
-    { a: 46, b: 24, phase: 0.1, speed: 0.34 },
-    { a: 42, b: 22, phase: 1.0, speed: -0.29 },
-    { a: 40, b: 21, phase: 1.9, speed: 0.31 },
-    { a: 48, b: 25, phase: 2.8, speed: -0.26 },
-    { a: 44, b: 23, phase: 3.7, speed: 0.33 },
-    { a: 50, b: 26, phase: 4.6, speed: -0.24 },
-    { a: 38, b: 20, phase: 5.5, speed: 0.36 }
+    { a: 46, b: 24, phase: 0.1, speed: 0.11 },
+    { a: 42, b: 22, phase: 1.0, speed: 0.09 },
+    { a: 40, b: 21, phase: 1.9, speed: 0.1 },
+    { a: 48, b: 25, phase: 2.8, speed: 0.08 },
+    { a: 44, b: 23, phase: 3.7, speed: 0.12 },
+    { a: 50, b: 26, phase: 4.6, speed: 0.085 },
+    { a: 38, b: 20, phase: 5.5, speed: 0.105 }
   ];
 
   function short(n){ return n>=1000 ? (n/1000).toFixed(1).replace(/\.0$/,'')+'k' : String(n); }
@@ -996,8 +996,15 @@
         var ang = o.phase + t * o.speed;
         var x = 48 + o.a * Math.cos(ang);
         var y = 57 + o.b * Math.sin(ang);
+
+        // Tangent direction so ships face forward along trajectory
+        var vx = -o.a * Math.sin(ang) * o.speed;
+        var vy =  o.b * Math.cos(ang) * o.speed;
+        var heading = Math.atan2(vy, vx) * 180 / Math.PI;
+
         it.el.style.left = x.toFixed(2) + '%';
         it.el.style.top = y.toFixed(2) + '%';
+        it.el.style.transform = 'translate(-50%, -50%) rotate(' + heading.toFixed(2) + 'deg)';
       }
       requestAnimationFrame(animate);
     }
