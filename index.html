@@ -648,9 +648,8 @@
       if (!board) return;
       function syncFocus(){
         var y = window.scrollY || document.documentElement.scrollTop || 0;
-        var trigger = Math.max(40, board.offsetTop - 140);
-        var boardTopInView = board.getBoundingClientRect().top < 140;
-        document.body.classList.toggle('content-focus', y > trigger || boardTopInView);
+        // Only switch to content mode after user really scrolls down
+        document.body.classList.toggle('content-focus', y > 180);
       }
       syncFocus();
       window.addEventListener('scroll', syncFocus, { passive: true });
