@@ -3,6 +3,19 @@
 
   if (!isHome) {
     document.body.classList.add('subpage-daylight');
+
+    // Hard-apply daylight style on subpages (works even when CSS cache is stale)
+    if (!document.getElementById('subpage-daylight-inline-style')) {
+      var daylight = document.createElement('style');
+      daylight.id = 'subpage-daylight-inline-style';
+      daylight.textContent = "body.subpage-daylight{background:linear-gradient(180deg,#dff1ff 0%,#eef7ff 48%,#f7fbff 100%)!important;}"
+        + "body.subpage-daylight .banner{background:linear-gradient(180deg,rgba(160,210,255,.32) 0%,rgba(225,242,255,.78) 100%)!important;}"
+        + "body.subpage-daylight #board{background:rgba(255,255,255,.92)!important;border:1px solid rgba(113,157,198,.28)!important;box-shadow:0 14px 36px rgba(36,67,98,.16)!important;}"
+        + "body.subpage-daylight .index-card,body.subpage-daylight .post-content,body.subpage-daylight .post-detail-card,body.subpage-daylight #post{background:rgba(255,255,255,.94)!important;border:1px solid rgba(127,171,212,.24)!important;}"
+        + "body.subpage-daylight .markdown-body,body.subpage-daylight .about-content,body.subpage-daylight .post-content,body.subpage-daylight #post{color:#243b55!important;}"
+        + "body.subpage-daylight .markdown-body h1,body.subpage-daylight .markdown-body h2,body.subpage-daylight .markdown-body h3,body.subpage-daylight .about-content h1,body.subpage-daylight .about-content h2,body.subpage-daylight .about-content h3{color:#13263d!important;}";
+      document.head.appendChild(daylight);
+    }
   }
 
   // Keep cosmic ocean only for homepage experience.
