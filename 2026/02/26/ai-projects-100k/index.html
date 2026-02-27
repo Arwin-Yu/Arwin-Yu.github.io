@@ -1,72 +1,81 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-CN">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Top AI GitHub Projects (100k+ Stars)</title>
+  <title>AI 高赞项目（100k+）双源收录</title>
   <style>
-    body {
-      margin: 0;
-      font-family: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      color: #eaf2ff;
-      background: linear-gradient(180deg, #080b16 0%, #131b35 55%, #202d56 100%);
-      min-height: 100vh;
-    }
-    .bg {
-      position: fixed; inset: 0; z-index: -1;
-      background: linear-gradient(180deg, rgba(6,10,20,0.65), rgba(8,12,24,0.35)), url('/img/generated-space-v2/002-ultra-cinematic-deep-space-background-fo.png') center/cover no-repeat;
-      animation: breathe 14s ease-in-out infinite;
-    }
-    @keyframes breathe { 0%,100%{transform:scale(1.01)}50%{transform:scale(1.03)} }
-    .wrap { max-width: 980px; margin: 0 auto; padding: 48px 18px 80px; }
-    h1 { margin: 0 0 10px; }
-    .sub { opacity: .85; margin-bottom: 24px; }
-    .grid { display: grid; gap: 14px; }
-    .card {
-      display: block;
-      text-decoration: none;
-      color: inherit;
-      background: rgba(10,16,34,0.72);
-      border: 1px solid rgba(125, 194, 255, 0.35);
-      border-radius: 12px;
-      padding: 14px 16px;
-      transition: transform .2s ease, border-color .2s ease;
-    }
-    .card:hover { transform: translateY(-2px); border-color: rgba(150,220,255,0.75); }
-    .name { font-weight: 700; }
-    .meta { opacity: .85; font-size: 14px; margin-top: 6px; }
+    body { margin:0; font-family: Inter,system-ui,-apple-system,Segoe UI,Roboto,sans-serif; color:#eaf2ff;
+      background: linear-gradient(180deg,#080b16 0%, #131b35 55%, #202d56 100%); min-height:100vh; }
+    .bg{position:fixed;inset:0;z-index:-1;background:linear-gradient(180deg,rgba(6,10,20,.65),rgba(8,12,24,.35)),url('/img/generated-space-v2/002-ultra-cinematic-deep-space-background-fo.png') center/cover no-repeat;}
+    .wrap{max-width:1060px;margin:0 auto;padding:46px 18px 80px;}
+    h1{margin:0 0 8px}.sub{opacity:.85;margin:0 0 10px}
+    .tip{font-size:13px;opacity:.78;margin-bottom:20px}
+    h2{margin:24px 0 10px;font-size:1.1rem;opacity:.95}
+    .list{display:grid;gap:12px}
+    .card{display:block;text-decoration:none;color:inherit;background:rgba(10,16,34,.72);border:1px solid rgba(125,194,255,.35);border-radius:12px;padding:13px 14px}
+    .card:hover{border-color:rgba(150,220,255,.8)}
+    .name{font-weight:700}.meta{opacity:.86;font-size:14px;margin-top:6px}
   </style>
-  <link rel="stylesheet" href="/css/cosmic-theme.css">
 </head>
 <body>
   <div class="bg"></div>
   <div class="wrap">
-    <h1>Top AI GitHub Projects (⭐ 100k+)</h1>
-    <div class="sub">A quick curated list of the hottest AI-related open-source repos with 100k+ stars.</div>
+    <h1>AI 高赞项目（100k+）</h1>
+    <div class="sub">双源收录（自 2026 年以来持续维护）：GitHub Search API + Hugging Face 生态补充源。</div>
+    <div class="tip">筛选规则：AI/Agent/LLM 相关，累计 stars &gt; 100k，去重后展示。</div>
 
-    <div class="grid">
-      <a class="card" href="https://github.com/huggingface/transformers" target="_blank" rel="noopener noreferrer">
-        <div class="name">huggingface/transformers</div>
-        <div class="meta">⭐ 150k+ · State-of-the-art ML for PyTorch / JAX / TensorFlow</div>
-      </a>
-      <a class="card" href="https://github.com/Significant-Gravitas/AutoGPT" target="_blank" rel="noopener noreferrer">
-        <div class="name">Significant-Gravitas/AutoGPT</div>
-        <div class="meta">⭐ 170k+ · Autonomous AI agent framework</div>
-      </a>
-      <a class="card" href="https://github.com/langchain-ai/langchain" target="_blank" rel="noopener noreferrer">
-        <div class="name">langchain-ai/langchain</div>
-        <div class="meta">⭐ 100k+ · Build LLM-powered apps with composable chains/agents</div>
-      </a>
-      <a class="card" href="https://github.com/microsoft/vscode" target="_blank" rel="noopener noreferrer">
-        <div class="name">microsoft/vscode</div>
-        <div class="meta">⭐ 170k+ · Not AI-only, but core infra for AI coding workflows</div>
-      </a>
-      <a class="card" href="https://github.com/mrdoob/three.js" target="_blank" rel="noopener noreferrer">
-        <div class="name">mrdoob/three.js</div>
-        <div class="meta">⭐ 100k+ · Graphics infra often used in AI visualization experiences</div>
-      </a>
-    </div>
+    <h2>Source A · GitHub Search API（主源）</h2>
+    <div id="list-github" class="list">加载中...</div>
+
+    <h2>Source B · Hugging Face 生态补充（校对源）</h2>
+    <div id="list-hf" class="list"></div>
   </div>
-<script src="/js/cosmic-theme.js"></script>
+
+  <script>
+    function short(n){ return n>=1000 ? (n/1000).toFixed(1).replace(/\.0$/,'')+'k' : String(n); }
+
+    var HF_SUPPLEMENT = [
+      { full_name: 'huggingface/transformers', stars: 150000, language: 'Python', url: 'https://github.com/huggingface/transformers', desc: 'Core HF ecosystem library for modern LLM/ML workflows.' },
+      { full_name: 'ollama/ollama', stars: 100000, language: 'Go', url: 'https://github.com/ollama/ollama', desc: 'Run and serve LLMs locally at scale (HF ecosystem frequently uses it).' },
+      { full_name: 'AUTOMATIC1111/stable-diffusion-webui', stars: 100000, language: 'Python', url: 'https://github.com/AUTOMATIC1111/stable-diffusion-webui', desc: 'High-impact diffusion tooling used broadly in AI creator ecosystem.' }
+    ];
+
+    document.getElementById('list-hf').innerHTML = HF_SUPPLEMENT.map(function(x){
+      return '<a class="card" href="'+x.url+'" target="_blank" rel="noopener noreferrer">'
+        + '<div class="name">'+x.full_name+'</div>'
+        + '<div class="meta">⭐ '+short(x.stars)+' · '+x.language+' · '+x.desc+'</div>'
+        + '</a>';
+    }).join('');
+
+    (async function(){
+      var el = document.getElementById('list-github');
+      try {
+        var q = '(ai OR llm OR agent OR diffusion OR transformer) in:name,description stars:>100000';
+        var url = 'https://api.github.com/search/repositories?q=' + encodeURIComponent(q) + '&sort=stars&order=desc&per_page=50';
+        var r = await fetch(url, {headers:{Accept:'application/vnd.github+json'}});
+        if(!r.ok) throw new Error('api');
+        var data = await r.json();
+        var items = (data.items || []).map(function(x){
+          return {
+            full_name: x.full_name,
+            stars: x.stargazers_count || 0,
+            language: x.language || 'Unknown',
+            url: x.html_url,
+            desc: x.description || ''
+          };
+        });
+        if(!items.length) throw new Error('empty');
+        el.innerHTML = items.map(function(x){
+          return '<a class="card" href="'+x.url+'" target="_blank" rel="noopener noreferrer">'
+            + '<div class="name">'+x.full_name+'</div>'
+            + '<div class="meta">⭐ '+short(x.stars)+' · '+x.language+' · '+x.desc+'</div>'
+            + '</a>';
+        }).join('');
+      } catch(e) {
+        el.innerHTML = '<div class="card">主源加载失败（可能触发 GitHub API 限流），请稍后再试。</div>';
+      }
+    })();
+  </script>
 </body>
 </html>
