@@ -1,6 +1,12 @@
 (function () {
-  // Avoid duplicate layers on index (already custom-built)
-  if (!document.getElementById('planet-system')) {
+  var isHome = location.pathname === '/' || location.pathname === '/index.html';
+
+  if (!isHome) {
+    document.body.classList.add('subpage-daylight');
+  }
+
+  // Keep cosmic ocean only for homepage experience.
+  if (isHome && !document.getElementById('planet-system')) {
     var ocean = document.createElement('div');
     ocean.id = 'cosmic-ocean';
     ocean.style.position = 'fixed';

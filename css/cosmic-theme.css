@@ -90,3 +90,75 @@ body {
 #planet-system {
   pointer-events: none;
 }
+
+/* Daylight redesign for all subpages (homepage keeps cosmic night) */
+body.subpage-daylight {
+  background: linear-gradient(180deg, #dff1ff 0%, #eef7ff 48%, #f7fbff 100%) !important;
+}
+
+body.subpage-daylight .banner {
+  background: linear-gradient(180deg, rgba(160, 210, 255, 0.32) 0%, rgba(225, 242, 255, 0.78) 100%) !important;
+}
+
+body.subpage-daylight .banner .mask {
+  background: rgba(255, 255, 255, 0.18) !important;
+}
+
+body.subpage-daylight #board {
+  background-color: rgba(255, 255, 255, 0.92) !important;
+  border: 1px solid rgba(113, 157, 198, 0.28) !important;
+  box-shadow: 0 14px 36px rgba(36, 67, 98, 0.16) !important;
+}
+
+body.subpage-daylight .index-card,
+body.subpage-daylight .post-content,
+body.subpage-daylight .post-detail-card,
+body.subpage-daylight #post {
+  background: rgba(255, 255, 255, 0.94) !important;
+  border: 1px solid rgba(127, 171, 212, 0.24) !important;
+  box-shadow: 0 10px 24px rgba(42, 73, 106, 0.1) !important;
+}
+
+body.subpage-daylight .index-card .index-header,
+body.subpage-daylight .index-card .index-header a,
+body.subpage-daylight .post-content h1,
+body.subpage-daylight .post-content h2,
+body.subpage-daylight .post-content h3,
+body.subpage-daylight #post h1,
+body.subpage-daylight #post h2,
+body.subpage-daylight #post h3,
+body.subpage-daylight .about-name,
+body.subpage-daylight .about-intro,
+body.subpage-daylight .about-content h1,
+body.subpage-daylight .about-content h2,
+body.subpage-daylight .about-content h3,
+body.subpage-daylight .markdown-body h1,
+body.subpage-daylight .markdown-body h2,
+body.subpage-daylight .markdown-body h3 {
+  color: #13263d !important;
+}
+
+body.subpage-daylight .index-card .index-excerpt,
+body.subpage-daylight .index-card .index-excerpt p,
+body.subpage-daylight .index-card .post-meta,
+body.subpage-daylight .index-card .post-meta *,
+body.subpage-daylight .post-content,
+body.subpage-daylight .post-content p,
+body.subpage-daylight .post-content li,
+body.subpage-daylight #post,
+body.subpage-daylight #post p,
+body.subpage-daylight #post li,
+body.subpage-daylight .about-content,
+body.subpage-daylight .about-content p,
+body.subpage-daylight .about-content li,
+body.subpage-daylight .markdown-body,
+body.subpage-daylight .markdown-body p,
+body.subpage-daylight .markdown-body li {
+  color: #243b55 !important;
+}
+
+body.subpage-daylight .markdown-body a,
+body.subpage-daylight .about-content a,
+body.subpage-daylight #post a {
+  color: #0b62b0 !important;
+}
